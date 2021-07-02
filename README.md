@@ -1,2 +1,2 @@
-# ConvexHullProblem
-In this branch you can find solution of the convex hull problem.
+# Выпуклая оболочка
+Здесь рассмотрена проблема поиска минимальной выпуклой оболочки для множества точек.

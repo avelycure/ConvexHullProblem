@@ -46,6 +46,7 @@ void initMesh(Point **&coordinateMesh, SystemPatemeters &systemParameters);
 void initRightPart(RightPart *&localRigthParts, int MATRIX_CONTRIBUTION_SIZE);
 void initContributionMatrix(ContributionMatrix *&contributionMatrix, int MATRIX_CONTRIBUTION_SIZE);
 void readSystemParameters(SystemPatemeters &systemParameters, string &method);
+void dimensionlessSystemParameters(SystemPatemeters &systemParameters, string &method);
 
 /**
  * 

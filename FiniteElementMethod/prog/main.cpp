@@ -37,6 +37,7 @@ int main()
     ContributionMatrix *contributionMatrix;
 
     readSystemParameters(systemParameters, method);
+    dimensionlessSystemParameters(systemParameters, method);
 
     if (method == H_CONST)
         solveWithHConst(contributionMatrix, coordinateMesh, matrixPressure,
@@ -45,6 +46,6 @@ int main()
     if (method == H_LINEAR)
         solveWithHLinear(contributionMatrix, localRigthParts, coordinateMesh,
                          matrixPressure, rightPart, systemParameters);
-                         
+
     solveEquation(systemParameters.n * systemParameters.n);
 }

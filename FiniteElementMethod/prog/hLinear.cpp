@@ -66,7 +66,10 @@ void createLocalContributionMatrixForHLinearTop(ContributionMatrix localMatrix,
                                                RightPart localRightPart,
                                                SystemPatemeters &systemParameters)
 {
-    double hMin = systemParameters.hMin;
+    //dimensionless input height
+    double h0 = systemParameters.hMin;
+    
+    //dimensionless parameter k
     double k = systemParameters.k;
 
     // coefficients of line z = k1 * x + k2
@@ -74,9 +77,9 @@ void createLocalContributionMatrixForHLinearTop(ContributionMatrix localMatrix,
     double k2 = pointJ.getX() - pointJ.getY() * (pointK.getX() - pointJ.getX()) / (pointK.getY() - pointJ.getY());
 
     //coefficients of polynom
-    double A1 = pow(hMin, 3.0);
-    double A2 = 3.0 * pow(hMin, 2.0) * k;
-    double A3 = 3.0 * hMin * pow(k, 2.0);
+    double A1 = pow(h0, 3.0);
+    double A2 = 3.0 * pow(h0, 2.0) * k;
+    double A3 = 3.0 * h0 * pow(k, 2.0);
     double A4 = pow(k, 3.0);
 
     double s = pointK.getY() - pointI.getY();
@@ -101,8 +104,8 @@ void createLocalContributionMatrixForHLinearTop(ContributionMatrix localMatrix,
     double coefT4 = -0.5 * k1 * k1 * s3 - k1 * k2 * s2 + 0.5 * (pointK.getX() * pointK.getX() - k2 * k2) * s;
 
     //coefficient R3
-    double R3 = 6.0 * systemParameters.mu * systemParameters.L * systemParameters.U * k /
-                (systemParameters.Hn * systemParameters.Hn * systemParameters.pMin);
+    double R3 = 6.0 * systemParameters.mu * systemParameters.L * systemParameters.U * systemParameters.k /
+                (systemParameters.realInputGap * systemParameters.realInputGap * systemParameters.realPressure);
 
     double valB, valG;
     double *a = new double[3];
@@ -154,13 +157,16 @@ void createLocalContributionMatrixForHLinearBottom(ContributionMatrix localMatri
     double k1 = (pointK.getX() - pointJ.getX()) / (pointK.getY() - pointJ.getY());
     double k2 = pointJ.getX() - pointJ.getY() * (pointK.getX() - pointJ.getX()) / (pointK.getY() - pointJ.getY());
 
-    double hMin = systemParameters.hMin;
+    //dimensionless input height
+    double h0 = systemParameters.hMin;
+    
+    //dimensionless parameter k
     double k = systemParameters.k;
 
     //coefficients of polynom
-    double A1 = pow(hMin, 3.0);
-    double A2 = 3.0 * pow(hMin, 2.0) * k;
-    double A3 = 3.0 * hMin * pow(k, 2.0);
+    double A1 = pow(h0, 3.0);
+    double A2 = 3.0 * pow(h0, 2.0) * k;
+    double A3 = 3.0 * h0 * pow(k, 2.0);
     double A4 = pow(k, 3.0);
 
     double s = pointI.getY() - pointK.getY();
@@ -186,7 +192,7 @@ void createLocalContributionMatrixForHLinearBottom(ContributionMatrix localMatri
 
     //coefficient R3 6 * mu * k * L * ...
     double R3 = 6.0 * systemParameters.mu * systemParameters.L * systemParameters.U * k /
-                (systemParameters.Hn * systemParameters.Hn * systemParameters.pMin);
+                (systemParameters.realInputGap * systemParameters.realInputGap * systemParameters.realPressure);
 
     double valB, valG;
     double *a = new double[3];

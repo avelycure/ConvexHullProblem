@@ -4,34 +4,83 @@
 class SystemPatemeters
 {
 public:
+    /**
+    * Number of finite elements
+    * */
     int n;
-    double L;
+
+    /**
+     * Fluid speed
+     * */
     double U;
-    double k;
+
+    /**
+     * Fluid viscosity
+     * */
     double mu;
-    double Hn;
+
+    /**
+     * Upper surface slope parameter
+     * */
+    double k;
+
+    /**
+     * Real coefficient k
+     * */
+    double realK;
+
+    /**
+    * Height of input gap
+    * */
     double hMin;
-    double pMin;
+
+    /**
+     * Real value of input gap
+     * */
+    double realInputGap;
+
+    /**
+    * Real pressure on borders
+    * */
+    double realPressure;
+
+    /**
+     * Length of the region
+     * */
+    double L;
+
+    /**
+     * X and Y coordinates of top-left point of the region
+     * */
     double xOrigin;
     double yOrigin;
+
+    /**
+     * Value of pressure on three sides of the region
+     * */
     double LOW_BORDER;
+
+    /**
+     * Value of pressure on one side of the region
+     * */
     double HIGH_BORDER;
-    double borderLength;
 
     SystemPatemeters()
     {
         n = 0;
-        mu = 0.0;
-        L = 0.0;
         U = 0.0;
-        pMin = 0.0;
+        L = 0.0;
+        mu = 0.0;
+        xOrigin = 0.0;
+        yOrigin = 0.0;
+
         k = 0.0;
         hMin = 0.0;
         HIGH_BORDER = 2.0;
         LOW_BORDER = 1.0;
-        xOrigin = 0.0;
-        yOrigin = 0.0;
-        k = 0.0;
-        borderLength = 0.0;
+        
+        realK = 0.0;
+        realInputGap = 0.0;
+        realPressure = 0.0;
     }
 };

@@ -88,7 +88,7 @@ void initMesh(Point **&coordinateMesh, SystemPatemeters &systemParameters)
     int n = systemParameters.n;
     double xOrigin = systemParameters.xOrigin;
     double yOrigin = systemParameters.yOrigin;
-    double h = systemParameters.borderLength / (n - 1);
+    double h = systemParameters.L / (n - 1);
     coordinateMesh = new Point *[n];
     for (int i = 0; i < n; i++)
         coordinateMesh[i] = new Point[n];
@@ -103,6 +103,7 @@ void initMesh(Point **&coordinateMesh, SystemPatemeters &systemParameters)
 
 void readSystemParameters(SystemPatemeters &systemParameters, string &method)
 {
+    
     nlohmann::json j;
     fstream fileInputSystem;
     fileInputSystem.open(FILE_SYSTEM_NAME);
@@ -119,16 +120,28 @@ void readSystemParameters(SystemPatemeters &systemParameters, string &method)
     systemParameters.n = jsonObject["configs"][k]["n"];
     systemParameters.L = jsonObject["configs"][k]["L"];
     systemParameters.U = jsonObject["configs"][k]["U"];
-    systemParameters.k = jsonObject["configs"][k]["k"];
     systemParameters.mu = jsonObject["configs"][k]["mu"];
-    systemParameters.Hn = jsonObject["configs"][k]["Hn"];// для обезразмеривания
-    systemParameters.pMin = jsonObject["configs"][k]["pMin"];
-    systemParameters.hMin = jsonObject["configs"][k]["hMin"];//высота впускного зазора
     systemParameters.xOrigin = jsonObject["configs"][k]["xOrigin"];
     systemParameters.yOrigin = jsonObject["configs"][k]["yOrigin"];
+
+    systemParameters.hMin = jsonObject["configs"][k]["realInputGap"];
     systemParameters.LOW_BORDER = jsonObject["configs"][k]["lowBorder"];
     systemParameters.HIGH_BORDER = jsonObject["configs"][k]["highBorder"];
-    systemParameters.borderLength = jsonObject["configs"][k]["borderLength"];
+    systemParameters.k = jsonObject["configs"][k]["realK"];
 
+    systemParameters.realPressure = jsonObject["configs"][k]["realPressure"];
+    systemParameters.realK = jsonObject["configs"][k]["realK"];
+    systemParameters.realInputGap = jsonObject["configs"][k]["realInputGap"];
     fileInput.close();
+}
+
+void dimensionlessSystemParameters(SystemPatemeters &systemParameters, string &method)
+{
+    systemParameters.hMin /= systemParameters.realInputGap;
+    systemParameters.LOW_BORDER /= systemParameters.realPressure;
+    systemParameters.HIGH_BORDER /= systemParameters.realPressure;
+    if (method == H_LINEAR)
+        systemParameters.k = (systemParameters.k * systemParameters.L) / systemParameters.realInputGap;
+    else
+        systemParameters.k = 0.0;
 }

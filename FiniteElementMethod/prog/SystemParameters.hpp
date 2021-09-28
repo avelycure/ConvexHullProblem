@@ -1,3 +1,6 @@
+/**
+ * This class stores input data
+ * */
 class SystemPatemeters
 {
 public:

@@ -45,5 +45,6 @@ int main()
     if (method == H_LINEAR)
         solveWithHLinear(contributionMatrix, localRigthParts, coordinateMesh,
                          matrixPressure, rightPart, systemParameters);
+                         
     solveEquation(systemParameters.n * systemParameters.n);
 }

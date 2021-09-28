@@ -4,8 +4,6 @@
  * Constant height. Special case of linear changing height
  * */
 
-const string VECTOR_RIGHT_PART_OUTPUT_FILE = "data/rightPart.txt";
-
 void solveWithHConst(ContributionMatrix *&contributionMatrix,
                     Point **&coordinateMesh,
                     double **&matrixPressure,

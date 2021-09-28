@@ -1,8 +1,9 @@
 #include "header.hpp"
-/*
-*    LINEAR PART
-*/
-int solveWithHLinear(ContributionMatrix *&contributionMatrix,
+
+/**
+ * Linear changing height
+ * */
+void solveWithHLinear(ContributionMatrix *&contributionMatrix,
                      RightPart *&localRigthParts,
                      Point **&coordinateMesh,
                      double **&matrixPressure,
@@ -26,11 +27,41 @@ int solveWithHLinear(ContributionMatrix *&contributionMatrix,
                                systemParameters.LOW_BORDER, systemParameters.HIGH_BORDER);
 
     outputPressureMatrix(matrixPressure, MATRIX_PRESSURE_SIZE);
-
-    return 0;
 }
 
-int createLocalContributionMatrixForHLinearTop(ContributionMatrix localMatrix,
+void createLocalMatrixForEveryElementHLinear(ContributionMatrix *&contributionMatrixParam,
+                                             Point **&coordinateMeshParam,
+                                             RightPart *&rightPartParam,
+                                             SystemPatemeters &systemParameters)
+{
+    double k = systemParameters.k;
+    double hMin = systemParameters.hMin;
+    int n = systemParameters.n;
+
+    int finiteElementNumber = -1;
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = 0; j < n - 1; j++)
+        {
+            finiteElementNumber++;
+            createLocalContributionMatrixForHLinearTop(contributionMatrixParam[finiteElementNumber],
+                                                       coordinateMeshParam[i][j],
+                                                       coordinateMeshParam[i + 1][j],
+                                                       coordinateMeshParam[i][j + 1],
+                                                       rightPartParam[finiteElementNumber],
+                                                       systemParameters);
+            finiteElementNumber++;
+            createLocalContributionMatrixForHLinearBottom(contributionMatrixParam[finiteElementNumber],
+                                                          coordinateMeshParam[i + 1][j + 1],
+                                                          coordinateMeshParam[i][j + 1],
+                                                          coordinateMeshParam[i + 1][j],
+                                                          rightPartParam[finiteElementNumber],
+                                                          systemParameters);
+        }
+    }
+}
+
+void createLocalContributionMatrixForHLinearTop(ContributionMatrix localMatrix,
                                                Point pointI, Point pointJ, Point pointK,
                                                RightPart localRightPart,
                                                SystemPatemeters &systemParameters)
@@ -112,11 +143,9 @@ int createLocalContributionMatrixForHLinearTop(ContributionMatrix localMatrix,
     //creating local vector
     for (int i = 0; i < 3; i++)
         localRightPart.vector[i] = -R3 * (coefT4 * c[i] + coefT3 * b[i] + coefT2 * a[i]);
-
-    return 0;
 }
 
-int createLocalContributionMatrixForHLinearBottom(ContributionMatrix localMatrix,
+void createLocalContributionMatrixForHLinearBottom(ContributionMatrix localMatrix,
                                                   Point pointI, Point pointJ, Point pointK,
                                                   RightPart localRightPart,
                                                   SystemPatemeters &systemParameters)
@@ -198,40 +227,6 @@ int createLocalContributionMatrixForHLinearBottom(ContributionMatrix localMatrix
     //creating local vector
     for (int i = 0; i < 3; i++)
         localRightPart.vector[i] = -R3 * (coefT4 * c[i] + coefT3 * b[i] + coefT2 * a[i]);
-
-    return 0;
-}
-
-void createLocalMatrixForEveryElementHLinear(ContributionMatrix *&contributionMatrixParam,
-                                             Point **&coordinateMeshParam,
-                                             RightPart *&rightPartParam,
-                                             SystemPatemeters &systemParameters)
-{
-    double k = systemParameters.k;
-    double hMin = systemParameters.hMin;
-    int n = systemParameters.n;
-
-    int finiteElementNumber = -1;
-    for (int i = 0; i < n - 1; i++)
-    {
-        for (int j = 0; j < n - 1; j++)
-        {
-            finiteElementNumber++;
-            createLocalContributionMatrixForHLinearTop(contributionMatrixParam[finiteElementNumber],
-                                                       coordinateMeshParam[i][j],
-                                                       coordinateMeshParam[i + 1][j],
-                                                       coordinateMeshParam[i][j + 1],
-                                                       rightPartParam[finiteElementNumber],
-                                                       systemParameters);
-            finiteElementNumber++;
-            createLocalContributionMatrixForHLinearBottom(contributionMatrixParam[finiteElementNumber],
-                                                          coordinateMeshParam[i + 1][j + 1],
-                                                          coordinateMeshParam[i][j + 1],
-                                                          coordinateMeshParam[i + 1][j],
-                                                          rightPartParam[finiteElementNumber],
-                                                          systemParameters);
-        }
-    }
 }
 
 void createGlobalPressureMatrixHLinear(double **&matrixPressure, ContributionMatrix *&contributionMatrix,
@@ -338,7 +333,7 @@ void addBorderConditionsHLinear(double **&matrixResult,
     }
 
     fstream myFile;
-    myFile.open("data/rightPart.txt", fstream::out);
+    myFile.open(VECTOR_RIGHT_PART_OUTPUT_FILE, fstream::out);
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
         myFile << rightPartParam[i] << endl;
 }

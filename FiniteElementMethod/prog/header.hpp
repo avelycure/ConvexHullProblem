@@ -13,10 +13,28 @@ using namespace std;
 
 const string FILE_PARAMETERS_NAME = "systemParameters.json";
 const string FILE_SYSTEM_NAME = "systemNum.json";
+
+/**
+ * Name of file for right part output
+ * */
+const string VECTOR_RIGHT_PART_OUTPUT_FILE = "data/rightPart.txt";
+
+/**
+ * Names of methods
+ * */
 const string H_CONST = "hConst";
 const string H_LINEAR = "hLinear";
 
-//Basic funcs
+/**
+ * 
+ * 
+ * 
+ * Common functions
+ * 
+ * 
+ * 
+ * */
+
 void initMatrix(double **&matrix, int row, int column);
 void displayMatrix(double **matrix, int row, int column);
 void displayMesh(Point **coordinateMesh, int n);
@@ -29,7 +47,15 @@ void initRightPart(RightPart *&localRigthParts, int MATRIX_CONTRIBUTION_SIZE);
 void initContributionMatrix(ContributionMatrix *&contributionMatrix, int MATRIX_CONTRIBUTION_SIZE);
 void readSystemParameters(SystemPatemeters &systemParameters, string &method);
 
-//Finite elements method funcs
+/**
+ * 
+ * 
+ * 
+ * Finite elements method functions
+ * 
+ * 
+ * 
+ * */
 
 /**
  * Constant height
@@ -39,17 +65,24 @@ void solveWithHConst(ContributionMatrix *&contributionMatrix,
                     double **&matrixPressure,
                     SystemPatemeters &systemParameters);
 double countArea(Point pointI, Point pointJ, Point pointK);
-
-
 void createLocalContributionMatrixForHConst(ContributionMatrix localMatrix, Point pointI, Point pointJ, Point pointK);
 void createLocalMatrixForEveryElementHConst(ContributionMatrix *&contributionMatrixParam, Point **&coordinateMeshParam, int n);
 void addBorderConditionsHConst(double **&matrixResult, int n, int MATRIX_PRESSURE_SIZE, int OTHER_BORDER, int DOWN_BORDER);
 void createGlobalPressureMatrixHConst(double **&matrixPressure, ContributionMatrix *&contributionMatrix, int n);
 
-int createLocalContributionMatrixForHLinearTop(ContributionMatrix localMatrix,
+/**
+ * Linear changing height
+ * */
+void solveWithHLinear(ContributionMatrix *&contributionMatrix,
+                     RightPart *&localRigthParts,
+                     Point **&coordinateMesh,
+                     double **&matrixPressure,
+                     double *&rightPart,
+                     SystemPatemeters &systemParameters);
+void createLocalContributionMatrixForHLinearTop(ContributionMatrix localMatrix,
                                                Point pointI, Point pointJ, Point pointK,
                                                RightPart localRightPart,SystemPatemeters &systemParameters);
-int createLocalContributionMatrixForHLinearBottom(ContributionMatrix localMatrix,
+void createLocalContributionMatrixForHLinearBottom(ContributionMatrix localMatrix,
                                                   Point pointI, Point pointJ, Point pointK,
                                                   RightPart localRightPart,SystemPatemeters &systemParameters);
 void createLocalMatrixForEveryElementHLinear(ContributionMatrix *&contributionMatrixParam,
@@ -61,15 +94,16 @@ void createGlobalPressureMatrixHLinear(double **&matrixPressure, ContributionMat
 void addBorderConditionsHLinear(double **&matrixResult, double *&rightPartParam, int n,
                                 int MATRIX_PRESSURE_SIZE, int OTHER_BORDER, int DOWN_BORDER);
 
-int solveWithHLinear(ContributionMatrix *&contributionMatrix,
-                     RightPart *&localRigthParts,
-                     Point **&coordinateMesh,
-                     double **&matrixPressure,
-                     double *&rightPart,
-                     SystemPatemeters &systemParameters);
-
+/**
+ * 
+ * 
+ * 
+ * Gauss functions
+ * 
+ * 
+ * 
+ * */
 int solveEquation(const int size);
-
 int allocateMemory(double **&A, double *&B, double *&X1, const int &n);
 int readData(const string fileNameMatrix, const string fileNameVector, double **&matrixA, double *&vectorB, const int &n);
 void writeVector(string fileNameOutput, double *&vector, const int &n);

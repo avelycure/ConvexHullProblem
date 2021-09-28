@@ -24,12 +24,12 @@ public:
     {
         return y;
     }
-    void setX(double xParam)
+    void setX(double xP)
     {
-        x = xParam;
+        x = xP;
     }
-    void setY(double yParam)
+    void setY(double yP)
     {
-        y = yParam;
+        y = yP;
     }
 };

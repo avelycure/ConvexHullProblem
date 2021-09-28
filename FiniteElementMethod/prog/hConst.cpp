@@ -3,11 +3,10 @@
 /**
  * Constant height. Special case of linear changing height
  * */
-
 void solveWithHConst(ContributionMatrix *&contributionMatrix,
-                    Point **&coordinateMesh,
-                    double **&matrixPressure,
-                    SystemPatemeters &systemParameters)
+                     Point **&coordinateMesh,
+                     double **&matrixPressure,
+                     SystemPatemeters &systemParameters)
 {
     const int MATRIX_PRESSURE_SIZE = systemParameters.n * systemParameters.n;
     const int MATRIX_CONTRIBUTION_SIZE = (systemParameters.n - 1) * (systemParameters.n - 1) * 2;
@@ -87,7 +86,7 @@ void createLocalContributionMatrixForHConst(ContributionMatrix localMatrix,
         {
             valB = lambdaX * area * b[i] * b[j];
             valG = lambdaY * area * c[i] * c[j];
-            localMatrix.setElement(i, j, valB + valG);
+            localMatrix.set(i, j, valB + valG);
         }
     }
 }
@@ -102,7 +101,6 @@ double countArea(Point pointI, Point pointJ, Point pointK)
                        pointK.getX() * pointI.getY() - pointJ.getX() * pointI.getY()));
 }
 
-
 /**
  * Transform local matrixes and local indexes to global matrix and global indexes
  * */
@@ -112,7 +110,6 @@ void createGlobalPressureMatrixHConst(double **&matrixPressure, ContributionMatr
     int finiteElementNumber = 0;
 
     for (int i = 0; i < n - 1; i++)
-    {
         for (int j = 0; j < n - 1; j++)
         {
             //for top triangle
@@ -122,10 +119,8 @@ void createGlobalPressureMatrixHConst(double **&matrixPressure, ContributionMatr
 
             for (int iterator1 = 0; iterator1 < 3; iterator1++)
                 for (int iterator2 = 0; iterator2 < 3; iterator2++)
-                {
                     matrixPressure[globalNodeNumbersIJK[iterator1]][globalNodeNumbersIJK[iterator2]] +=
-                        contributionMatrix[finiteElementNumber].matrix[iterator1][iterator2];
-                }
+                        contributionMatrix[finiteElementNumber].get(iterator1, iterator2);
 
             finiteElementNumber++;
 
@@ -135,13 +130,11 @@ void createGlobalPressureMatrixHConst(double **&matrixPressure, ContributionMatr
 
             for (int iterator1 = 0; iterator1 < 3; iterator1++)
                 for (int iterator2 = 0; iterator2 < 3; iterator2++)
-                {
                     matrixPressure[globalNodeNumbersIJK[iterator1]][globalNodeNumbersIJK[iterator2]] +=
-                        contributionMatrix[finiteElementNumber].matrix[iterator1][iterator2];
-                }
+                        contributionMatrix[finiteElementNumber].get(iterator1, iterator2);
+
             finiteElementNumber++;
         }
-    }
 }
 
 /**
@@ -199,7 +192,7 @@ void addBorderConditionsHConst(double **&matrixResult,
     }
 
     fstream myFile;
-    myFile.open(VECTOR_RIGHT_PART_OUTPUT_FILE, fstream::out);
+    myFile.open(FILE_VECTOR_RIGHT_PART_OUTPUT, fstream::out);
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
         myFile << rightPart[i] << endl;
 }

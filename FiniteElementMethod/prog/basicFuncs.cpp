@@ -4,9 +4,7 @@ void initMatrix(double **&matrix, int row, int column)
 {
     matrix = new double *[row];
     for (int i = 0; i < row; i++)
-    {
         matrix[i] = new double[column];
-    }
 }
 
 void displayMatrix(double **matrix, int row, int column)
@@ -14,9 +12,8 @@ void displayMatrix(double **matrix, int row, int column)
     for (int i = 0; i < row; i++)
     {
         for (int j = 0; j < column; j++)
-        {
             cout << matrix[i][j] << " ";
-        }
+
         cout << endl;
     }
 }
@@ -26,9 +23,8 @@ void displayMesh(Point **coordinateMesh, int n)
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < n; j++)
-        {
             cout << "(" << coordinateMesh[i][j].getX() << "," << coordinateMesh[i][j].getY() << ") ";
-        }
+
         cout << endl;
     }
 }
@@ -48,7 +44,13 @@ void displayAllLocalMatrixes(ContributionMatrix *&ContributionMatrixParam, int n
     for (int i = 0; i < n; i++)
     {
         cout << "matrix[" << i << "]" << endl;
-        displayMatrix(ContributionMatrixParam[i].matrix, 3, 3);
+        for (int ii = 0; ii < 3; ii++)
+        {
+            for (int jj = 0; jj < 3; jj++)
+                cout << ContributionMatrixParam[i].get(ii, jj) << " ";
+
+            cout << endl;
+        }
         cout << endl;
     }
 }
@@ -57,13 +59,12 @@ void outputPressureMatrix(double **matrixPressure, int MATRIX_PRESSURE_SIZE)
 {
     fstream myFile;
 
-    myFile.open("data/pressureMatrix.txt", fstream::out);
+    myFile.open(FILE_OUTPUT_MATRIX, fstream::out);
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
     {
         for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-        {
             myFile << matrixPressure[i][j] << " ";
-        }
+
         myFile << endl;
     }
 }
@@ -83,6 +84,9 @@ void initRightPart(RightPart *&localRigthParts, int MATRIX_CONTRIBUTION_SIZE)
     localRigthParts = new RightPart[MATRIX_CONTRIBUTION_SIZE];
 }
 
+/**
+ * Set coordinates of the nodes
+ * */
 void initMesh(Point **&coordinateMesh, SystemPatemeters &systemParameters)
 {
     int n = systemParameters.n;
@@ -101,9 +105,12 @@ void initMesh(Point **&coordinateMesh, SystemPatemeters &systemParameters)
         }
 }
 
+/**
+ * Read parameters of the system from json file. This done not to recompile program every time
+ * we need to change parameters
+ * */
 void readSystemParameters(SystemPatemeters &systemParameters, string &method)
 {
-    
     nlohmann::json j;
     fstream fileInputSystem;
     fileInputSystem.open(FILE_SYSTEM_NAME);
@@ -135,11 +142,16 @@ void readSystemParameters(SystemPatemeters &systemParameters, string &method)
     fileInput.close();
 }
 
+/**
+ * This function transforms input parameters into dimensionless, so computation will be more
+ * efficient, and we could see different models
+ * */
 void dimensionlessSystemParameters(SystemPatemeters &systemParameters, string &method)
 {
     systemParameters.hMin /= systemParameters.realInputGap;
     systemParameters.LOW_BORDER /= systemParameters.realPressure;
     systemParameters.HIGH_BORDER /= systemParameters.realPressure;
+    
     if (method == H_LINEAR)
         systemParameters.k = (systemParameters.k * systemParameters.L) / systemParameters.realInputGap;
     else

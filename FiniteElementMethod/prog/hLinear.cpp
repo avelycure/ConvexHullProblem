@@ -4,11 +4,11 @@
  * Linear changing height
  * */
 void solveWithHLinear(ContributionMatrix *&contributionMatrix,
-                     RightPart *&localRigthParts,
-                     Point **&coordinateMesh,
-                     double **&matrixPressure,
-                     double *&rightPart,
-                     SystemPatemeters &systemParameters)
+                      RightPart *&localRigthParts,
+                      Point **&coordinateMesh,
+                      double **&matrixPressure,
+                      double *&rightPart,
+                      SystemPatemeters &systemParameters)
 {
     const int MATRIX_PRESSURE_SIZE = systemParameters.n * systemParameters.n;
     const int MATRIX_CONTRIBUTION_SIZE = (systemParameters.n - 1) * (systemParameters.n - 1) * 2;
@@ -40,7 +40,6 @@ void createLocalMatrixForEveryElementHLinear(ContributionMatrix *&contributionMa
 
     int finiteElementNumber = -1;
     for (int i = 0; i < n - 1; i++)
-    {
         for (int j = 0; j < n - 1; j++)
         {
             finiteElementNumber++;
@@ -58,17 +57,16 @@ void createLocalMatrixForEveryElementHLinear(ContributionMatrix *&contributionMa
                                                           rightPartParam[finiteElementNumber],
                                                           systemParameters);
         }
-    }
 }
 
 void createLocalContributionMatrixForHLinearTop(ContributionMatrix localMatrix,
-                                               Point pointI, Point pointJ, Point pointK,
-                                               RightPart localRightPart,
-                                               SystemPatemeters &systemParameters)
+                                                Point pointI, Point pointJ, Point pointK,
+                                                RightPart localRightPart,
+                                                SystemPatemeters &systemParameters)
 {
     //dimensionless input height
     double h0 = systemParameters.hMin;
-    
+
     //dimensionless parameter k
     double k = systemParameters.k;
 
@@ -139,19 +137,19 @@ void createLocalContributionMatrixForHLinearTop(ContributionMatrix localMatrix,
         {
             valB = b[i] * b[j] * coefT1;
             valG = c[i] * c[j] * coefT1;
-            localMatrix.setElement(i, j, valB + valG);
+            localMatrix.set(i, j, valB + valG);
         }
     }
 
     //creating local vector
     for (int i = 0; i < 3; i++)
-        localRightPart.vector[i] = -R3 * (coefT4 * c[i] + coefT3 * b[i] + coefT2 * a[i]);
+        localRightPart.set(i, -R3 * (coefT4 * c[i] + coefT3 * b[i] + coefT2 * a[i]));
 }
 
 void createLocalContributionMatrixForHLinearBottom(ContributionMatrix localMatrix,
-                                                  Point pointI, Point pointJ, Point pointK,
-                                                  RightPart localRightPart,
-                                                  SystemPatemeters &systemParameters)
+                                                   Point pointI, Point pointJ, Point pointK,
+                                                   RightPart localRightPart,
+                                                   SystemPatemeters &systemParameters)
 {
     // coefficients of line z = k1 * x + k2
     double k1 = (pointK.getX() - pointJ.getX()) / (pointK.getY() - pointJ.getY());
@@ -159,7 +157,7 @@ void createLocalContributionMatrixForHLinearBottom(ContributionMatrix localMatri
 
     //dimensionless input height
     double h0 = systemParameters.hMin;
-    
+
     //dimensionless parameter k
     double k = systemParameters.k;
 
@@ -226,13 +224,13 @@ void createLocalContributionMatrixForHLinearBottom(ContributionMatrix localMatri
         {
             valB = b[i] * b[j] * coefT1;
             valG = c[i] * c[j] * coefT1;
-            localMatrix.setElement(i, j, valB + valG);
+            localMatrix.set(i, j, valB + valG);
         }
     }
 
     //creating local vector
     for (int i = 0; i < 3; i++)
-        localRightPart.vector[i] = -R3 * (coefT4 * c[i] + coefT3 * b[i] + coefT2 * a[i]);
+        localRightPart.set(i, -R3 * (coefT4 * c[i] + coefT3 * b[i] + coefT2 * a[i]));
 }
 
 void createGlobalPressureMatrixHLinear(double **&matrixPressure, ContributionMatrix *&contributionMatrix,
@@ -251,18 +249,13 @@ void createGlobalPressureMatrixHLinear(double **&matrixPressure, ContributionMat
             /*k*/ globalNodeNumbersIJK[2] = globalNodeNumbersIJK[0] + 1;
 
             for (int iterator1 = 0; iterator1 < 3; iterator1++)
-            {
                 for (int iterator2 = 0; iterator2 < 3; iterator2++)
-                {
                     matrixPressure[globalNodeNumbersIJK[iterator1]][globalNodeNumbersIJK[iterator2]] +=
-                        contributionMatrix[finiteElementNumber].matrix[iterator1][iterator2];
-                }
-            }
+                        contributionMatrix[finiteElementNumber].get(iterator1, iterator2);
 
             for (int iterator1 = 0; iterator1 < 3; iterator1++)
-            {
-                rightPartParam[globalNodeNumbersIJK[iterator1]] += localRightPartsParam[finiteElementNumber].vector[iterator1];
-            }
+                rightPartParam[globalNodeNumbersIJK[iterator1]] += localRightPartsParam[finiteElementNumber].get(iterator1);
+
             finiteElementNumber++;
 
             //for bottom triangle
@@ -270,18 +263,13 @@ void createGlobalPressureMatrixHLinear(double **&matrixPressure, ContributionMat
             swap(globalNodeNumbersIJK[1], globalNodeNumbersIJK[2]);
 
             for (int iterator1 = 0; iterator1 < 3; iterator1++)
-            {
                 for (int iterator2 = 0; iterator2 < 3; iterator2++)
-                {
                     matrixPressure[globalNodeNumbersIJK[iterator1]][globalNodeNumbersIJK[iterator2]] +=
-                        contributionMatrix[finiteElementNumber].matrix[iterator1][iterator2];
-                }
-            }
+                        contributionMatrix[finiteElementNumber].get(iterator1, iterator2);
 
             for (int iterator1 = 0; iterator1 < 3; iterator1++)
-            {
-                rightPartParam[globalNodeNumbersIJK[iterator1]] += localRightPartsParam[finiteElementNumber].vector[iterator1];
-            }
+                rightPartParam[globalNodeNumbersIJK[iterator1]] += localRightPartsParam[finiteElementNumber].get(iterator1);
+
             finiteElementNumber++;
         }
     }
@@ -298,9 +286,8 @@ void addBorderConditionsHLinear(double **&matrixResult,
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-        {
             matrixResult[i][j] = 0.0;
-        }
+
         matrixResult[i][i] = 1.0;
         rightPartParam[i] = DOWN_BORDER;
     }
@@ -309,9 +296,8 @@ void addBorderConditionsHLinear(double **&matrixResult,
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-        {
             matrixResult[i * n][j] = 0.0;
-        }
+
         matrixResult[i * n][i * n] = 1.0;
         rightPartParam[i * n] = OTHER_BORDER;
     }
@@ -320,9 +306,8 @@ void addBorderConditionsHLinear(double **&matrixResult,
     for (int i = 1; i <= n; i++)
     {
         for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-        {
             matrixResult[i * n - 1][j] = 0.0;
-        }
+
         matrixResult[i * n - 1][i * n - 1] = 1.0;
         rightPartParam[i * n - 1] = OTHER_BORDER;
     }
@@ -331,15 +316,14 @@ void addBorderConditionsHLinear(double **&matrixResult,
     for (int i = MATRIX_PRESSURE_SIZE - n; i < MATRIX_PRESSURE_SIZE; i++)
     {
         for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-        {
             matrixResult[i][j] = 0.0;
-        }
+
         matrixResult[i][i] = 1.0;
         rightPartParam[i] = OTHER_BORDER;
     }
 
     fstream myFile;
-    myFile.open(VECTOR_RIGHT_PART_OUTPUT_FILE, fstream::out);
+    myFile.open(FILE_VECTOR_RIGHT_PART_OUTPUT, fstream::out);
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
         myFile << rightPartParam[i] << endl;
 }

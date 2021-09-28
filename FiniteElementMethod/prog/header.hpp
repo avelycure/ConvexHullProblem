@@ -15,9 +15,14 @@ const string FILE_PARAMETERS_NAME = "systemParameters.json";
 const string FILE_SYSTEM_NAME = "systemNum.json";
 
 /**
- * Name of file for right part output
+ * Name of file for matrix of pressures in node
  * */
-const string VECTOR_RIGHT_PART_OUTPUT_FILE = "data/rightPart.txt";
+const string FILE_OUTPUT_MATRIX = "data/pressureMatrix.txt";
+
+/**
+ * Name of file for right part
+ * */
+const string FILE_VECTOR_RIGHT_PART_OUTPUT = "data/rightPart.txt";
 
 /**
  * Names of methods

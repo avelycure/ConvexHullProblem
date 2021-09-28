@@ -1,3 +1,6 @@
+/**
+ * This class represents point of the region
+ * */
 class Point
 {
     double x;

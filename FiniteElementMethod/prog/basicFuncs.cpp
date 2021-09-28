@@ -40,6 +40,9 @@ void displayVector(double *mVector, int n)
     cout << endl;
 }
 
+/**
+ * Display matrixes of all finit elements
+ * */
 void displayAllLocalMatrixes(ContributionMatrix *&ContributionMatrixParam, int n)
 {
     for (int i = 0; i < n; i++)

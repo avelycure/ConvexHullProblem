@@ -1,8 +1,7 @@
 #include "header.hpp"
 /*
-    LINEAR PART
+*    LINEAR PART
 */
-
 int solveWithHLinear(ContributionMatrix *&contributionMatrix,
                      RightPart *&localRigthParts,
                      Point **&coordinateMesh,

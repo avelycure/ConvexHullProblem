@@ -30,15 +30,21 @@ void initContributionMatrix(ContributionMatrix *&contributionMatrix, int MATRIX_
 void readSystemParameters(SystemPatemeters &systemParameters, string &method);
 
 //Finite elements method funcs
+
+/**
+ * Constant height
+ * */
+void solveWithHConst(ContributionMatrix *&contributionMatrix,
+                    Point **&coordinateMesh,
+                    double **&matrixPressure,
+                    SystemPatemeters &systemParameters);
 double countArea(Point pointI, Point pointJ, Point pointK);
+
+
 void createLocalContributionMatrixForHConst(ContributionMatrix localMatrix, Point pointI, Point pointJ, Point pointK);
 void createLocalMatrixForEveryElementHConst(ContributionMatrix *&contributionMatrixParam, Point **&coordinateMeshParam, int n);
 void addBorderConditionsHConst(double **&matrixResult, int n, int MATRIX_PRESSURE_SIZE, int OTHER_BORDER, int DOWN_BORDER);
 void createGlobalPressureMatrixHConst(double **&matrixPressure, ContributionMatrix *&contributionMatrix, int n);
-int solveWithHConst(ContributionMatrix *&contributionMatrix,
-                    Point **&coordinateMesh,
-                    double **&matrixPressure,
-                    SystemPatemeters &systemParameters);
 
 int createLocalContributionMatrixForHLinearTop(ContributionMatrix localMatrix,
                                                Point pointI, Point pointJ, Point pointK,

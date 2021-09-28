@@ -11,19 +11,19 @@ int solveEquation(const int size)
     double *B;
     double *X;
 
-    AllocateMemory(A, B, X, size);
-    ReadData(FILENAME_MATRIX_PRESSURE, FILENAME_RIGHT_PART, A, B, size);
+    allocateMemory(A, B, X, size);
+    readData(FILENAME_MATRIX_PRESSURE, FILENAME_RIGHT_PART, A, B, size);
 
-    if (GaussMethod(A, B, X, size))
-        WriteVector(FILENAME_SOLUTION, X, size);
+    if (gaussMethod(A, B, X, size))
+        writeVector(FILENAME_SOLUTION, X, size);
     else
         cout << "Matrix A is degenerate " << endl;
 
-    FreeMemory(A, B, X, size);
+    freeMemory(A, B, X, size);
     return 0;
 }
 
-int AllocateMemory(double **&A, double *&B, double *&X, const int &n)
+int allocateMemory(double **&A, double *&B, double *&X, const int &n)
 {
     A = new double *[n];
 
@@ -35,7 +35,7 @@ int AllocateMemory(double **&A, double *&B, double *&X, const int &n)
     return 0;
 }
 
-int ReadData(const string fileNameMatrix, const string fileNameVector, double **&matrixA, double *&vectorB, const int &n)
+int readData(const string fileNameMatrix, const string fileNameVector, double **&matrixA, double *&vectorB, const int &n)
 {
     ifstream matrixFile;
     matrixFile.open(fileNameMatrix);
@@ -69,7 +69,7 @@ int ReadData(const string fileNameMatrix, const string fileNameVector, double **
     return 0;
 }
 
-bool GaussMethod(double **&A, double *&B, double *&X, const int &size)
+bool gaussMethod(double **&A, double *&B, double *&X, const int &size)
 {
     double m;
     double k;
@@ -87,7 +87,7 @@ bool GaussMethod(double **&A, double *&B, double *&X, const int &size)
         if (i % 100 == 0)
             cout << "Current progress: "<< i << endl;
 
-        if (MatrixIsPrepared(A, B, i, permutations, size))
+        if (matrixIsPrepared(A, B, i, permutations, size))
         {
             m = A[i][i];
             B[i] /= m;
@@ -111,7 +111,7 @@ bool GaussMethod(double **&A, double *&B, double *&X, const int &size)
         }
     }
 
-    if (MatrixIsPrepared(A, B, size - 1, permutations, size) == false)
+    if (matrixIsPrepared(A, B, size - 1, permutations, size) == false)
         noProblems = false;
 
     if (noProblems == true)
@@ -125,7 +125,7 @@ bool GaussMethod(double **&A, double *&B, double *&X, const int &size)
                 A[j][i] = 0.0;
             }
 
-        DiagonalizeEquation(A, B, X, size, permutations);
+        diagonalizeEquation(A, B, X, size, permutations);
         for (int i = 0; i < size; i++)
             swap(B[i], X[i]);
     }
@@ -133,31 +133,31 @@ bool GaussMethod(double **&A, double *&B, double *&X, const int &size)
     return noProblems;
 }
 
-bool MatrixIsPrepared(double **&A, double *&B, const int &i, vector<tuple<int, int>> &permutations, const int &size)
+bool matrixIsPrepared(double **&A, double *&B, const int &i, vector<tuple<int, int>> &permutations, const int &size)
 {
     tuple<int, int> t;
-    t = SearchMax(A, i, size);
+    t = searchMax(A, i, size);
 
     if (get<0>(t) != i)
-        SwapRows(A, B, i, get<0>(t));
+        swapRows(A, B, i, get<0>(t));
     if (isDegenerate(A, i, size) == false)
         return true;
     else
         return false;
 }
 
-void DiagonalizeEquation(double **&A, double *&B, double *&X, const int &size, vector<tuple<int, int>> &permutations)
+void diagonalizeEquation(double **&A, double *&B, double *&X, const int &size, vector<tuple<int, int>> &permutations)
 {
     for (int i = permutations.size() - 1; i > -1; i--)
-        SwapColomns(A, get<0>(permutations[i]), get<1>(permutations[i]), size);
+        swapColomns(A, get<0>(permutations[i]), get<1>(permutations[i]), size);
 
     for (int i = 0; i < size; i++)
         for (int j = 0; j < size; j++)
             if (A[i][j] > epsilon && i != j)
-                SwapRows(A, B, i, j);
+                swapRows(A, B, i, j);
 }
 
-tuple<int, int> SearchMax(double **&A, const int &currentMinor, const int &size)
+tuple<int, int> searchMax(double **&A, const int &currentMinor, const int &size)
 {
     int max_i = currentMinor;
     double max = fabs(A[max_i][currentMinor]);
@@ -170,13 +170,13 @@ tuple<int, int> SearchMax(double **&A, const int &currentMinor, const int &size)
     return make_tuple(max_i, currentMinor);
 }
 
-void SwapRows(double **&A, double *&B, const int &i1, const int &i2)
+void swapRows(double **&A, double *&B, const int &i1, const int &i2)
 {
     swap(A[i1], A[i2]);
     swap(B[i1], B[i2]);
 }
 
-void SwapColomns(double **&A, const int &j1, const int &j2, const int &size)
+void swapColomns(double **&A, const int &j1, const int &j2, const int &size)
 {
     for (int i = 0; i < size; i++)
         swap(A[i][j1], A[i][j2]);
@@ -195,7 +195,7 @@ bool isDegenerate(double **&A, const int &i, const int &size)
     return false;
 }
 
-int FreeMemory(double **&A, double *&B, double *&X, const int &n)
+void freeMemory(double **&A, double *&B, double *&X, const int &n)
 {
     delete[] B;
     delete[] X;
@@ -203,11 +203,9 @@ int FreeMemory(double **&A, double *&B, double *&X, const int &n)
     for (int i = 0; i < n; ++i)
         delete[] A[i];
     delete[] A;
-
-    return 0;
 }
 
-int WriteVector(string fileNameOutput, double *&vector, const int &n)
+void writeVector(string fileNameOutput, double *&vector, const int &n)
 {
     ofstream fileOutput;
     fileOutput.open(fileNameOutput);
@@ -217,5 +215,4 @@ int WriteVector(string fileNameOutput, double *&vector, const int &n)
     fileOutput << "\n";
 
     fileOutput.close();
-    return 0;
 }

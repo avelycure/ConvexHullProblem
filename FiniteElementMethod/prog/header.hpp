@@ -64,22 +64,14 @@ int solveWithHLinear(ContributionMatrix *&contributionMatrix,
 
 int solveEquation(const int size);
 
-int AllocateMemory(double **&A, double *&B, double *&X1, const int &n);
-int ReadData(const string fileNameMatrix, const string fileNameVector, double **&matrixA, double *&vectorB, const int &n);
-
-int WriteVector(string fileNameOutput, double *&vector, const int &n);
-
-bool GaussMethod(double **&A, double *&B, double *&X, const int &size);
-
-bool MatrixIsPrepared(double **&A, double *&B, const int &i, vector<tuple<int, int>> &permutations, const int &size);
-
-void DiagonalizeEquation(double **&A, double *&B, double *&X, const int &size, vector<tuple<int, int>> &permutations);
-
-tuple<int, int> SearchMax(double **&A, const int &currentMinor, const int &size);
-
-void SwapRows(double **&A, double *&B, const int &i1, const int &i2);
-void SwapColomns(double **&A, const int &j1, const int &j2, const int &size);
-
+int allocateMemory(double **&A, double *&B, double *&X1, const int &n);
+int readData(const string fileNameMatrix, const string fileNameVector, double **&matrixA, double *&vectorB, const int &n);
+void writeVector(string fileNameOutput, double *&vector, const int &n);
+bool gaussMethod(double **&A, double *&B, double *&X, const int &size);
+bool matrixIsPrepared(double **&A, double *&B, const int &i, vector<tuple<int, int>> &permutations, const int &size);
+void diagonalizeEquation(double **&A, double *&B, double *&X, const int &size, vector<tuple<int, int>> &permutations);
+tuple<int, int> searchMax(double **&A, const int &currentMinor, const int &size);
+void swapRows(double **&A, double *&B, const int &i1, const int &i2);
+void swapColomns(double **&A, const int &j1, const int &j2, const int &size);
 bool isDegenerate(double **&A, const int &i, const int &size);
-
-int FreeMemory(double **&A, double *&B, double *&X1, const int &n);
+void freeMemory(double **&A, double *&B, double *&X1, const int &n);

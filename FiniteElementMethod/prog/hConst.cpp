@@ -19,8 +19,9 @@ void solveWithHConst(ContributionMatrix *&contributionMatrix,
     createLocalMatrixForEveryElementHConst(contributionMatrix, coordinateMesh, systemParameters.n);
     createGlobalPressureMatrixHConst(matrixPressure, contributionMatrix, systemParameters.n);
 
-    addBorderConditionsHConst(matrixPressure, systemParameters.n, MATRIX_PRESSURE_SIZE,
-                              systemParameters.LOW_BORDER, systemParameters.HIGH_BORDER);
+    double *rightPart = new double[MATRIX_PRESSURE_SIZE];
+    addBorderConditions(matrixPressure, rightPart, systemParameters.n, MATRIX_PRESSURE_SIZE,
+                        systemParameters.LOW_BORDER, systemParameters.HIGH_BORDER);
 
     outputPressureMatrix(matrixPressure, MATRIX_PRESSURE_SIZE);
 }
@@ -135,64 +136,4 @@ void createGlobalPressureMatrixHConst(double **&matrixPressure, ContributionMatr
 
             finiteElementNumber++;
         }
-}
-
-/**
- * The global stiffness matrix was created. In this function we take this matrix and change some
- * equations in it. For exaple, we have border condition on the right side of the region, in node n
- * (this is first node in secong row), we take equation number n, and just set value of node n to 
- * the condition(change the equation to x_n = p_n)
- * */
-void addBorderConditionsHConst(double **&matrixResult,
-                               int n,
-                               int MATRIX_PRESSURE_SIZE,
-                               int LOW_BORDER,
-                               int HIGH_BORDER)
-{
-    double *rightPart = new double[MATRIX_PRESSURE_SIZE];
-
-    //left
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-            matrixResult[i * n][j] = 0.0;
-
-        matrixResult[i * n][i * n] = 1.0;
-        rightPart[i * n] = LOW_BORDER;
-    }
-
-    //right
-    for (int i = 1; i <= n; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-            matrixResult[i * n - 1][j] = 0.0;
-
-        matrixResult[i * n - 1][i * n - 1] = 1.0;
-        rightPart[i * n - 1] = LOW_BORDER;
-    }
-
-    //n row
-    for (int i = MATRIX_PRESSURE_SIZE - n; i < MATRIX_PRESSURE_SIZE; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-            matrixResult[i][j] = 0.0;
-
-        matrixResult[i][i] = 1.0;
-        rightPart[i] = LOW_BORDER;
-    }
-
-    //0 row
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-            matrixResult[i][j] = 0.0;
-
-        matrixResult[i][i] = 1.0;
-        rightPart[i] = HIGH_BORDER;
-    }
-
-    fstream myFile;
-    myFile.open(FILE_VECTOR_RIGHT_PART_OUTPUT, fstream::out);
-    for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
-        myFile << rightPart[i] << endl;
 }

@@ -23,7 +23,7 @@ void solveWithHLinear(ContributionMatrix *&contributionMatrix,
     createLocalMatrixForEveryElementHLinear(contributionMatrix, coordinateMesh, localRigthParts, systemParameters);
 
     createGlobalPressureMatrixHLinear(matrixPressure, contributionMatrix, rightPart, localRigthParts, systemParameters.n);
-    addBorderConditionsHLinear(matrixPressure, rightPart, systemParameters.n, MATRIX_PRESSURE_SIZE,
+    addBorderConditions(matrixPressure, rightPart, systemParameters.n, MATRIX_PRESSURE_SIZE,
                                systemParameters.LOW_BORDER, systemParameters.HIGH_BORDER);
 
     outputPressureMatrix(matrixPressure, MATRIX_PRESSURE_SIZE);
@@ -273,57 +273,4 @@ void createGlobalPressureMatrixHLinear(double **&matrixPressure, ContributionMat
             finiteElementNumber++;
         }
     }
-}
-
-void addBorderConditionsHLinear(double **&matrixResult,
-                                double *&rightPartParam,
-                                int n,
-                                int MATRIX_PRESSURE_SIZE,
-                                int OTHER_BORDER,
-                                int DOWN_BORDER)
-{
-    //0 row
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-            matrixResult[i][j] = 0.0;
-
-        matrixResult[i][i] = 1.0;
-        rightPartParam[i] = DOWN_BORDER;
-    }
-
-    //left
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-            matrixResult[i * n][j] = 0.0;
-
-        matrixResult[i * n][i * n] = 1.0;
-        rightPartParam[i * n] = OTHER_BORDER;
-    }
-
-    //right
-    for (int i = 1; i <= n; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-            matrixResult[i * n - 1][j] = 0.0;
-
-        matrixResult[i * n - 1][i * n - 1] = 1.0;
-        rightPartParam[i * n - 1] = OTHER_BORDER;
-    }
-
-    //n row
-    for (int i = MATRIX_PRESSURE_SIZE - n; i < MATRIX_PRESSURE_SIZE; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-            matrixResult[i][j] = 0.0;
-
-        matrixResult[i][i] = 1.0;
-        rightPartParam[i] = OTHER_BORDER;
-    }
-
-    fstream myFile;
-    myFile.open(FILE_VECTOR_RIGHT_PART_OUTPUT, fstream::out);
-    for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
-        myFile << rightPartParam[i] << endl;
 }

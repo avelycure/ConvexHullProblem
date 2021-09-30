@@ -52,6 +52,12 @@ void initRightPart(RightPart *&localRigthParts, int MATRIX_CONTRIBUTION_SIZE);
 void initContributionMatrix(ContributionMatrix *&contributionMatrix, int MATRIX_CONTRIBUTION_SIZE);
 void readSystemParameters(SystemPatemeters &systemParameters, string &method);
 void dimensionlessSystemParameters(SystemPatemeters &systemParameters, string &method);
+void addBorderConditions(double **&matrixResult,
+                         double *&rightPart,
+                         int n,
+                         int MATRIX_PRESSURE_SIZE,
+                         int LOW_BORDER,
+                         int HIGH_BORDER);
 
 /**
  * 
@@ -67,38 +73,35 @@ void dimensionlessSystemParameters(SystemPatemeters &systemParameters, string &m
  * Constant height
  * */
 void solveWithHConst(ContributionMatrix *&contributionMatrix,
-                    Point **&coordinateMesh,
-                    double **&matrixPressure,
-                    SystemPatemeters &systemParameters);
+                     Point **&coordinateMesh,
+                     double **&matrixPressure,
+                     SystemPatemeters &systemParameters);
 double countArea(Point pointI, Point pointJ, Point pointK);
 void createLocalContributionMatrixForHConst(ContributionMatrix localMatrix, Point pointI, Point pointJ, Point pointK);
 void createLocalMatrixForEveryElementHConst(ContributionMatrix *&contributionMatrixParam, Point **&coordinateMeshParam, int n);
-void addBorderConditionsHConst(double **&matrixResult, int n, int MATRIX_PRESSURE_SIZE, int OTHER_BORDER, int DOWN_BORDER);
 void createGlobalPressureMatrixHConst(double **&matrixPressure, ContributionMatrix *&contributionMatrix, int n);
 
 /**
  * Linear changing height
  * */
 void solveWithHLinear(ContributionMatrix *&contributionMatrix,
-                     RightPart *&localRigthParts,
-                     Point **&coordinateMesh,
-                     double **&matrixPressure,
-                     double *&rightPart,
-                     SystemPatemeters &systemParameters);
+                      RightPart *&localRigthParts,
+                      Point **&coordinateMesh,
+                      double **&matrixPressure,
+                      double *&rightPart,
+                      SystemPatemeters &systemParameters);
 void createLocalContributionMatrixForHLinearTop(ContributionMatrix localMatrix,
-                                               Point pointI, Point pointJ, Point pointK,
-                                               RightPart localRightPart,SystemPatemeters &systemParameters);
+                                                Point pointI, Point pointJ, Point pointK,
+                                                RightPart localRightPart, SystemPatemeters &systemParameters);
 void createLocalContributionMatrixForHLinearBottom(ContributionMatrix localMatrix,
-                                                  Point pointI, Point pointJ, Point pointK,
-                                                  RightPart localRightPart,SystemPatemeters &systemParameters);
+                                                   Point pointI, Point pointJ, Point pointK,
+                                                   RightPart localRightPart, SystemPatemeters &systemParameters);
 void createLocalMatrixForEveryElementHLinear(ContributionMatrix *&contributionMatrixParam,
                                              Point **&coordinateMeshParam,
                                              RightPart *&rightPartParam,
                                              SystemPatemeters &systemParameters);
 void createGlobalPressureMatrixHLinear(double **&matrixPressure, ContributionMatrix *&contributionMatrix,
                                        double *&rightPartParam, RightPart *&localRightPartsParam, int n);
-void addBorderConditionsHLinear(double **&matrixResult, double *&rightPartParam, int n,
-                                int MATRIX_PRESSURE_SIZE, int OTHER_BORDER, int DOWN_BORDER);
 
 /**
  * 

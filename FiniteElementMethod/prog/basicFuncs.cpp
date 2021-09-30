@@ -151,7 +151,7 @@ void dimensionlessSystemParameters(SystemPatemeters &systemParameters, string &m
     systemParameters.hMin /= systemParameters.realInputGap;
     systemParameters.LOW_BORDER /= systemParameters.realPressure;
     systemParameters.HIGH_BORDER /= systemParameters.realPressure;
-    
+
     if (method == H_LINEAR)
         systemParameters.k = (systemParameters.k * systemParameters.L) / systemParameters.realInputGap;
     else
@@ -165,11 +165,11 @@ void dimensionlessSystemParameters(SystemPatemeters &systemParameters, string &m
  * the condition(change the equation to x_n = p_n)
  * */
 void addBorderConditions(double **&matrixResult,
-                                double *&rightPart,
-                                int n,
-                                int MATRIX_PRESSURE_SIZE,
-                                int LOW_BORDER,
-                                int HIGH_BORDER)
+                         double *&rightPart,
+                         int n,
+                         int MATRIX_PRESSURE_SIZE,
+                         double LOW_BORDER,
+                         double HIGH_BORDER)
 {
     //0 row
     for (int i = 0; i < n; i++)
@@ -209,6 +209,70 @@ void addBorderConditions(double **&matrixResult,
 
         matrixResult[i][i] = 1.0;
         rightPart[i] = LOW_BORDER;
+    }
+
+    fstream myFile;
+    myFile.open(FILE_VECTOR_RIGHT_PART_OUTPUT, fstream::out);
+    for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
+        myFile << rightPart[i] << endl;
+}
+
+/**
+ * Overloaded function. Supports users input vector of border conditions
+ * */
+void addBorderConditions(double **&matrixResult,
+                         double *&borderValues,
+                         double *&rightPart,
+                         int n,
+                         int MATRIX_PRESSURE_SIZE,
+                         string borderPosition)
+{
+    if (borderPosition == "TOP")
+    {
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
+                matrixResult[i][j] = 0.0;
+
+            matrixResult[i][i] = 1.0;
+            rightPart[i] = borderValues[i];
+        }
+    }
+
+    if (borderPosition == "BOTTOM")
+    {
+        for (int i = MATRIX_PRESSURE_SIZE - n; i < MATRIX_PRESSURE_SIZE; i++)
+        {
+            for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
+                matrixResult[i][j] = 0.0;
+
+            matrixResult[i][i] = 1.0;
+            rightPart[i] = borderValues[i];
+        }
+    }
+
+    if (borderPosition == "RIGHT")
+    {
+        for (int i = 1; i <= n; i++)
+        {
+            for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
+                matrixResult[i * n - 1][j] = 0.0;
+
+            matrixResult[i * n - 1][i * n - 1] = 1.0;
+            rightPart[i * n - 1] = borderValues[i];
+        }
+    }
+
+    if (borderPosition == "LEFT")
+    {
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
+                matrixResult[i * n][j] = 0.0;
+
+            matrixResult[i * n][i * n] = 1.0;
+            rightPart[i * n] = borderValues[i];
+        }
     }
 
     fstream myFile;

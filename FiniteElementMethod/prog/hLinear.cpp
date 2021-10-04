@@ -7,11 +7,11 @@ void solveWithHLinear(ContributionMatrix *&contributionMatrix,
                       RightPart *&localRigthParts,
                       Point **&coordinateMesh,
                       double **&matrixPressure,
-                      double *&rightPart,
                       SystemPatemeters &systemParameters)
 {
     const int MATRIX_PRESSURE_SIZE = systemParameters.n * systemParameters.n;
     const int MATRIX_CONTRIBUTION_SIZE = (systemParameters.n - 1) * (systemParameters.n - 1) * 2;
+    double *rightPart;
 
     initMatrix(matrixPressure, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
     initMesh(coordinateMesh, systemParameters);
@@ -23,10 +23,6 @@ void solveWithHLinear(ContributionMatrix *&contributionMatrix,
     createLocalMatrixForEveryElementHLinear(contributionMatrix, coordinateMesh, localRigthParts, systemParameters);
 
     createGlobalPressureMatrixHLinear(matrixPressure, contributionMatrix, rightPart, localRigthParts, systemParameters.n);
-    addBorderConditions(matrixPressure, rightPart, systemParameters.n, MATRIX_PRESSURE_SIZE,
-                               systemParameters.LOW_BORDER, systemParameters.HIGH_BORDER);
-
-    outputPressureMatrix(matrixPressure, MATRIX_PRESSURE_SIZE);
 }
 
 void createLocalMatrixForEveryElementHLinear(ContributionMatrix *&contributionMatrixParam,

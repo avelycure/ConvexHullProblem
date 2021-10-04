@@ -65,6 +65,11 @@ public:
      * */
     double HIGH_BORDER;
 
+    /**
+     * Border conditions type
+     * */
+    std::string borderConditions;
+
     SystemPatemeters()
     {
         n = 0;
@@ -73,6 +78,7 @@ public:
         mu = 0.0;
         xOrigin = 0.0;
         yOrigin = 0.0;
+        borderConditions = "common";
 
         k = 0.0;
         hMin = 0.0;

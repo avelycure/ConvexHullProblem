@@ -69,6 +69,17 @@ void outputPressureMatrix(double **matrixPressure, int MATRIX_PRESSURE_SIZE)
     }
 }
 
+void outputVector(string fileName, double *vector, int size)
+{
+    fstream myFile;
+    myFile.open(fileName, fstream::out);
+
+    for (int i = 0; i < size; i++)
+        myFile << vector[i] << endl;
+
+    myFile.close();
+}
+
 void initVector(double *&p, int n)
 {
     p = new double[n];
@@ -130,6 +141,7 @@ void readSystemParameters(SystemPatemeters &systemParameters, string &method)
     systemParameters.mu = jsonObject["configs"][k]["mu"];
     systemParameters.xOrigin = jsonObject["configs"][k]["xOrigin"];
     systemParameters.yOrigin = jsonObject["configs"][k]["yOrigin"];
+    systemParameters.borderConditions = jsonObject["configs"][k]["borderConditions"];
 
     systemParameters.hMin = jsonObject["configs"][k]["realInputGap"];
     systemParameters.LOW_BORDER = jsonObject["configs"][k]["lowBorder"];
@@ -165,12 +177,15 @@ void dimensionlessSystemParameters(SystemPatemeters &systemParameters, string &m
  * the condition(change the equation to x_n = p_n)
  * */
 void addBorderConditions(double **&matrixResult,
-                         double *&rightPart,
                          int n,
                          int MATRIX_PRESSURE_SIZE,
                          double LOW_BORDER,
                          double HIGH_BORDER)
 {
+    double *rightPart = new double[MATRIX_PRESSURE_SIZE];
+    for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
+        rightPart[i] = 0.0;
+
     //0 row
     for (int i = 0; i < n; i++)
     {
@@ -222,11 +237,15 @@ void addBorderConditions(double **&matrixResult,
  * */
 void addBorderConditions(double **&matrixResult,
                          double *&borderValues,
-                         double *&rightPart,
                          int n,
                          int MATRIX_PRESSURE_SIZE,
                          string borderPosition)
 {
+    /**
+     * Vector of right parts
+     * */
+    double *rightPart = new double[MATRIX_PRESSURE_SIZE];
+
     if (borderPosition == "TOP")
     {
         for (int i = 0; i < n; i++)
@@ -279,4 +298,18 @@ void addBorderConditions(double **&matrixResult,
     myFile.open(FILE_VECTOR_RIGHT_PART_OUTPUT, fstream::out);
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
         myFile << rightPart[i] << endl;
+}
+
+void inputVector(const string fileNameVector, double *&borderValues, const int n)
+{
+    ifstream vectorFile;
+    vectorFile.open(fileNameVector);
+
+    if (!vectorFile.is_open())
+        std::cerr << "Error: file with vector is not open\n";
+
+    for (int i = 0; i < n; ++i)
+        vectorFile >> borderValues[i];
+
+    vectorFile.close();
 }

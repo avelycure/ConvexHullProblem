@@ -18,12 +18,6 @@ void solveWithHConst(ContributionMatrix *&contributionMatrix,
 
     createLocalMatrixForEveryElementHConst(contributionMatrix, coordinateMesh, systemParameters.n);
     createGlobalPressureMatrixHConst(matrixPressure, contributionMatrix, systemParameters.n);
-
-    double *rightPart = new double[MATRIX_PRESSURE_SIZE];
-    addBorderConditions(matrixPressure, rightPart, systemParameters.n, MATRIX_PRESSURE_SIZE,
-                        systemParameters.LOW_BORDER, systemParameters.HIGH_BORDER);
-
-    outputPressureMatrix(matrixPressure, MATRIX_PRESSURE_SIZE);
 }
 
 /**

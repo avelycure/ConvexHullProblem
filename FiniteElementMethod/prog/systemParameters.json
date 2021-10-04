@@ -12,7 +12,8 @@
             "yOrigin": 0.0,
             "lowBorder": 100000.0,
             "highBorder": 200000.0,
-            "method": "hLinear"
+            "method": "hLinear",
+            "borderConditions": "user"
         },
         {
             "n": 30,
@@ -26,7 +27,8 @@
             "yOrigin": 0.0,
             "lowBorder": 100000.0,
             "highBorder": 200000.0,
-            "method": "hLinear"
+            "method": "hLinear",
+            "borderConditions": "user"
         }
     ]
 }

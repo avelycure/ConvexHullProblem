@@ -39,7 +39,8 @@ const string H_LINEAR = "hLinear";
  * 
  * 
  * */
-
+void inputVector(const string fileNameVector, double *&borderValues, const int n);
+void outputVector(string fileName, double *vector, int size);
 void initMatrix(double **&matrix, int row, int column);
 void displayMatrix(double **matrix, int row, int column);
 void displayMesh(Point **coordinateMesh, int n);
@@ -52,15 +53,15 @@ void initRightPart(RightPart *&localRigthParts, int MATRIX_CONTRIBUTION_SIZE);
 void initContributionMatrix(ContributionMatrix *&contributionMatrix, int MATRIX_CONTRIBUTION_SIZE);
 void readSystemParameters(SystemPatemeters &systemParameters, string &method);
 void dimensionlessSystemParameters(SystemPatemeters &systemParameters, string &method);
+
 void addBorderConditions(double **&matrixResult,
-                         double *&rightPart,
                          int n,
                          int MATRIX_PRESSURE_SIZE,
                          double LOW_BORDER,
                          double HIGH_BORDER);
+
 void addBorderConditions(double **&matrixResult,
                          double *&borderValues,
-                         double *&rightPart,
                          int n,
                          int MATRIX_PRESSURE_SIZE,
                          string borderPosition);
@@ -94,7 +95,6 @@ void solveWithHLinear(ContributionMatrix *&contributionMatrix,
                       RightPart *&localRigthParts,
                       Point **&coordinateMesh,
                       double **&matrixPressure,
-                      double *&rightPart,
                       SystemPatemeters &systemParameters);
 void createLocalContributionMatrixForHLinearTop(ContributionMatrix localMatrix,
                                                 Point pointI, Point pointJ, Point pointK,

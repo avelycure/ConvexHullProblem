@@ -1,4 +1,4 @@
-#include "header.hpp"
+#include "../header.hpp"
 
 const double epsilon = 1e-12;
 string FILENAME_MATRIX_PRESSURE = "data/pressureMatrix.txt";

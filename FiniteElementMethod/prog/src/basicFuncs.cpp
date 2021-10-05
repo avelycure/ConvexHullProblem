@@ -1,4 +1,4 @@
-#include "header.hpp"
+#include "../header.hpp"
 
 void initMatrix(double **&matrix, int row, int column)
 {

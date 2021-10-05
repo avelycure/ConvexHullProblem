@@ -39,10 +39,10 @@ int main()
     setValue(borderValues, size, 1.0);
     outputVector("bottom.txt", borderValues, size);
 
-    setValue(borderValues, size);
+    setValue(borderValues, size, 1.0);
     outputVector("right.txt", borderValues, size);
 
-    //setValue(borderValues, size, 1.0);
+    setValue(borderValues, size, 1.0);
     outputVector("left.txt", borderValues, size);
     return 0;
 }

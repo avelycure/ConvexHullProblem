@@ -1,4 +1,4 @@
-#include "header.hpp"
+#include "../header.hpp"
 
 /**
  * Constant height. Special case of linear changing height

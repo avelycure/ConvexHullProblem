@@ -5,14 +5,14 @@
 #include <cmath>
 #include <sstream>
 #include <algorithm>
-#include "Point.h"
-#include "ContributionMatrix.h"
-#include "SystemParameters.hpp"
+#include "headers/Point.h"
+#include "headers/ContributionMatrix.h"
+#include "headers/SystemParameters.hpp"
 #include "single_include/nlohmann/json.hpp"
 using namespace std;
 
-const string FILE_PARAMETERS_NAME = "systemParameters.json";
-const string FILE_SYSTEM_NAME = "systemNum.json";
+const string FILE_PARAMETERS_NAME = "data/systemParameters.json";
+const string FILE_SYSTEM_NAME = "data/systemNum.json";
 
 /**
  * Name of file for matrix of pressures in node

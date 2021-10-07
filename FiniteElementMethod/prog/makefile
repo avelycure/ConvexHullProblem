@@ -1,3 +1,3 @@
 all:
-	g++ main.cpp basicFuncs.cpp hLinear.cpp hConst.cpp gaussFuncs.cpp
+	g++ src/main.cpp src/basicFuncs.cpp src/hLinear.cpp src/hConst.cpp src/gaussFuncs.cpp
 	./a.out

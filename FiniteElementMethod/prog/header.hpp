@@ -5,18 +5,42 @@
 #include <cmath>
 #include <sstream>
 #include <algorithm>
-#include "Point.h"
-#include "ContributionMatrix.h"
-#include "SystemParameters.hpp"
+#include "headers/Point.h"
+#include "headers/ContributionMatrix.h"
+#include "headers/SystemParameters.hpp"
 #include "single_include/nlohmann/json.hpp"
 using namespace std;
 
-const string FILE_PARAMETERS_NAME = "systemParameters.json";
-const string FILE_SYSTEM_NAME = "systemNum.json";
+const string FILE_PARAMETERS_NAME = "data/systemParameters.json";
+const string FILE_SYSTEM_NAME = "data/systemNum.json";
+
+/**
+ * Name of file for matrix of pressures in node
+ * */
+const string FILE_OUTPUT_MATRIX = "data/pressureMatrix.txt";
+
+/**
+ * Name of file for right part
+ * */
+const string FILE_VECTOR_RIGHT_PART_OUTPUT = "data/rightPart.txt";
+
+/**
+ * Names of methods
+ * */
 const string H_CONST = "hConst";
 const string H_LINEAR = "hLinear";
 
-//Basic funcs
+/**
+ * 
+ * 
+ * 
+ * Common functions
+ * 
+ * 
+ * 
+ * */
+void inputVector(const string fileNameVector, double *&borderValues, const int n);
+void outputVector(string fileName, double *vector, int size);
 void initMatrix(double **&matrix, int row, int column);
 void displayMatrix(double **matrix, int row, int column);
 void displayMesh(Point **coordinateMesh, int n);
@@ -28,42 +52,73 @@ void initMesh(Point **&coordinateMesh, SystemPatemeters &systemParameters);
 void initRightPart(RightPart *&localRigthParts, int MATRIX_CONTRIBUTION_SIZE);
 void initContributionMatrix(ContributionMatrix *&contributionMatrix, int MATRIX_CONTRIBUTION_SIZE);
 void readSystemParameters(SystemPatemeters &systemParameters, string &method);
+void dimensionlessSystemParameters(SystemPatemeters &systemParameters, string &method);
 
-//Finite elements method funcs
+void addBorderConditions(double **&matrixResult,
+                         int n,
+                         int MATRIX_PRESSURE_SIZE,
+                         double LOW_BORDER,
+                         double HIGH_BORDER);
+
+void addBorderConditions(double **&matrixResult,
+                         double *&borderValues,
+                         int n,
+                         int MATRIX_PRESSURE_SIZE,
+                         string borderPosition);
+
+/**
+ * 
+ * 
+ * 
+ * Finite elements method functions
+ * 
+ * 
+ * 
+ * */
+
+/**
+ * Constant height
+ * */
+void solveWithHConst(ContributionMatrix *&contributionMatrix,
+                     Point **&coordinateMesh,
+                     double **&matrixPressure,
+                     SystemPatemeters &systemParameters);
 double countArea(Point pointI, Point pointJ, Point pointK);
 void createLocalContributionMatrixForHConst(ContributionMatrix localMatrix, Point pointI, Point pointJ, Point pointK);
 void createLocalMatrixForEveryElementHConst(ContributionMatrix *&contributionMatrixParam, Point **&coordinateMeshParam, int n);
-void addBorderConditionsHConst(double **&matrixResult, int n, int MATRIX_PRESSURE_SIZE, int OTHER_BORDER, int DOWN_BORDER);
 void createGlobalPressureMatrixHConst(double **&matrixPressure, ContributionMatrix *&contributionMatrix, int n);
-int solveWithHConst(ContributionMatrix *&contributionMatrix,
-                    Point **&coordinateMesh,
-                    double **&matrixPressure,
-                    SystemPatemeters &systemParameters);
 
-int createLocalContributionMatrixForHLinearTop(ContributionMatrix localMatrix,
-                                               Point pointI, Point pointJ, Point pointK,
-                                               RightPart localRightPart,SystemPatemeters &systemParameters);
-int createLocalContributionMatrixForHLinearBottom(ContributionMatrix localMatrix,
-                                                  Point pointI, Point pointJ, Point pointK,
-                                                  RightPart localRightPart,SystemPatemeters &systemParameters);
+/**
+ * Linear changing height
+ * */
+void solveWithHLinear(ContributionMatrix *&contributionMatrix,
+                      RightPart *&localRigthParts,
+                      Point **&coordinateMesh,
+                      double **&matrixPressure,
+                      SystemPatemeters &systemParameters);
+void createLocalContributionMatrixForHLinearTop(ContributionMatrix localMatrix,
+                                                Point pointI, Point pointJ, Point pointK,
+                                                RightPart localRightPart, SystemPatemeters &systemParameters);
+void createLocalContributionMatrixForHLinearBottom(ContributionMatrix localMatrix,
+                                                   Point pointI, Point pointJ, Point pointK,
+                                                   RightPart localRightPart, SystemPatemeters &systemParameters);
 void createLocalMatrixForEveryElementHLinear(ContributionMatrix *&contributionMatrixParam,
                                              Point **&coordinateMeshParam,
                                              RightPart *&rightPartParam,
                                              SystemPatemeters &systemParameters);
 void createGlobalPressureMatrixHLinear(double **&matrixPressure, ContributionMatrix *&contributionMatrix,
                                        double *&rightPartParam, RightPart *&localRightPartsParam, int n);
-void addBorderConditionsHLinear(double **&matrixResult, double *&rightPartParam, int n,
-                                int MATRIX_PRESSURE_SIZE, int OTHER_BORDER, int DOWN_BORDER);
 
-int solveWithHLinear(ContributionMatrix *&contributionMatrix,
-                     RightPart *&localRigthParts,
-                     Point **&coordinateMesh,
-                     double **&matrixPressure,
-                     double *&rightPart,
-                     SystemPatemeters &systemParameters);
-
+/**
+ * 
+ * 
+ * 
+ * Gauss functions
+ * 
+ * 
+ * 
+ * */
 int solveEquation(const int size);
-
 int allocateMemory(double **&A, double *&B, double *&X1, const int &n);
 int readData(const string fileNameMatrix, const string fileNameVector, double **&matrixA, double *&vectorB, const int &n);
 void writeVector(string fileNameOutput, double *&vector, const int &n);

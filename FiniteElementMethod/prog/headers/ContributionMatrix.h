@@ -1,18 +1,24 @@
+/**
+ * Class represents stiffness matrix
+ * */
 class ContributionMatrix
 {
+    double **matrix;
+
 public:
     const int ROW = 3;
     const int COLUMN = 3;
-    double **matrix;
 
-    double getElement(int i, int j)
+    double get(int i, int j)
     {
         return matrix[i][j];
     }
-    void setElement(int i, int j, double value)
+
+    void set(int i, int j, double value)
     {
         matrix[i][j] = value;
     }
+
     ContributionMatrix()
     {
         matrix = new double *[ROW];
@@ -21,17 +27,21 @@ public:
     }
 };
 
+/**
+ * Class represents local right part
+ * */
 class RightPart
 {
-public:
-    const int COLUMN = 3;
     double *vector;
 
-    double getElement(int i)
+public:
+    const int COLUMN = 3;
+
+    double get(int i)
     {
         return vector[i];
     }
-    void setElement(int i, double value)
+    void set(int i, double value)
     {
         vector[i] = value;
     }

@@ -16,7 +16,7 @@
             "borderConditions": "user"
         },
         {
-            "n": 30,
+            "n": 40,
             "U": 120000.0,
             "mu": 0.0009,
             "realK": -0.0001,
@@ -25,10 +25,10 @@
             "realInputGap": 0.2,
             "xOrigin": 0.0,
             "yOrigin": 0.0,
-            "lowBorder": 100000.0,
+            "lowBorder": 200000.0,
             "highBorder": 200000.0,
             "method": "hLinear",
-            "borderConditions": "user"
+            "borderConditions": "der"
         }
     ]
 }

@@ -186,16 +186,6 @@ void addBorderConditions(double **&matrixResult,
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
         rightPart[i] = 0.0;
 
-    //0 row
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-            matrixResult[i][j] = 0.0;
-
-        matrixResult[i][i] = 1.0;
-        rightPart[i] = HIGH_BORDER;
-    }
-
     //left
     for (int i = 0; i < n; i++)
     {
@@ -214,6 +204,16 @@ void addBorderConditions(double **&matrixResult,
 
         matrixResult[i * n - 1][i * n - 1] = 1.0;
         rightPart[i * n - 1] = LOW_BORDER;
+    }
+
+    //0 row
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
+            matrixResult[i][j] = 0.0;
+
+        matrixResult[i][i] = 1.0;
+        rightPart[i] = HIGH_BORDER;
     }
 
     //n row
@@ -312,4 +312,142 @@ void inputVector(const string fileNameVector, double *&borderValues, const int n
         vectorFile >> borderValues[i];
 
     vectorFile.close();
+}
+
+/**
+ * Right border == left border
+ * */
+void addBorderConditionsToLeftAndRight(double **&matrixResult,
+                                       int n,
+                                       double h,
+                                       int MATRIX_PRESSURE_SIZE,
+                                       double TOP_BORDER,
+                                       double BOTTOM_BORDER)
+{
+    double *rightPart = new double[MATRIX_PRESSURE_SIZE];
+    for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
+        rightPart[i] = 0.0;
+
+    //left, set equality of values
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
+            matrixResult[i * n][j] = 0.0;
+
+        matrixResult[i * n][i * n] = 1.0;
+        matrixResult[i * n][(i + 1) * n - 1] = -1.0;
+
+        rightPart[i * n] = 0.0;
+    }
+
+    //right, set equality of derivatives
+    double t = 1.0 / h;
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
+            matrixResult[i * n - 1][j] = 0.0;
+
+        matrixResult[i * n - 1][(i - 1) * n] = -1.0;//first node in row
+        matrixResult[i * n - 1][(i - 1) * n + 1] = 1.0;//next to first node in row
+
+        matrixResult[i * n - 1][i * n - 1] = -1.0;//last node in row
+        matrixResult[i * n - 1][i * n - 2] = 1.0;//node before last
+
+        rightPart[i * n - 1] = 0.0;
+    }
+
+    //0 row, number of equation == number of the node, so we set zeros to first n equations and then
+    //set 1 to the node and value to right part
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
+            matrixResult[i][j] = 0.0;
+
+        matrixResult[i][i] = 1.0;
+        rightPart[i] = TOP_BORDER;
+    }
+
+    //n row
+    for (int i = MATRIX_PRESSURE_SIZE - n; i < MATRIX_PRESSURE_SIZE; i++)
+    {
+        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
+            matrixResult[i][j] = 0.0;
+
+        matrixResult[i][i] = 1.0;
+        rightPart[i] = BOTTOM_BORDER;
+    }
+
+    fstream myFile;
+    myFile.open(FILE_VECTOR_RIGHT_PART_OUTPUT, fstream::out);
+    for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
+        myFile << rightPart[i] << endl;
+}
+
+/**
+ * Right border == left border, but second order approximation
+ * */
+void addBorderConditionsSecondOrder(double **&matrixResult,
+                                       int n,
+                                       double h,
+                                       int MATRIX_PRESSURE_SIZE,
+                                       double TOP_BORDER,
+                                       double BOTTOM_BORDER)
+{
+    double *rightPart = new double[MATRIX_PRESSURE_SIZE];
+    for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
+        rightPart[i] = 0.0;
+
+    //left, set equality of values
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
+            matrixResult[i * n][j] = 0.0;
+
+        matrixResult[i * n][i * n] = 1.0;
+        matrixResult[i * n][(i + 1) * n - 1] = -1.0;
+
+        rightPart[i * n] = 0.0;
+    }
+
+    //right, set equality of derivatives
+    double t = 1.0 / h;
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
+            matrixResult[i * n - 1][j] = 0.0;
+
+        matrixResult[i * n - 1][(i - 1) * n] = -1.0;//first node in row
+        matrixResult[i * n - 1][(i - 1) * n + 2] = 1.0;//2 times next to first node in row
+
+        matrixResult[i * n - 1][i * n - 1] = -1.0;//last node in row
+        matrixResult[i * n - 1][i * n - 3] = 1.0;//node before before last
+
+        rightPart[i * n - 1] = 0.0;
+    }
+
+    //0 row, number of equation == number of the node, so we set zeros to first n equations and then
+    //set 1 to the node and value to right part
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
+            matrixResult[i][j] = 0.0;
+
+        matrixResult[i][i] = 1.0;
+        rightPart[i] = TOP_BORDER;
+    }
+
+    //n row
+    for (int i = MATRIX_PRESSURE_SIZE - n; i < MATRIX_PRESSURE_SIZE; i++)
+    {
+        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
+            matrixResult[i][j] = 0.0;
+
+        matrixResult[i][i] = 1.0;
+        rightPart[i] = BOTTOM_BORDER;
+    }
+
+    fstream myFile;
+    myFile.open(FILE_VECTOR_RIGHT_PART_OUTPUT, fstream::out);
+    for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
+        myFile << rightPart[i] << endl;
 }

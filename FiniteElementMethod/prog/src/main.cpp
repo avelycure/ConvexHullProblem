@@ -48,10 +48,11 @@ int main()
     if (systemParameters.borderConditions == "common")
         addBorderConditions(matrixPressure, systemParameters.n, MATRIX_PRESSURE_SIZE,
                             systemParameters.LOW_BORDER, systemParameters.HIGH_BORDER);
-    else
+
+    if (systemParameters.borderConditions == "user")
     {
         double *borderValues = new double[MATRIX_PRESSURE_SIZE];
-        cout << "in else branch" << endl;
+        cout << "in user branch" << endl;
 
         inputVector("border_conditions/right.txt", borderValues, MATRIX_PRESSURE_SIZE);
         cout << borderValues[1] << endl;
@@ -69,6 +70,31 @@ int main()
         cout << borderValues[1] << endl;
         addBorderConditions(matrixPressure, borderValues, systemParameters.n, MATRIX_PRESSURE_SIZE, "BOTTOM");
     }
+
+    if (systemParameters.borderConditions == "der")
+    {
+        cout << "in der branch1" << endl;
+        double h = systemParameters.L / (systemParameters.n - 1);
+        addBorderConditionsToLeftAndRight(matrixPressure,
+                                          systemParameters.n,
+                                          h,
+                                          MATRIX_PRESSURE_SIZE,
+                                          systemParameters.HIGH_BORDER,
+                                          systemParameters.LOW_BORDER);
+    }
+
+    if (systemParameters.borderConditions == "der2")
+    {
+        cout << "in der branch2" << endl;
+        double h = systemParameters.L / (systemParameters.n - 1);
+        addBorderConditionsSecondOrder(matrixPressure,
+                                          systemParameters.n,
+                                          h,
+                                          MATRIX_PRESSURE_SIZE,
+                                          systemParameters.HIGH_BORDER,
+                                          systemParameters.LOW_BORDER);
+    }
+    
     outputPressureMatrix(matrixPressure, MATRIX_PRESSURE_SIZE);
 
     solveEquation(systemParameters.n * systemParameters.n);

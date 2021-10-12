@@ -66,6 +66,20 @@ void addBorderConditions(double **&matrixResult,
                          int MATRIX_PRESSURE_SIZE,
                          string borderPosition);
 
+void addBorderConditionsToLeftAndRight(double **&matrixResult,
+                         int n,
+                         double h,
+                         int MATRIX_PRESSURE_SIZE,
+                         double TOP_BORDER, 
+                         double BOTTOM_BORDER);
+
+void addBorderConditionsSecondOrder(double **&matrixResult,
+                                       int n,
+                                       double h,
+                                       int MATRIX_PRESSURE_SIZE,
+                                       double TOP_BORDER,
+                                       double BOTTOM_BORDER);
+
 /**
  * 
  * 

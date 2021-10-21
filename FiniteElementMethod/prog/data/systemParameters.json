@@ -16,19 +16,19 @@
             "borderConditions": "user"
         },
         {
-            "n": 40,
+            "n": 30,
             "U": 120000.0,
             "mu": 0.0009,
-            "realK": -0.0001,
+            "realK": -0.2,
             "L": 20,
-            "realPressure": 100000,
+            "realPressure": 100000.0,
             "realInputGap": 0.2,
             "xOrigin": 0.0,
             "yOrigin": 0.0,
-            "lowBorder": 200000.0,
+            "lowBorder": 100000.0,
             "highBorder": 200000.0,
             "method": "hLinear",
-            "borderConditions": "der"
+            "borderConditions": "user"
         }
     ]
 }

@@ -186,6 +186,16 @@ void addBorderConditions(double **&matrixResult,
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
         rightPart[i] = 0.0;
 
+    //0 row
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
+            matrixResult[i][j] = 0.0;
+
+        matrixResult[i][i] = 1.0;
+        rightPart[i] = HIGH_BORDER;
+    }
+
     //left
     for (int i = 0; i < n; i++)
     {
@@ -204,16 +214,6 @@ void addBorderConditions(double **&matrixResult,
 
         matrixResult[i * n - 1][i * n - 1] = 1.0;
         rightPart[i * n - 1] = LOW_BORDER;
-    }
-
-    //0 row
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-            matrixResult[i][j] = 0.0;
-
-        matrixResult[i][i] = 1.0;
-        rightPart[i] = HIGH_BORDER;
     }
 
     //n row
@@ -347,11 +347,11 @@ void addBorderConditionsToLeftAndRight(double **&matrixResult,
         for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
             matrixResult[i * n - 1][j] = 0.0;
 
-        matrixResult[i * n - 1][(i - 1) * n] = -1.0;//first node in row
-        matrixResult[i * n - 1][(i - 1) * n + 1] = 1.0;//next to first node in row
+        matrixResult[i * n - 1][(i - 1) * n] = -1.0;    //first node in row
+        matrixResult[i * n - 1][(i - 1) * n + 1] = 1.0; //next to first node in row
 
-        matrixResult[i * n - 1][i * n - 1] = -1.0;//last node in row
-        matrixResult[i * n - 1][i * n - 2] = 1.0;//node before last
+        matrixResult[i * n - 1][i * n - 1] = -1.0; //last node in row
+        matrixResult[i * n - 1][i * n - 2] = 1.0;  //node before last
 
         rightPart[i * n - 1] = 0.0;
     }
@@ -387,11 +387,11 @@ void addBorderConditionsToLeftAndRight(double **&matrixResult,
  * Right border == left border, but second order approximation
  * */
 void addBorderConditionsSecondOrder(double **&matrixResult,
-                                       int n,
-                                       double h,
-                                       int MATRIX_PRESSURE_SIZE,
-                                       double TOP_BORDER,
-                                       double BOTTOM_BORDER)
+                                    int n,
+                                    double h,
+                                    int MATRIX_PRESSURE_SIZE,
+                                    double TOP_BORDER,
+                                    double BOTTOM_BORDER)
 {
     double *rightPart = new double[MATRIX_PRESSURE_SIZE];
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
@@ -416,11 +416,11 @@ void addBorderConditionsSecondOrder(double **&matrixResult,
         for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
             matrixResult[i * n - 1][j] = 0.0;
 
-        matrixResult[i * n - 1][(i - 1) * n] = -1.0;//first node in row
-        matrixResult[i * n - 1][(i - 1) * n + 2] = 1.0;//2 times next to first node in row
+        matrixResult[i * n - 1][(i - 1) * n] = -1.0;    //first node in row
+        matrixResult[i * n - 1][(i - 1) * n + 2] = 1.0; //2 times next to first node in row
 
-        matrixResult[i * n - 1][i * n - 1] = -1.0;//last node in row
-        matrixResult[i * n - 1][i * n - 3] = 1.0;//node before before last
+        matrixResult[i * n - 1][i * n - 1] = -1.0; //last node in row
+        matrixResult[i * n - 1][i * n - 3] = 1.0;  //node before before last
 
         rightPart[i * n - 1] = 0.0;
     }

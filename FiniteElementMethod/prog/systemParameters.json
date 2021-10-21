@@ -271,7 +271,7 @@
             "systemtype": "16best"
         },
         {
-            "n": 30,
+            "n": 4,
             "L": 0.02,
             "k": 0.0,
             "mu": 0.09,
@@ -286,6 +286,23 @@
             "method": "hConst",
             "borderLength": 1.0,
             "systemtype": "17best"
+        },
+        {
+            "n": 30,
+            "L": 0.02,
+            "k": -0.2,
+            "mu": 0.9,
+            "hMin": 1.0,
+            "Hn": 0.02,
+            "U": 120000.0,
+            "xOrigin": 0.0,
+            "yOrigin": 0.0,
+            "pMin": 100000.0,
+            "lowBorder": 1.0,
+            "highBorder": 2.0,
+            "method": "der",
+            "borderLength": 1.0,
+            "systemtype": "18"
         }
     ]
 }

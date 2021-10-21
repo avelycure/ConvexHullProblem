@@ -18,5 +18,14 @@ int main()
     if (method == H_LINEAR)
         solveWithHLinear(contributionMatrix, localRigthParts, coordinateMesh,
                          matrixPressure, rightPart, systemParameters);
+
+    if (method == "der")
+        solveWithHLinearWithDerBC(contributionMatrix, localRigthParts, coordinateMesh,
+                                  matrixPressure, rightPart, systemParameters);
+
+    if(method == "derh")
+        solveWithHConstBCLR(contributionMatrix, coordinateMesh, matrixPressure,
+                        systemParameters);
+
     solveEquation(systemParameters.n * systemParameters.n);
 }

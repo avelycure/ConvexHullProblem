@@ -14,6 +14,9 @@ int solveWithHLinear(ContributionMatrix *&contributionMatrix,
     const int MATRIX_CONTRIBUTION_SIZE = (systemParameters.n - 1) * (systemParameters.n - 1) * 2;
 
     initMatrix(matrixPressure, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
+    for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
+        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
+            matrixPressure[i][j] = 0.0;
     initMesh(coordinateMesh, systemParameters);
 
     initContributionMatrix(contributionMatrix, MATRIX_CONTRIBUTION_SIZE);
@@ -25,6 +28,40 @@ int solveWithHLinear(ContributionMatrix *&contributionMatrix,
     createGlobalPressureMatrixHLinear(matrixPressure, contributionMatrix, rightPart, localRigthParts, systemParameters.n);
     addBorderConditionsHLinear(matrixPressure, rightPart, systemParameters.n, MATRIX_PRESSURE_SIZE,
                                systemParameters.LOW_BORDER, systemParameters.HIGH_BORDER);
+
+    outputPressureMatrix(matrixPressure, MATRIX_PRESSURE_SIZE);
+
+    return 0;
+}
+
+int solveWithHLinearWithDerBC(ContributionMatrix *&contributionMatrix,
+                              RightPart *&localRigthParts,
+                              Point **&coordinateMesh,
+                              double **&matrixPressure,
+                              double *&rightPart,
+                              SystemPatemeters &systemParameters)
+{
+    const int MATRIX_PRESSURE_SIZE = systemParameters.n * systemParameters.n;
+    const int MATRIX_CONTRIBUTION_SIZE = (systemParameters.n - 1) * (systemParameters.n - 1) * 2;
+
+    initMatrix(matrixPressure, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
+    for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
+        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
+            matrixPressure[i][j] = 0.0;
+    initMesh(coordinateMesh, systemParameters);
+
+    initContributionMatrix(contributionMatrix, MATRIX_CONTRIBUTION_SIZE);
+    initRightPart(localRigthParts, MATRIX_CONTRIBUTION_SIZE);
+    initVector(rightPart, MATRIX_PRESSURE_SIZE);
+
+    createLocalMatrixForEveryElementHLinear(contributionMatrix, coordinateMesh, localRigthParts, systemParameters);
+
+    createGlobalPressureMatrixHLinear(matrixPressure, contributionMatrix, rightPart, localRigthParts, systemParameters.n);
+
+    double h = systemParameters.L / (systemParameters.n - 1);
+    cout << h << endl;
+    addBorderConditionsToLeftAndRight(matrixPressure, systemParameters.n, h, MATRIX_PRESSURE_SIZE,
+                                      systemParameters.HIGH_BORDER, systemParameters.LOW_BORDER);
 
     outputPressureMatrix(matrixPressure, MATRIX_PRESSURE_SIZE);
 
@@ -338,8 +375,81 @@ void addBorderConditionsHLinear(double **&matrixResult,
         rightPartParam[i] = OTHER_BORDER;
     }
 
+    //displayMatrix(matrixResult, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
+
     fstream myFile;
     myFile.open("data/rightPart.txt", fstream::out);
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
         myFile << rightPartParam[i] << endl;
+}
+
+/**
+ * Right border == left border
+ * */
+void addBorderConditionsToLeftAndRight(double **&matrixResult,
+                                       int n,
+                                       double h,
+                                       int MATRIX_PRESSURE_SIZE,
+                                       double TOP_BORDER,
+                                       double BOTTOM_BORDER)
+{
+    double *rightPart = new double[MATRIX_PRESSURE_SIZE];
+    for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
+        rightPart[i] = 0.0;
+
+    //left, set equality of values
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
+            matrixResult[i * n][j] = 0.0;
+
+        matrixResult[i * n][i * n] = 1.0;
+        matrixResult[i * n][(i + 1) * n - 1] = -1.0;
+
+        rightPart[i * n] = 0.0;
+    }
+
+    //right, set equality of derivatives
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
+            matrixResult[i * n - 1][j] = 0.0;
+
+//todo !!! Знаки
+        matrixResult[i * n - 1][(i - 1) * n] = 1.0;    //first node in row
+        matrixResult[i * n - 1][(i - 1) * n + 1] = -1.0; //next to first node in row
+
+        matrixResult[i * n - 1][i * n - 1] = 1.0; //last node in row
+        matrixResult[i * n - 1][i * n - 2] = -1.0;  //node before last
+
+        rightPart[i * n - 1] = 0.0;
+    }
+
+    //0 row, number of equation == number of the node, so we set zeros to first n equations and then
+    //set 1 to the node and value to right part
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
+            matrixResult[i][j] = 0.0;
+
+        matrixResult[i][i] = 1.0;
+        rightPart[i] = TOP_BORDER;
+    }
+
+    //n row
+    for (int i = MATRIX_PRESSURE_SIZE - n; i < MATRIX_PRESSURE_SIZE; i++)
+    {
+        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
+            matrixResult[i][j] = 0.0;
+
+        matrixResult[i][i] = 1.0;
+        rightPart[i] = BOTTOM_BORDER;
+    }
+
+    //displayMatrix(matrixResult, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
+
+    fstream myFile;
+    myFile.open("data/rightPart.txt", fstream::out);
+    for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
+        myFile << rightPart[i] << endl;
 }

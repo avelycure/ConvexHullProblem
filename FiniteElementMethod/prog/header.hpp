@@ -42,10 +42,10 @@ int solveWithHConst(ContributionMatrix *&contributionMatrix,
 
 int createLocalContributionMatrixForHLinearTop(ContributionMatrix localMatrix,
                                                Point pointI, Point pointJ, Point pointK,
-                                               RightPart localRightPart,SystemPatemeters &systemParameters);
+                                               RightPart localRightPart, SystemPatemeters &systemParameters);
 int createLocalContributionMatrixForHLinearBottom(ContributionMatrix localMatrix,
                                                   Point pointI, Point pointJ, Point pointK,
-                                                  RightPart localRightPart,SystemPatemeters &systemParameters);
+                                                  RightPart localRightPart, SystemPatemeters &systemParameters);
 void createLocalMatrixForEveryElementHLinear(ContributionMatrix *&contributionMatrixParam,
                                              Point **&coordinateMeshParam,
                                              RightPart *&rightPartParam,
@@ -54,6 +54,27 @@ void createGlobalPressureMatrixHLinear(double **&matrixPressure, ContributionMat
                                        double *&rightPartParam, RightPart *&localRightPartsParam, int n);
 void addBorderConditionsHLinear(double **&matrixResult, double *&rightPartParam, int n,
                                 int MATRIX_PRESSURE_SIZE, int OTHER_BORDER, int DOWN_BORDER);
+
+/**
+ * Right border == left border
+ * */
+void addBorderConditionsToLeftAndRight(double **&matrixResult,
+                                       int n,
+                                       double h,
+                                       int MATRIX_PRESSURE_SIZE,
+                                       double TOP_BORDER,
+                                       double BOTTOM_BORDER);
+int solveWithHLinearWithDerBC(ContributionMatrix *&contributionMatrix,
+                              RightPart *&localRigthParts,
+                              Point **&coordinateMesh,
+                              double **&matrixPressure,
+                              double *&rightPart,
+                              SystemPatemeters &systemParameters);
+
+int solveWithHConstBCLR(ContributionMatrix *&contributionMatrix,
+                    Point **&coordinateMesh,
+                    double **&matrixPressure,
+                    SystemPatemeters &systemParameters);
 
 int solveWithHLinear(ContributionMatrix *&contributionMatrix,
                      RightPart *&localRigthParts,

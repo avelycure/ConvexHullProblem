@@ -5,15 +5,15 @@
 #include <cmath>
 #include <sstream>
 #include <algorithm>
-#include "Point.h"
-#include "ContributionMatrix.h"
-#include "SystemParameters.hpp"
-#include "RectangleCommon.hpp"
+#include "common/classes/mesh/Point.hpp"
+#include "common/classes/contribution_matrix/ContributionMatrix.hpp"
+#include "common/classes/system/SystemParameters.hpp"
+#include "common/classes/contribution_matrix/RectangleCommon.hpp"
 #include "libs/single_include/nlohmann/json.hpp"
 using namespace std;
 
-const string FILE_PARAMETERS_NAME = "systemParameters.json";
-const string FILE_SYSTEM_NAME = "systemNum.json";
+const string FILE_PARAMETERS_NAME = "input/initial_conditions/systemParameters.json";
+const string FILE_SYSTEM_NAME = "input/initial_conditions/systemNum.json";
 const string H_CONST = "hConst";
 const string H_LINEAR = "hLinear";
 

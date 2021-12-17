@@ -8,13 +8,53 @@
 #include "Point.h"
 #include "ContributionMatrix.h"
 #include "SystemParameters.hpp"
-#include "single_include/nlohmann/json.hpp"
+#include "RectangleCommon.hpp"
+#include "libs/single_include/nlohmann/json.hpp"
 using namespace std;
 
 const string FILE_PARAMETERS_NAME = "systemParameters.json";
 const string FILE_SYSTEM_NAME = "systemNum.json";
 const string H_CONST = "hConst";
 const string H_LINEAR = "hLinear";
+
+//Rectangle
+void createLocalMatrixForEveryRectangleElement(RectnangleContributionMatrix *&contributionMatrixParam,
+                                               Point **&coordinateMeshParam,
+                                               RectnangleRightPart *&rightPartParam,
+                                               SystemPatemeters &systemParameters);
+
+void createLocalContributionMatrixForRectangleElement(RectnangleContributionMatrix &localMatrix,
+                                                      Point pointI,
+                                                      Point pointJ,
+                                                      Point pointK,
+                                                      Point pointM,
+                                                      RectnangleRightPart &localRightPart,
+                                                      SystemPatemeters &systemParameters);
+
+void solveWithRectangleFiniteElements(RectnangleContributionMatrix *&contributionMatrix,
+                                      RectnangleRightPart *&localRigthParts,
+                                      Point **&coordinateMesh,
+                                      double **&matrixPressure,
+                                      double *&rightPart,
+                                      SystemPatemeters &systemParameters);
+
+void createGlobalPressureMatrixForRectangleElement(
+    double **&matrixPressure, RectnangleContributionMatrix *&contributionMatrix,
+    double *&rightPartParam, RectnangleRightPart *&localRightPartsParam, int n);
+
+void addBorderConditionsForRectnangleElements(double **&matrixResult,
+                                              double *&rightPartParam,
+                                              int n,
+                                              int MATRIX_PRESSURE_SIZE,
+                                              int OTHER_BORDER,
+                                              int DOWN_BORDER);
+
+void addBorderConditionsForRectnangleElementsToLeftAndRight(double **&matrixResult,
+                                       int n,
+                                       double h,
+                                       int MATRIX_PRESSURE_SIZE,
+                                       double TOP_BORDER,
+                                       double BOTTOM_BORDER);
 
 //Basic funcs
 void initMatrix(double **&matrix, int row, int column);
@@ -72,9 +112,9 @@ int solveWithHLinearWithDerBC(ContributionMatrix *&contributionMatrix,
                               SystemPatemeters &systemParameters);
 
 int solveWithHConstBCLR(ContributionMatrix *&contributionMatrix,
-                    Point **&coordinateMesh,
-                    double **&matrixPressure,
-                    SystemPatemeters &systemParameters);
+                        Point **&coordinateMesh,
+                        double **&matrixPressure,
+                        SystemPatemeters &systemParameters);
 
 int solveWithHLinear(ContributionMatrix *&contributionMatrix,
                      RightPart *&localRigthParts,

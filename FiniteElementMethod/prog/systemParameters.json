@@ -249,7 +249,7 @@
             "pMin": 100000.0,
             "lowBorder": 1.0,
             "highBorder": 2.0,
-            "method": "hLinear",
+            "method": "rect",
             "borderLength": 1.0,
             "systemtype": "15best"
         },
@@ -271,7 +271,7 @@
             "systemtype": "16best"
         },
         {
-            "n": 4,
+            "n": 30,
             "L": 0.02,
             "k": 0.0,
             "mu": 0.09,
@@ -283,14 +283,14 @@
             "pMin": 100000.0,
             "lowBorder": 1.0,
             "highBorder": 2.0,
-            "method": "hConst",
+            "method": "rect",
             "borderLength": 1.0,
             "systemtype": "17best"
         },
         {
             "n": 30,
             "L": 0.02,
-            "k": -0.2,
+            "k": 0.2,
             "mu": 0.9,
             "hMin": 1.0,
             "Hn": 0.02,
@@ -300,9 +300,26 @@
             "pMin": 100000.0,
             "lowBorder": 1.0,
             "highBorder": 2.0,
-            "method": "der",
+            "method": "derh",
             "borderLength": 1.0,
             "systemtype": "18"
+        },
+        {
+            "n": 4,
+            "L": 0.02,
+            "k": 0.0,
+            "mu": 0.9,
+            "hMin": 1.0,
+            "Hn": 0.02,
+            "U": 120000.0,
+            "xOrigin": 0.0,
+            "yOrigin": 0.0,
+            "pMin": 100000.0,
+            "lowBorder": 1.0,
+            "highBorder": 2.0,
+            "method": "rect",
+            "borderLength": 1.0,
+            "systemtype": "19"
         }
     ]
 }

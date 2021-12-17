@@ -6,8 +6,12 @@ int main()
     Point **coordinateMesh;
     double **matrixPressure;
     RightPart *localRigthParts;
+
     SystemPatemeters systemParameters;
     ContributionMatrix *contributionMatrix;
+
+    RectnangleContributionMatrix *contributionMatrixR;
+    RectnangleRightPart *localRigthPartsR;
 
     readSystemParameters(systemParameters, method);
 
@@ -23,9 +27,13 @@ int main()
         solveWithHLinearWithDerBC(contributionMatrix, localRigthParts, coordinateMesh,
                                   matrixPressure, rightPart, systemParameters);
 
-    if(method == "derh")
+    if (method == "derh")
         solveWithHConstBCLR(contributionMatrix, coordinateMesh, matrixPressure,
-                        systemParameters);
+                            systemParameters);
+
+    if (method == "rect")
+        solveWithRectangleFiniteElements(contributionMatrixR, localRigthPartsR, coordinateMesh,
+                                         matrixPressure, rightPart, systemParameters);
 
     solveEquation(systemParameters.n * systemParameters.n);
 }

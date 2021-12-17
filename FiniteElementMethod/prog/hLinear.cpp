@@ -29,6 +29,28 @@ int solveWithHLinear(ContributionMatrix *&contributionMatrix,
     addBorderConditionsHLinear(matrixPressure, rightPart, systemParameters.n, MATRIX_PRESSURE_SIZE,
                                systemParameters.LOW_BORDER, systemParameters.HIGH_BORDER);
 
+    cout << "Local matrix: " << endl;
+    for (int i = 0; i < MATRIX_CONTRIBUTION_SIZE; i++)
+    {
+        for (int i1 = 0; i1 < 3; i1++)
+        {
+            for (int j1 = 0; j1 < 3; j1++)
+                cout << contributionMatrix[i].matrix[i1][j1] << " ";
+            cout << endl;
+        }
+        cout << endl;
+    }
+
+    cout << "Local right parts: " << endl;
+    for (int i = 0; i < MATRIX_CONTRIBUTION_SIZE; i++)
+    {
+        for (int i1 = 0; i1 < 3; i1++)
+        {
+            cout << localRigthParts[i].vector[i1] << " ";
+        }
+        cout << endl;
+    }
+
     outputPressureMatrix(matrixPressure, MATRIX_PRESSURE_SIZE);
 
     return 0;
@@ -68,10 +90,10 @@ int solveWithHLinearWithDerBC(ContributionMatrix *&contributionMatrix,
     return 0;
 }
 
-int createLocalContributionMatrixForHLinearTop(ContributionMatrix localMatrix,
-                                               Point pointI, Point pointJ, Point pointK,
-                                               RightPart localRightPart,
-                                               SystemPatemeters &systemParameters)
+int createLocalContributionMatrixForHLinearBottom(ContributionMatrix localMatrix,
+                                                  Point pointI, Point pointJ, Point pointK,
+                                                  RightPart localRightPart,
+                                                  SystemPatemeters &systemParameters)
 {
     double hMin = systemParameters.hMin;
     double k = systemParameters.k;
@@ -154,10 +176,10 @@ int createLocalContributionMatrixForHLinearTop(ContributionMatrix localMatrix,
     return 0;
 }
 
-int createLocalContributionMatrixForHLinearBottom(ContributionMatrix localMatrix,
-                                                  Point pointI, Point pointJ, Point pointK,
-                                                  RightPart localRightPart,
-                                                  SystemPatemeters &systemParameters)
+int createLocalContributionMatrixForHLinearTop(ContributionMatrix localMatrix,
+                                               Point pointI, Point pointJ, Point pointK,
+                                               RightPart localRightPart,
+                                               SystemPatemeters &systemParameters)
 {
     // coefficients of line z = k1 * x + k2
     double k1 = (pointK.getX() - pointJ.getX()) / (pointK.getY() - pointJ.getY());
@@ -393,6 +415,9 @@ void addBorderConditionsToLeftAndRight(double **&matrixResult,
                                        double TOP_BORDER,
                                        double BOTTOM_BORDER)
 {
+    cout << "Before" << endl;
+    displayMatrix(matrixResult, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
+
     double *rightPart = new double[MATRIX_PRESSURE_SIZE];
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
         rightPart[i] = 0.0;
@@ -415,12 +440,12 @@ void addBorderConditionsToLeftAndRight(double **&matrixResult,
         for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
             matrixResult[i * n - 1][j] = 0.0;
 
-//todo !!! Знаки
-        matrixResult[i * n - 1][(i - 1) * n] = 1.0;    //first node in row
+        //todo !!! Знаки
+        matrixResult[i * n - 1][(i - 1) * n] = 1.0;      //first node in row
         matrixResult[i * n - 1][(i - 1) * n + 1] = -1.0; //next to first node in row
 
-        matrixResult[i * n - 1][i * n - 1] = 1.0; //last node in row
-        matrixResult[i * n - 1][i * n - 2] = -1.0;  //node before last
+        matrixResult[i * n - 1][i * n - 1] = 1.0;  //last node in row
+        matrixResult[i * n - 1][i * n - 2] = -1.0; //node before last
 
         rightPart[i * n - 1] = 0.0;
     }
@@ -446,7 +471,10 @@ void addBorderConditionsToLeftAndRight(double **&matrixResult,
         rightPart[i] = BOTTOM_BORDER;
     }
 
-    //displayMatrix(matrixResult, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
+    cout << "After" << endl;
+    displayMatrix(matrixResult, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
+
+    displayVector(rightPart, MATRIX_PRESSURE_SIZE);
 
     fstream myFile;
     myFile.open("data/rightPart.txt", fstream::out);

@@ -118,9 +118,9 @@ void readSystemParameters(SystemPatemeters &systemParameters, string &method)
     systemParameters.U = jsonObject["configs"][k]["U"];
     systemParameters.k = jsonObject["configs"][k]["k"];
     systemParameters.mu = jsonObject["configs"][k]["mu"];
-    systemParameters.Hn = jsonObject["configs"][k]["Hn"];// для обезразмеривания
+    systemParameters.Hn = jsonObject["configs"][k]["Hn"]; // для обезразмеривания
     systemParameters.pMin = jsonObject["configs"][k]["pMin"];
-    systemParameters.hMin = jsonObject["configs"][k]["hMin"];//высота впускного зазора
+    systemParameters.hMin = jsonObject["configs"][k]["hMin"]; //высота впускного зазора
     systemParameters.xOrigin = jsonObject["configs"][k]["xOrigin"];
     systemParameters.yOrigin = jsonObject["configs"][k]["yOrigin"];
     systemParameters.LOW_BORDER = jsonObject["configs"][k]["lowBorder"];

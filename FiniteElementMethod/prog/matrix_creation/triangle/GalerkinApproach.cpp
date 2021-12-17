@@ -1,4 +1,4 @@
-#include "../../header.hpp"
+#include "../../main.hpp"
 /*
     LINEAR PART
 */
@@ -400,7 +400,7 @@ void addBorderConditionsHLinear(double **&matrixResult,
     //displayMatrix(matrixResult, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
 
     fstream myFile;
-    myFile.open("fem_output/rightPart.txt", fstream::out);
+    myFile.open("data/fem_output/rightPart.txt", fstream::out);
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
         myFile << rightPartParam[i] << endl;
 }
@@ -477,7 +477,7 @@ void addBorderConditionsToLeftAndRight(double **&matrixResult,
     displayVector(rightPart, MATRIX_PRESSURE_SIZE);
 
     fstream myFile;
-    myFile.open("fem_output/rightPart.txt", fstream::out);
+    myFile.open("data/fem_output/rightPart.txt", fstream::out);
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
         myFile << rightPart[i] << endl;
 }

@@ -1,9 +1,9 @@
-#include "../../header.hpp"
+#include "../../main.hpp"
 
 const double epsilon = 1e-12;
-string FILENAME_MATRIX_PRESSURE = "fem_output/pressureMatrix.txt";
-string FILENAME_RIGHT_PART = "fem_output/rightPart.txt";
-string FILENAME_SOLUTION = "solvers/gauss/gauss_output/solution.txt";
+string FILENAME_MATRIX_PRESSURE = "data/fem_output/pressureMatrix.txt";
+string FILENAME_RIGHT_PART = "data/fem_output/rightPart.txt";
+string FILENAME_SOLUTION = "data/gauss_output/solution.txt";
 
 int solveEquation(const int size)
 {

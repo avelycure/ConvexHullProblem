@@ -1,4 +1,4 @@
-#include "../../header.hpp"
+#include "../../main.hpp"
 
 void initMatrix(double **&matrix, int row, int column)
 {
@@ -54,7 +54,7 @@ void outputPressureMatrix(double **matrixPressure, int MATRIX_PRESSURE_SIZE)
 {
     fstream myFile;
 
-    myFile.open("fem_output/pressureMatrix.txt", fstream::out);
+    myFile.open("data/fem_output/pressureMatrix.txt", fstream::out);
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
     {
         for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)

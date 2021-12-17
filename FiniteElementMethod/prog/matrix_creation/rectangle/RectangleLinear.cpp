@@ -1,4 +1,4 @@
-#include "../../header.hpp"
+#include "../../main.hpp"
 
 void solveWithRectangleFiniteElements(RectnangleContributionMatrix *&contributionMatrix,
                                       RectnangleRightPart *&localRigthParts,
@@ -291,7 +291,7 @@ void addBorderConditionsForRectnangleElements(double **&matrixResult,
     }
 
     fstream myFile;
-    myFile.open("fem_output/rightPart.txt", fstream::out);
+    myFile.open("data/fem_output/rightPart.txt", fstream::out);
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
         myFile << rightPartParam[i] << endl;
 }
@@ -368,7 +368,7 @@ void addBorderConditionsForRectnangleElementsToLeftAndRight(double **&matrixResu
     displayVector(rightPart, MATRIX_PRESSURE_SIZE);
 
     fstream myFile;
-    myFile.open("fem_output/rightPart.txt", fstream::out);
+    myFile.open("data/fem_output/rightPart.txt", fstream::out);
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
         myFile << rightPart[i] << endl;
 }

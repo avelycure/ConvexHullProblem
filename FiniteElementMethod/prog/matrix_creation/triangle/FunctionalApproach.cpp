@@ -1,4 +1,4 @@
-#include "../../header.hpp"
+#include "../../main.hpp"
 /*
     CONST PART
 */
@@ -120,12 +120,12 @@ void addBorderConditionsHConst(double **&matrixResult,
     //displayMatrix(matrixResult, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
 
     fstream myFile;
-    myFile.open("fem_output/rightPart.txt", fstream::out);
+    myFile.open("data/fem_output/rightPart.txt", fstream::out);
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
         myFile << rightPart[i] << endl;
 
     fstream myFile2;
-    myFile2.open("fem_output/matrixPressureForSol.txt", fstream::out);
+    myFile2.open("data/fem_output/matrixPressureForSol.txt", fstream::out);
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
     {
         for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)

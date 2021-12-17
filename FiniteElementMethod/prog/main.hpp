@@ -12,8 +12,8 @@
 #include "libs/single_include/nlohmann/json.hpp"
 using namespace std;
 
-const string FILE_PARAMETERS_NAME = "input/initial_conditions/systemParameters.json";
-const string FILE_SYSTEM_NAME = "input/initial_conditions/systemNum.json";
+const string FILE_PARAMETERS_NAME = "data/fem_input/initial_conditions/systemParameters.json";
+const string FILE_SYSTEM_NAME = "data/fem_input/initial_conditions/systemNum.json";
 const string H_CONST = "hConst";
 const string H_LINEAR = "hLinear";
 

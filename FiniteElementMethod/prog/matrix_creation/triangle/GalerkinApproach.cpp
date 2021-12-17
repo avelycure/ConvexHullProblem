@@ -3,12 +3,12 @@
     LINEAR PART
 */
 
-int solveWithHLinear(ContributionMatrix *&contributionMatrix,
-                     RightPart *&localRigthParts,
+int solveWithHLinear(TriangleContributionMatrix *&contributionMatrix,
+                     TriangleRightPart *&localRigthParts,
                      Point **&coordinateMesh,
                      double **&matrixPressure,
                      double *&rightPart,
-                     SystemPatemeters &systemParameters)
+                     SystemParameters &systemParameters)
 {
     const int MATRIX_PRESSURE_SIZE = systemParameters.n * systemParameters.n;
     const int MATRIX_CONTRIBUTION_SIZE = (systemParameters.n - 1) * (systemParameters.n - 1) * 2;
@@ -56,12 +56,12 @@ int solveWithHLinear(ContributionMatrix *&contributionMatrix,
     return 0;
 }
 
-int solveWithHLinearWithDerBC(ContributionMatrix *&contributionMatrix,
-                              RightPart *&localRigthParts,
+int solveWithHLinearWithDerBC(TriangleContributionMatrix *&contributionMatrix,
+                              TriangleRightPart *&localRigthParts,
                               Point **&coordinateMesh,
                               double **&matrixPressure,
                               double *&rightPart,
-                              SystemPatemeters &systemParameters)
+                              SystemParameters &systemParameters)
 {
     const int MATRIX_PRESSURE_SIZE = systemParameters.n * systemParameters.n;
     const int MATRIX_CONTRIBUTION_SIZE = (systemParameters.n - 1) * (systemParameters.n - 1) * 2;
@@ -90,10 +90,10 @@ int solveWithHLinearWithDerBC(ContributionMatrix *&contributionMatrix,
     return 0;
 }
 
-int createLocalContributionMatrixForHLinearBottom(ContributionMatrix localMatrix,
+int createLocalContributionMatrixForHLinearBottom(TriangleContributionMatrix localMatrix,
                                                   Point pointI, Point pointJ, Point pointK,
-                                                  RightPart localRightPart,
-                                                  SystemPatemeters &systemParameters)
+                                                  TriangleRightPart localRightPart,
+                                                  SystemParameters &systemParameters)
 {
     double hMin = systemParameters.hMin;
     double k = systemParameters.k;
@@ -176,10 +176,10 @@ int createLocalContributionMatrixForHLinearBottom(ContributionMatrix localMatrix
     return 0;
 }
 
-int createLocalContributionMatrixForHLinearTop(ContributionMatrix localMatrix,
+int createLocalContributionMatrixForHLinearTop(TriangleContributionMatrix localMatrix,
                                                Point pointI, Point pointJ, Point pointK,
-                                               RightPart localRightPart,
-                                               SystemPatemeters &systemParameters)
+                                               TriangleRightPart localRightPart,
+                                               SystemParameters &systemParameters)
 {
     // coefficients of line z = k1 * x + k2
     double k1 = (pointK.getX() - pointJ.getX()) / (pointK.getY() - pointJ.getY());
@@ -262,10 +262,10 @@ int createLocalContributionMatrixForHLinearTop(ContributionMatrix localMatrix,
     return 0;
 }
 
-void createLocalMatrixForEveryElementHLinear(ContributionMatrix *&contributionMatrixParam,
+void createLocalMatrixForEveryElementHLinear(TriangleContributionMatrix *&contributionMatrixParam,
                                              Point **&coordinateMeshParam,
-                                             RightPart *&rightPartParam,
-                                             SystemPatemeters &systemParameters)
+                                             TriangleRightPart *&rightPartParam,
+                                             SystemParameters &systemParameters)
 {
     double k = systemParameters.k;
     double hMin = systemParameters.hMin;
@@ -294,8 +294,8 @@ void createLocalMatrixForEveryElementHLinear(ContributionMatrix *&contributionMa
     }
 }
 
-void createGlobalPressureMatrixHLinear(double **&matrixPressure, ContributionMatrix *&contributionMatrix,
-                                       double *&rightPartParam, RightPart *&localRightPartsParam, int n)
+void createGlobalPressureMatrixHLinear(double **&matrixPressure, TriangleContributionMatrix *&contributionMatrix,
+                                       double *&rightPartParam, TriangleRightPart *&localRightPartsParam, int n)
 {
     int *globalNodeNumbersIJK = new int[3];
     int finiteElementNumber = 0;

@@ -1,4 +1,4 @@
-class RectnangleContributionMatrix
+class RectangleContributionMatrix
 {
 public:
     const int ROW = 4;
@@ -13,7 +13,7 @@ public:
     {
         matrix[i][j] = value;
     }
-    RectnangleContributionMatrix()
+    RectangleContributionMatrix()
     {
         matrix = new double *[ROW];
         for (int i = 0; i < ROW; i++)
@@ -22,28 +22,5 @@ public:
         for (int i = 0; i < ROW; i++)
             for (int j = 0; j < COLUMN; j++)
                 matrix[i][j] = 0.0;
-    }
-};
-
-class RectnangleRightPart
-{
-public:
-    const int ROWS = 4;
-    double *vector;
-
-    double getElement(int i)
-    {
-        return vector[i];
-    }
-    void setElement(int i, double value)
-    {
-        vector[i] = value;
-    }
-    RectnangleRightPart()
-    {
-        vector = new double[ROWS];
-        
-        for (int i = 0; i < ROWS; i++)
-            vector[i] = 0.0;
     }
 };

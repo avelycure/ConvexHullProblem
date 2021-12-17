@@ -1,4 +1,4 @@
-class ContributionMatrix
+class TriangleContributionMatrix
 {
 public:
     const int ROW = 3;
@@ -13,30 +13,10 @@ public:
     {
         matrix[i][j] = value;
     }
-    ContributionMatrix()
+    TriangleContributionMatrix()
     {
         matrix = new double *[ROW];
         for (int i = 0; i < ROW; i++)
             matrix[i] = new double[COLUMN];
-    }
-};
-
-class RightPart
-{
-public:
-    const int COLUMN = 3;
-    double *vector;
-
-    double getElement(int i)
-    {
-        return vector[i];
-    }
-    void setElement(int i, double value)
-    {
-        vector[i] = value;
-    }
-    RightPart()
-    {
-        vector = new double[COLUMN];
     }
 };

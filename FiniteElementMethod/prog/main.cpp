@@ -1,17 +1,18 @@
 #include "main.hpp"
+
 int main()
 {
     string method;
     double *rightPart;
     Point **coordinateMesh;
     double **matrixPressure;
-    RightPart *localRigthParts;
+    SystemParameters systemParameters;
 
-    SystemPatemeters systemParameters;
-    ContributionMatrix *contributionMatrix;
+    TriangleContributionMatrix *contributionMatrix;
+    TriangleRightPart *localRigthParts;
 
-    RectnangleContributionMatrix *contributionMatrixR;
-    RectnangleRightPart *localRigthPartsR;
+    RectangleContributionMatrix *contributionMatrixR;
+    RectangleRightPart *localRigthPartsR;
 
     readSystemParameters(systemParameters, method);
 

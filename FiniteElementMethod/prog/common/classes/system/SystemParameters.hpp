@@ -1,4 +1,4 @@
-class SystemPatemeters
+class SystemParameters
 {
 public:
     int n;
@@ -15,7 +15,7 @@ public:
     double HIGH_BORDER;
     double borderLength;
 
-    SystemPatemeters()
+    SystemParameters()
     {
         n = 0;
         mu = 0.0;

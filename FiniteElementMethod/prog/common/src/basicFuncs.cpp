@@ -4,9 +4,7 @@ void initMatrix(double **&matrix, int row, int column)
 {
     matrix = new double *[row];
     for (int i = 0; i < row; i++)
-    {
         matrix[i] = new double[column];
-    }
 }
 
 void displayMatrix(double **matrix, int row, int column)
@@ -14,9 +12,7 @@ void displayMatrix(double **matrix, int row, int column)
     for (int i = 0; i < row; i++)
     {
         for (int j = 0; j < column; j++)
-        {
             cout << matrix[i][j] << " ";
-        }
         cout << endl;
     }
 }
@@ -26,9 +22,7 @@ void displayMesh(Point **coordinateMesh, int n)
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < n; j++)
-        {
             cout << "(" << coordinateMesh[i][j].getX() << "," << coordinateMesh[i][j].getY() << ") ";
-        }
         cout << endl;
     }
 }
@@ -40,12 +34,12 @@ void displayVector(double *mVector, int n)
     cout << endl;
 }
 
-void displayAllLocalMatrixes(ContributionMatrix *&ContributionMatrixParam, int n)
+void displayAllLocalMatrixes(TriangleContributionMatrix *&contributionMatrixParam, int n)
 {
     for (int i = 0; i < n; i++)
     {
         cout << "matrix[" << i << "]" << endl;
-        displayMatrix(ContributionMatrixParam[i].matrix, 3, 3);
+        displayMatrix(contributionMatrixParam[i].matrix, 3, 3);
         cout << endl;
     }
 }
@@ -58,9 +52,7 @@ void outputPressureMatrix(double **matrixPressure, int MATRIX_PRESSURE_SIZE)
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
     {
         for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-        {
             myFile << matrixPressure[i][j] << " ";
-        }
         myFile << endl;
     }
 }
@@ -70,17 +62,17 @@ void initVector(double *&p, int n)
     p = new double[n];
 }
 
-void initContributionMatrix(ContributionMatrix *&contributionMatrix, int MATRIX_CONTRIBUTION_SIZE)
+void initContributionMatrix(TriangleContributionMatrix *&contributionMatrix, int MATRIX_CONTRIBUTION_SIZE)
 {
-    contributionMatrix = new ContributionMatrix[MATRIX_CONTRIBUTION_SIZE];
+    contributionMatrix = new TriangleContributionMatrix[MATRIX_CONTRIBUTION_SIZE];
 }
 
-void initRightPart(RightPart *&localRigthParts, int MATRIX_CONTRIBUTION_SIZE)
+void initRightPart(TriangleRightPart *&localRigthParts, int MATRIX_CONTRIBUTION_SIZE)
 {
-    localRigthParts = new RightPart[MATRIX_CONTRIBUTION_SIZE];
+    localRigthParts = new TriangleRightPart[MATRIX_CONTRIBUTION_SIZE];
 }
 
-void initMesh(Point **&coordinateMesh, SystemPatemeters &systemParameters)
+void initMesh(Point **&coordinateMesh, SystemParameters &systemParameters)
 {
     int n = systemParameters.n;
     double xOrigin = systemParameters.xOrigin;
@@ -98,7 +90,7 @@ void initMesh(Point **&coordinateMesh, SystemPatemeters &systemParameters)
         }
 }
 
-void readSystemParameters(SystemPatemeters &systemParameters, string &method)
+void readSystemParameters(SystemParameters &systemParameters, string &method)
 {
     nlohmann::json j;
     fstream fileInputSystem;

@@ -10,7 +10,7 @@ double countArea(Point pointI, Point pointJ, Point pointK)
                        pointK.getX() * pointI.getY() - pointJ.getX() * pointI.getY()));
 }
 
-void createLocalContributionMatrixForHConst(ContributionMatrix localMatrix,
+void createLocalContributionMatrixForHConst(TriangleContributionMatrix localMatrix,
                                             Point pointI, Point pointJ, Point pointK)
 {
     double valB, valG;
@@ -46,7 +46,7 @@ void createLocalContributionMatrixForHConst(ContributionMatrix localMatrix,
     }
 }
 
-void createLocalMatrixForEveryElementHConst(ContributionMatrix *&contributionMatrixParam,
+void createLocalMatrixForEveryElementHConst(TriangleContributionMatrix *&contributionMatrixParam,
                                             Point **&coordinateMeshParam,
                                             int n)
 {
@@ -134,7 +134,7 @@ void addBorderConditionsHConst(double **&matrixResult,
     }
 }
 
-void createGlobalPressureMatrixHConst(double **&matrixPressure, ContributionMatrix *&contributionMatrix, int n)
+void createGlobalPressureMatrixHConst(double **&matrixPressure, TriangleContributionMatrix *&contributionMatrix, int n)
 {
     int *globalNodeNumbersIJK = new int[3];
     int finiteElementNumber = 0;
@@ -172,10 +172,10 @@ void createGlobalPressureMatrixHConst(double **&matrixPressure, ContributionMatr
     }
 }
 
-int solveWithHConst(ContributionMatrix *&contributionMatrix,
+int solveWithHConst(TriangleContributionMatrix *&contributionMatrix,
                     Point **&coordinateMesh,
                     double **&matrixPressure,
-                    SystemPatemeters &systemParameters)
+                    SystemParameters &systemParameters)
 {
     const int MATRIX_PRESSURE_SIZE = systemParameters.n * systemParameters.n;
     const int MATRIX_CONTRIBUTION_SIZE = (systemParameters.n - 1) * (systemParameters.n - 1) * 2;
@@ -198,10 +198,10 @@ int solveWithHConst(ContributionMatrix *&contributionMatrix,
     return 0;
 }
 
-int solveWithHConstBCLR(ContributionMatrix *&contributionMatrix,
+int solveWithHConstBCLR(TriangleContributionMatrix *&contributionMatrix,
                         Point **&coordinateMesh,
                         double **&matrixPressure,
-                        SystemPatemeters &systemParameters)
+                        SystemParameters &systemParameters)
 {
     const int MATRIX_PRESSURE_SIZE = systemParameters.n * systemParameters.n;
     const int MATRIX_CONTRIBUTION_SIZE = (systemParameters.n - 1) * (systemParameters.n - 1) * 2;

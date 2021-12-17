@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <math.h>
 #include <string>
 #include <cmath>
 #include <sstream>
@@ -10,6 +9,7 @@
 #include "common/classes/system/SystemParameters.hpp"
 #include "common/classes/contribution_matrix/RectangleCommon.hpp"
 #include "libs/single_include/nlohmann/json.hpp"
+#include "solvers/gauss/GaussSystemSolver.hpp"
 using namespace std;
 
 const string FILE_PARAMETERS_NAME = "data/fem_input/initial_conditions/systemParameters.json";
@@ -122,25 +122,3 @@ int solveWithHLinear(ContributionMatrix *&contributionMatrix,
                      double **&matrixPressure,
                      double *&rightPart,
                      SystemPatemeters &systemParameters);
-
-int solveEquation(const int size);
-
-int AllocateMemory(double **&A, double *&B, double *&X1, const int &n);
-int ReadData(const string fileNameMatrix, const string fileNameVector, double **&matrixA, double *&vectorB, const int &n);
-
-int WriteVector(string fileNameOutput, double *&vector, const int &n);
-
-bool GaussMethod(double **&A, double *&B, double *&X, const int &size);
-
-bool MatrixIsPrepared(double **&A, double *&B, const int &i, vector<tuple<int, int>> &permutations, const int &size);
-
-void DiagonalizeEquation(double **&A, double *&B, double *&X, const int &size, vector<tuple<int, int>> &permutations);
-
-tuple<int, int> SearchMax(double **&A, const int &currentMinor, const int &size);
-
-void SwapRows(double **&A, double *&B, const int &i1, const int &i2);
-void SwapColomns(double **&A, const int &j1, const int &j2, const int &size);
-
-bool isDegenerate(double **&A, const int &i, const int &size);
-
-int FreeMemory(double **&A, double *&B, double *&X1, const int &n);

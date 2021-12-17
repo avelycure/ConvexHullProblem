@@ -1,100 +1,120 @@
-#include "../../main.hpp"
+#include "GaussSystemSolver.hpp"
 
 const double epsilon = 1e-12;
 string FILENAME_MATRIX_PRESSURE = "data/fem_output/pressureMatrix.txt";
 string FILENAME_RIGHT_PART = "data/fem_output/rightPart.txt";
 string FILENAME_SOLUTION = "data/gauss_output/solution.txt";
 
-int solveEquation(const int size)
+/**
+ * Solve the given equation using Gauss method
+ * */
+void solveEquation(const int size)
 {
+    //Matrix of the system
     double **A;
+
+    //Right part of the system
     double *B;
+
+    //Vector of solution
     double *X;
 
-    AllocateMemory(A, B, X, size);
-    ReadData(FILENAME_MATRIX_PRESSURE, FILENAME_RIGHT_PART, A, B, size);
+    allocateMemory(A, B, X, size);
 
-    if (GaussMethod(A, B, X, size))
-        WriteVector(FILENAME_SOLUTION, X, size);
-    else
-        cout << "Matrix A is degenerate " << endl;
+    int readSuccesfully = readData(FILENAME_MATRIX_PRESSURE, FILENAME_RIGHT_PART, A, B, size);
 
-    FreeMemory(A, B, X, size);
-    return 0;
+    if (readSuccesfully)
+        if (solveWithGauss(A, B, X, size))
+            WriteVector(FILENAME_SOLUTION, X, size);
+        else
+            cout << "Matrix A is degenerate " << endl;
+
+    freeMemory(A, B, X, size);
 }
 
-int AllocateMemory(double **&A, double *&B, double *&X, const int &n)
+/**
+ * Allocate memory for all components of the method
+ * */
+void allocateMemory(double **&A, double *&B, double *&X, const int &n)
 {
     A = new double *[n];
 
-    for (int i = 0; i < n; ++i)
+    for (int i = 0; i < n; i++)
         A[i] = new double[n];
 
     B = new double[n];
+
     X = new double[n];
-    return 0;
 }
 
-int ReadData(const string fileNameMatrix, const string fileNameVector, double **&matrixA, double *&vectorB, const int &n)
+/**
+ * Read matrix and right part from file, if everything is succesful return true
+ * else return false
+ * */
+bool readData(const string fileNameMatrix, const string fileNameVector, double **&matrixA, double *&vectorB, const int &n)
 {
+
+    //Read matrix
     ifstream matrixFile;
     matrixFile.open(fileNameMatrix);
 
     if (!matrixFile.is_open())
     {
         cerr << "Error: file with matrix is not open\n";
-        return 1;
+        return false;
     }
 
-    for (int i = 0; i < n; ++i)
-    {
-        for (int j = 0; j < n; ++j)
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
             matrixFile >> matrixA[i][j];
-    }
 
     matrixFile.close();
 
+    //Read right part
     ifstream vectorFile;
     vectorFile.open(fileNameVector);
 
     if (!vectorFile.is_open())
     {
         cerr << "Error: file with vector is not open\n";
-        return 1;
+        return false;
     }
 
-    for (int i = 0; i < n; ++i)
+    for (int i = 0; i < n; i++)
         vectorFile >> vectorB[i];
 
-    return 0;
+    return true;
 }
 
-bool GaussMethod(double **&A, double *&B, double *&X, const int &size)
+bool solveWithGauss(double **&A, double *&B, double *&X, const int &size)
 {
     double m;
     double k;
     bool noProblems = true;
-    vector<tuple<int, int>> permutations = {};
 
+    //Only for testing puposes
     cout << "Target: " << size << endl;
 
-    for (int i = 0; i < size; ++i)
+    for (int i = 0; i < size; i++)
         X[i] = B[i];
 
+    //Straight Gauss method
     for (int i = 0; i < size - 1; i++)
     {
-
+        //Only for testing puposes
         if (i % 100 == 0)
-            cout << "Current progress: "<< i << endl;
+            cout << "Current progress: " << i << endl;
 
-        if (MatrixIsPrepared(A, B, i, permutations, size))
+        if (matrixIsPrepared(A, B, i, size))
         {
             m = A[i][i];
             B[i] /= m;
 
+            //divide all row on diagonal element
             for (int j = i; j < size; j++)
                 A[i][j] /= m;
 
+            //beginning from element after diagonal substract elements of higher row from lower rows
             for (int i1 = i + 1; i1 < size; i1++)
             {
                 k = A[i1][i];
@@ -111,100 +131,106 @@ bool GaussMethod(double **&A, double *&B, double *&X, const int &size)
         }
     }
 
-    if (MatrixIsPrepared(A, B, size - 1, permutations, size) == false)
+    if (matrixIsPrepared(A, B, size - 1, size) == false)
         noProblems = false;
 
+    //Backwards Gauss method
     if (noProblems == true)
     {
         B[size - 1] /= A[size - 1][size - 1];
         A[size - 1][size - 1] /= A[size - 1][size - 1];
-        for (int i = size - 1; i > -1; i--)
-            for (int j = i - 1; j > -1; j--)
+
+        //begin cycle till the first row
+        for (int i = size - 1; i >= 0; i--)
+            for (int j = i - 1; j >= 0; j--)
             {
                 B[j] -= A[j][i] * B[i];
                 A[j][i] = 0.0;
             }
 
-        DiagonalizeEquation(A, B, X, size, permutations);
+        diagonalizeEquation(A, B, X, size);
         for (int i = 0; i < size; i++)
             swap(B[i], X[i]);
     }
-    permutations.clear();
     return noProblems;
 }
 
-bool MatrixIsPrepared(double **&A, double *&B, const int &i, vector<tuple<int, int>> &permutations, const int &size)
+/**
+ * Check if current minor is ready for computation(does not have zero in position (0,0) of current minor)
+ * */
+bool matrixIsPrepared(double **&A, double *&B, const int &i, const int &size)
 {
-    tuple<int, int> t;
-    t = SearchMax(A, i, size);
+    int indexOfMaximumInColumn = searchMaxInColumn(A, i, size);
 
-    if (get<0>(t) != i)
-        SwapRows(A, B, i, get<0>(t));
+    if (indexOfMaximumInColumn != i)
+        swapRows(A, B, i, indexOfMaximumInColumn);
+
     if (isDegenerate(A, i, size) == false)
         return true;
     else
         return false;
 }
 
-void DiagonalizeEquation(double **&A, double *&B, double *&X, const int &size, vector<tuple<int, int>> &permutations)
+/**
+ * Place back rows and columns that we have swaped before
+ * */
+void diagonalizeEquation(double **&A, double *&B, double *&X, const int &size)
 {
-    for (int i = permutations.size() - 1; i > -1; i--)
-        SwapColomns(A, get<0>(permutations[i]), get<1>(permutations[i]), size);
-
     for (int i = 0; i < size; i++)
         for (int j = 0; j < size; j++)
             if (A[i][j] > epsilon && i != j)
-                SwapRows(A, B, i, j);
+                swapRows(A, B, i, j);
 }
 
-tuple<int, int> SearchMax(double **&A, const int &currentMinor, const int &size)
+/**
+ * Searching maximum element in the the first column of current minor
+ * */
+int searchMaxInColumn(double **&A, const int &currentMinor, const int &size)
 {
-    int max_i = currentMinor;
-    double max = fabs(A[max_i][currentMinor]);
+    int maxI = currentMinor;
+    double max = fabs(A[maxI][currentMinor]);
     for (int i = currentMinor; i < size; i++)
         if (fabs(A[i][currentMinor]) > max)
         {
-            max_i = i;
-            max = fabs(A[max_i][currentMinor]);
+            maxI = i;
+            max = fabs(A[maxI][currentMinor]);
         }
-    return make_tuple(max_i, currentMinor);
+    return maxI;
 }
 
-void SwapRows(double **&A, double *&B, const int &i1, const int &i2)
+void swapRows(double **&A, double *&B, const int &i1, const int &i2)
 {
     swap(A[i1], A[i2]);
     swap(B[i1], B[i2]);
 }
 
-void SwapColomns(double **&A, const int &j1, const int &j2, const int &size)
-{
-    for (int i = 0; i < size; i++)
-        swap(A[i][j1], A[i][j2]);
-}
-
+/**
+ * Check if matrix is degenerate
+ * */
 bool isDegenerate(double **&A, const int &i, const int &size)
 {
-    int k = 0;
+    int numberOfZerosInRow = 0;
     for (int j = 0; j < size; j++)
         if (fabs(A[i][j]) < epsilon)
-            k++;
+            numberOfZerosInRow++;
 
-    if (k == size)
+    if (numberOfZerosInRow == size)
         return true;
 
     return false;
 }
 
-int FreeMemory(double **&A, double *&B, double *&X, const int &n)
+/**
+ * Delete allocated memory as we dont need it any more
+ * */
+void freeMemory(double **&A, double *&B, double *&X, const int &n)
 {
     delete[] B;
     delete[] X;
 
-    for (int i = 0; i < n; ++i)
+    for (int i = 0; i < n; i++)
         delete[] A[i];
     delete[] A;
-
-    return 0;
 }
 
 int WriteVector(string fileNameOutput, double *&vector, const int &n)
@@ -212,7 +238,7 @@ int WriteVector(string fileNameOutput, double *&vector, const int &n)
     ofstream fileOutput;
     fileOutput.open(fileNameOutput);
 
-    for (int i = 0; i < n; ++i)
+    for (int i = 0; i < n; i++)
         fileOutput << vector[i] << "\n";
     fileOutput << "\n";
 

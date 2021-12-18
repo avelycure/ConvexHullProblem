@@ -1,18 +1,26 @@
+#pragma once
+
+/**
+ * Data class for storing information about local contribution matrix
+ * */
 class RectangleContributionMatrix
 {
-public:
+private:
     const int ROW = 4;
     const int COLUMN = 4;
     double **matrix;
 
+public:
     double getElement(int i, int j)
     {
         return matrix[i][j];
     }
+
     void setElement(int i, int j, double value)
     {
         matrix[i][j] = value;
     }
+
     RectangleContributionMatrix()
     {
         matrix = new double *[ROW];

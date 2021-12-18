@@ -1,3 +1,8 @@
+#pragma once
+
+/**
+* Data class for storing parameters of the solving equation
+ * */
 class SystemParameters
 {
 public:

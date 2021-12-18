@@ -317,7 +317,7 @@
             "pMin": 100000.0,
             "lowBorder": 1.0,
             "highBorder": 2.0,
-            "method": "hLinear",
+            "method": "rect",
             "borderLength": 1.0,
             "systemtype": "19"
         }

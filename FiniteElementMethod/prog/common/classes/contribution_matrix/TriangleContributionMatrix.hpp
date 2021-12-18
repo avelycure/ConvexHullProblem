@@ -1,3 +1,8 @@
+#pragma once
+
+/**
+ * 
+ * */
 class TriangleContributionMatrix
 {
 public:

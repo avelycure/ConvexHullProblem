@@ -1,14 +1,7 @@
-#include "../../main.hpp"
-/*
-    CONST PART
+#include "FEMTriangles.hpp"
+/**
+ *  CONST PART
 */
-
-double countArea(Point pointI, Point pointJ, Point pointK)
-{
-    return fabs(0.5 * (pointJ.getX() * pointK.getY() - pointK.getX() * pointJ.getY() +
-                       pointJ.getY() * pointI.getX() - pointK.getY() * pointI.getX() +
-                       pointK.getX() * pointI.getY() - pointJ.getX() * pointI.getY()));
-}
 
 void createLocalContributionMatrixForHConst(TriangleContributionMatrix localMatrix,
                                             Point pointI, Point pointJ, Point pointK)
@@ -119,22 +112,24 @@ void addBorderConditionsHConst(double **&matrixResult,
 
     //displayMatrix(matrixResult, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
 
-    fstream myFile;
-    myFile.open("data/fem_output/rightPart.txt", fstream::out);
+    std::fstream myFile;
+    myFile.open("data/fem_output/rightPart.txt", std::fstream::out);
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
-        myFile << rightPart[i] << endl;
+        myFile << rightPart[i] << std::endl;
 
-    fstream myFile2;
-    myFile2.open("data/fem_output/matrixPressureForSol.txt", fstream::out);
+    std::fstream myFile2;
+    myFile2.open("data/fem_output/matrixPressureForSol.txt", std::fstream::out);
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
     {
         for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
             myFile2 << matrixResult[i][j] << " ";
-        myFile2 << endl;
+        myFile2 << std::endl;
     }
 }
 
-void createGlobalPressureMatrixHConst(double **&matrixPressure, TriangleContributionMatrix *&contributionMatrix, int n)
+void createGlobalPressureMatrixHConst(double **&matrixPressure,
+                                      TriangleContributionMatrix *&contributionMatrix,
+                                      int n)
 {
     int *globalNodeNumbersIJK = new int[3];
     int finiteElementNumber = 0;
@@ -159,7 +154,7 @@ void createGlobalPressureMatrixHConst(double **&matrixPressure, TriangleContribu
 
             //for bottom triangle
             globalNodeNumbersIJK[0] = globalNodeNumbersIJK[1] + 1;
-            swap(globalNodeNumbersIJK[1], globalNodeNumbersIJK[2]);
+            std::swap(globalNodeNumbersIJK[1], globalNodeNumbersIJK[2]);
 
             for (int iterator1 = 0; iterator1 < 3; iterator1++)
                 for (int iterator2 = 0; iterator2 < 3; iterator2++)

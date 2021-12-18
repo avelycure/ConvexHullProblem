@@ -36,35 +36,35 @@ void solveWithRectangleFiniteElements(RectangleContributionMatrix *&contribution
     //    matrixPressure, systemParameters.n, fabs(coordinateMesh[0]->getX() - coordinateMesh[1]->getX()), MATRIX_PRESSURE_SIZE,
     //   systemParameters.LOW_BORDER, systemParameters.HIGH_BORDER);
 
-    cout << "Local matrix: " << endl;
+    std::cout << "Local matrix: " << std::endl;
     for (int i = 0; i < MATRIX_CONTRIBUTION_SIZE; i++)
     {
         for (int i1 = 0; i1 < 4; i1++)
         {
             for (int j1 = 0; j1 < 4; j1++)
-                cout << contributionMatrix[i].matrix[i1][j1] << " ";
-            cout << endl;
+                std::cout << contributionMatrix[i].getElement(i1, j1) << " ";
+            std::cout << std::endl;
         }
-        cout << endl;
+        std::cout << std::endl;
     }
 
-    cout << "Local right parts: " << endl;
+    std::cout << "Local right parts: " << std::endl;
     for (int i = 0; i < MATRIX_CONTRIBUTION_SIZE; i++)
     {
         for (int i1 = 0; i1 < 4; i1++)
         {
-            cout << localRigthParts[i].vector[i1] << " ";
+            std::cout << localRigthParts[i].getElement(i1) << " ";
         }
-        cout << endl;
+        std::cout << std::endl;
     }
 
-    cout << "Pressure: " << endl;
+    std::cout << "Pressure: " << std::endl;
 
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
     {
         for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-            cout << matrixPressure[i][j] << " ";
-        cout << endl;
+            std::cout << matrixPressure[i][j] << " ";
+        std::cout << std::endl;
     }
     outputPressureMatrix(matrixPressure, MATRIX_PRESSURE_SIZE);
 }
@@ -167,25 +167,25 @@ void createLocalContributionMatrixForRectangleElement(RectangleContributionMatri
 
     double valR1, valR2, valR4;
 
-    cout << "*********" << endl;
+    std::cout << "*********" << std::endl;
 
     for (int i = 0; i < 4; i++)
-        cout << a[i] << " ";
-    cout << endl;
+        std::cout << a[i] << " ";
+    std::cout << std::endl;
 
     for (int i = 0; i < 4; i++)
-        cout << b[i] << " ";
-    cout << endl;
+        std::cout << b[i] << " ";
+    std::cout << std::endl;
 
     for (int i = 0; i < 4; i++)
-        cout << c[i] << " ";
-    cout << endl;
+        std::cout << c[i] << " ";
+    std::cout << std::endl;
 
     for (int i = 0; i < 4; i++)
-        cout << d[i] << " ";
-    cout << endl;
+        std::cout << d[i] << " ";
+    std::cout << std::endl;
 
-    cout << "*********" << endl;
+    std::cout << "*********" << std::endl;
 
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
@@ -199,12 +199,14 @@ void createLocalContributionMatrixForRectangleElement(RectangleContributionMatri
 
     //creating local vector
     for (int i = 0; i < 4; i++)
-        localRightPart.vector[i] = -R3 * (a[i] * s1 * z1 + b[i] * s2 * z1 + c[i] * s1 * z2 + d[i] * s2 * z2);
+        localRightPart.setElement(i, -R3 * (a[i] * s1 * z1 + b[i] * s2 * z1 + c[i] * s1 * z2 + d[i] * s2 * z2));
 }
 
-void createGlobalPressureMatrixForRectangleElement(
-    double **&matrixPressure, RectangleContributionMatrix *&contributionMatrix,
-    double *&rightPartParam, RectangleRightPart *&localRightPartsParam, int n)
+void createGlobalPressureMatrixForRectangleElement(double **&matrixPressure,
+                                                   RectangleContributionMatrix *&contributionMatrix,
+                                                   double *&rightPartParam,
+                                                   RectangleRightPart *&localRightPartsParam,
+                                                   int n)
 {
     int *globalNodeNumbersIJK = new int[4];
     int finiteElementNumber = 0;
@@ -219,19 +221,19 @@ void createGlobalPressureMatrixForRectangleElement(
             /*m*/ globalNodeNumbersIJK[3] = globalNodeNumbersIJK[0] + 1;
 
             //
-            cout << "begin " << endl;
+            std::cout << "begin " << std::endl;
 
             for (int i1 = 0; i1 < 4; i1++)
                 for (int i2 = 0; i2 < 4; i2++)
                 {
-                    cout << i1 << ", " << i2 << " into " << globalNodeNumbersIJK[i1] << " " << globalNodeNumbersIJK[i2] << endl;
+                    std::cout << i1 << ", " << i2 << " into " << globalNodeNumbersIJK[i1] << " " << globalNodeNumbersIJK[i2] << std::endl;
                     matrixPressure[globalNodeNumbersIJK[i1]][globalNodeNumbersIJK[i2]] +=
-                        contributionMatrix[finiteElementNumber].matrix[i1][i2];
+                        contributionMatrix[finiteElementNumber].getElement(i1, i2);
                 }
-            cout << "end " << endl;
+            std::cout << "end " << std::endl;
 
             for (int i1 = 0; i1 < 4; i1++)
-                rightPartParam[globalNodeNumbersIJK[i1]] += localRightPartsParam[finiteElementNumber].vector[i1];
+                rightPartParam[globalNodeNumbersIJK[i1]] += localRightPartsParam[finiteElementNumber].getElement(i1);
 
             finiteElementNumber++;
         }
@@ -290,10 +292,10 @@ void addBorderConditionsForRectnangleElements(double **&matrixResult,
         rightPartParam[i] = DOWN_BORDER;
     }
 
-    fstream myFile;
-    myFile.open("data/fem_output/rightPart.txt", fstream::out);
+    std::fstream myFile;
+    myFile.open("data/fem_output/rightPart.txt", std::fstream::out);
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
-        myFile << rightPartParam[i] << endl;
+        myFile << rightPartParam[i] << std::endl;
 }
 
 /**
@@ -306,7 +308,7 @@ void addBorderConditionsForRectnangleElementsToLeftAndRight(double **&matrixResu
                                                             double TOP_BORDER,
                                                             double BOTTOM_BORDER)
 {
-    //cout << "Before" << endl;
+    //cout << "Before" << std::cout;
     //displayMatrix(matrixResult, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
 
     double *rightPart = new double[MATRIX_PRESSURE_SIZE];
@@ -362,13 +364,13 @@ void addBorderConditionsForRectnangleElementsToLeftAndRight(double **&matrixResu
         rightPart[i] = BOTTOM_BORDER;
     }
 
-    //cout << "After" << endl;
+    //cout << "After" << std::cout;
     //displayMatrix(matrixResult, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
 
     displayVector(rightPart, MATRIX_PRESSURE_SIZE);
 
-    fstream myFile;
-    myFile.open("data/fem_output/rightPart.txt", fstream::out);
+    std::fstream myFile;
+    myFile.open("data/fem_output/rightPart.txt", std::fstream::out);
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
-        myFile << rightPart[i] << endl;
+        myFile << rightPart[i] << std::endl;
 }

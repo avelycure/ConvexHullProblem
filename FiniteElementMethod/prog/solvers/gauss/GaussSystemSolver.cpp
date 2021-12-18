@@ -1,9 +1,9 @@
 #include "GaussSystemSolver.hpp"
 
 const double epsilon = 1e-12;
-string FILENAME_MATRIX_PRESSURE = "data/fem_output/pressureMatrix.txt";
-string FILENAME_RIGHT_PART = "data/fem_output/rightPart.txt";
-string FILENAME_SOLUTION = "data/gauss_output/solution.txt";
+std::string FILENAME_MATRIX_PRESSURE = "data/fem_output/pressureMatrix.txt";
+std::string FILENAME_RIGHT_PART = "data/fem_output/rightPart.txt";
+std::string FILENAME_SOLUTION = "data/gauss_output/solution.txt";
 
 /**
  * Solve the given equation using Gauss method
@@ -27,7 +27,7 @@ void solveEquation(const int size)
         if (solveWithGauss(A, B, X, size))
             WriteVector(FILENAME_SOLUTION, X, size);
         else
-            cout << "Matrix A is degenerate " << endl;
+            std::cout << "Matrix A is degenerate " << std::endl;
 
     freeMemory(A, B, X, size);
 }
@@ -35,7 +35,10 @@ void solveEquation(const int size)
 /**
  * Allocate memory for all components of the method
  * */
-void allocateMemory(double **&A, double *&B, double *&X, const int &n)
+void allocateMemory(double **&A,
+                    double *&B,
+                    double *&X,
+                    const int &n)
 {
     A = new double *[n];
 
@@ -51,16 +54,20 @@ void allocateMemory(double **&A, double *&B, double *&X, const int &n)
  * Read matrix and right part from file, if everything is succesful return true
  * else return false
  * */
-bool readData(const string fileNameMatrix, const string fileNameVector, double **&matrixA, double *&vectorB, const int &n)
+bool readData(const std::string fileNameMatrix,
+              const std::string fileNameVector,
+              double **&matrixA,
+              double *&vectorB,
+              const int &n)
 {
 
     //Read matrix
-    ifstream matrixFile;
+    std::ifstream matrixFile;
     matrixFile.open(fileNameMatrix);
 
     if (!matrixFile.is_open())
     {
-        cerr << "Error: file with matrix is not open\n";
+        std::cerr << "Error: file with matrix is not open" << std::endl;
         return false;
     }
 
@@ -71,12 +78,12 @@ bool readData(const string fileNameMatrix, const string fileNameVector, double *
     matrixFile.close();
 
     //Read right part
-    ifstream vectorFile;
+    std::ifstream vectorFile;
     vectorFile.open(fileNameVector);
 
     if (!vectorFile.is_open())
     {
-        cerr << "Error: file with vector is not open\n";
+        std::cerr << "Error: file with vector is not open" << std::endl;
         return false;
     }
 
@@ -93,7 +100,7 @@ bool solveWithGauss(double **&A, double *&B, double *&X, const int &size)
     bool noProblems = true;
 
     //Only for testing puposes
-    cout << "Target: " << size << endl;
+    std::cout << "Target: " << size << std::endl;
 
     for (int i = 0; i < size; i++)
         X[i] = B[i];
@@ -103,7 +110,7 @@ bool solveWithGauss(double **&A, double *&B, double *&X, const int &size)
     {
         //Only for testing puposes
         if (i % 100 == 0)
-            cout << "Current progress: " << i << endl;
+            std::cout << "Current progress: " << i << std::endl;
 
         if (matrixIsPrepared(A, B, i, size))
         {
@@ -150,7 +157,7 @@ bool solveWithGauss(double **&A, double *&B, double *&X, const int &size)
 
         diagonalizeEquation(A, B, X, size);
         for (int i = 0; i < size; i++)
-            swap(B[i], X[i]);
+            std::swap(B[i], X[i]);
     }
     return noProblems;
 }
@@ -158,7 +165,10 @@ bool solveWithGauss(double **&A, double *&B, double *&X, const int &size)
 /**
  * Check if current minor is ready for computation(does not have zero in position (0,0) of current minor)
  * */
-bool matrixIsPrepared(double **&A, double *&B, const int &i, const int &size)
+bool matrixIsPrepared(double **&A,
+                      double *&B,
+                      const int &i,
+                      const int &size)
 {
     int indexOfMaximumInColumn = searchMaxInColumn(A, i, size);
 
@@ -174,7 +184,10 @@ bool matrixIsPrepared(double **&A, double *&B, const int &i, const int &size)
 /**
  * Place back rows and columns that we have swaped before
  * */
-void diagonalizeEquation(double **&A, double *&B, double *&X, const int &size)
+void diagonalizeEquation(double **&A,
+                         double *&B,
+                         double *&X,
+                         const int &size)
 {
     for (int i = 0; i < size; i++)
         for (int j = 0; j < size; j++)
@@ -185,7 +198,9 @@ void diagonalizeEquation(double **&A, double *&B, double *&X, const int &size)
 /**
  * Searching maximum element in the the first column of current minor
  * */
-int searchMaxInColumn(double **&A, const int &currentMinor, const int &size)
+int searchMaxInColumn(double **&A,
+                      const int &currentMinor,
+                      const int &size)
 {
     int maxI = currentMinor;
     double max = fabs(A[maxI][currentMinor]);
@@ -200,14 +215,16 @@ int searchMaxInColumn(double **&A, const int &currentMinor, const int &size)
 
 void swapRows(double **&A, double *&B, const int &i1, const int &i2)
 {
-    swap(A[i1], A[i2]);
-    swap(B[i1], B[i2]);
+    std::swap(A[i1], A[i2]);
+    std::swap(B[i1], B[i2]);
 }
 
 /**
  * Check if matrix is degenerate
  * */
-bool isDegenerate(double **&A, const int &i, const int &size)
+bool isDegenerate(double **&A,
+                  const int &i,
+                  const int &size)
 {
     int numberOfZerosInRow = 0;
     for (int j = 0; j < size; j++)
@@ -223,7 +240,10 @@ bool isDegenerate(double **&A, const int &i, const int &size)
 /**
  * Delete allocated memory as we dont need it any more
  * */
-void freeMemory(double **&A, double *&B, double *&X, const int &n)
+void freeMemory(double **&A,
+                double *&B,
+                double *&X,
+                const int &n)
 {
     delete[] B;
     delete[] X;
@@ -233,9 +253,11 @@ void freeMemory(double **&A, double *&B, double *&X, const int &n)
     delete[] A;
 }
 
-int WriteVector(string fileNameOutput, double *&vector, const int &n)
+int WriteVector(std::string fileNameOutput,
+                double *&vector,
+                const int &n)
 {
-    ofstream fileOutput;
+    std::ofstream fileOutput;
     fileOutput.open(fileNameOutput);
 
     for (int i = 0; i < n; i++)

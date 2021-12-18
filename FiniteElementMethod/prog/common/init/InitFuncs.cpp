@@ -1,4 +1,4 @@
-#include "../../main.hpp"
+#include "InitFuncs.hpp"
 
 void initMatrix(double **&matrix, int row, int column)
 {
@@ -12,8 +12,8 @@ void displayMatrix(double **matrix, int row, int column)
     for (int i = 0; i < row; i++)
     {
         for (int j = 0; j < column; j++)
-            cout << matrix[i][j] << " ";
-        cout << endl;
+            std::cout << matrix[i][j] << " ";
+        std::cout << std::endl;
     }
 }
 
@@ -22,38 +22,38 @@ void displayMesh(Point **coordinateMesh, int n)
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < n; j++)
-            cout << "(" << coordinateMesh[i][j].getX() << "," << coordinateMesh[i][j].getY() << ") ";
-        cout << endl;
+            std::cout << "(" << coordinateMesh[i][j].getX() << "," << coordinateMesh[i][j].getY() << ") ";
+        std::cout << std::endl;
     }
 }
 
 void displayVector(double *mVector, int n)
 {
     for (int i = 0; i < n; i++)
-        cout << mVector[i] << " ";
-    cout << endl;
+        std::cout << mVector[i] << " ";
+    std::cout << std::endl;
 }
 
 void displayAllLocalMatrixes(TriangleContributionMatrix *&contributionMatrixParam, int n)
 {
     for (int i = 0; i < n; i++)
     {
-        cout << "matrix[" << i << "]" << endl;
+        std::cout << "matrix[" << i << "]" << std::endl;
         displayMatrix(contributionMatrixParam[i].matrix, 3, 3);
-        cout << endl;
+        std::cout << std::endl;
     }
 }
 
 void outputPressureMatrix(double **matrixPressure, int MATRIX_PRESSURE_SIZE)
 {
-    fstream myFile;
+    std::fstream myFile;
 
-    myFile.open("data/fem_output/pressureMatrix.txt", fstream::out);
+    myFile.open("data/fem_output/pressureMatrix.txt", std::fstream::out);
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
     {
         for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
             myFile << matrixPressure[i][j] << " ";
-        myFile << endl;
+        myFile << std::endl;
     }
 }
 
@@ -90,17 +90,17 @@ void initMesh(Point **&coordinateMesh, SystemParameters &systemParameters)
         }
 }
 
-void readSystemParameters(SystemParameters &systemParameters, string &method)
+void readSystemParameters(SystemParameters &systemParameters, std::string &method)
 {
     nlohmann::json j;
-    fstream fileInputSystem;
+    std::fstream fileInputSystem;
     fileInputSystem.open(FILE_SYSTEM_NAME);
     fileInputSystem >> j;
     int k = j["system"];
     fileInputSystem.close();
 
     nlohmann::json jsonObject;
-    fstream fileInput;
+    std::fstream fileInput;
     fileInput.open(FILE_PARAMETERS_NAME);
     fileInput >> jsonObject;
 

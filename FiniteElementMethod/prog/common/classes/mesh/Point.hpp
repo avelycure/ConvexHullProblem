@@ -1,5 +1,11 @@
+#pragma once
+
+/**
+ * This class represents point of the mesh
+ * */
 class Point
 {
+private:
     double x;
     double y;
 

@@ -2,7 +2,7 @@
 
 int main()
 {
-    string method;
+    std::string method;
     double *rightPart;
     Point **coordinateMesh;
     double **matrixPressure;

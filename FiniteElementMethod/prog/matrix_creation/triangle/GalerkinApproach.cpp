@@ -29,28 +29,6 @@ int solveWithHLinear(TriangleContributionMatrix *&contributionMatrix,
     addBorderConditionsHLinear(matrixPressure, rightPart, systemParameters.n, MATRIX_PRESSURE_SIZE,
                                systemParameters.LOW_BORDER, systemParameters.HIGH_BORDER);
 
-    /*std::cout << "Local matrix: " << std::endl;
-    for (int i = 0; i < MATRIX_CONTRIBUTION_SIZE; i++)
-    {
-        for (int i1 = 0; i1 < 3; i1++)
-        {
-            for (int j1 = 0; j1 < 3; j1++)
-                std::cout << contributionMatrix[i].matrix[i1][j1] << " ";
-            std::cout << std::endl;
-        }
-        std::cout << std::endl;
-    }*/
-
-    /*std::cout << "Local right parts: " << std::endl;
-    for (int i = 0; i < MATRIX_CONTRIBUTION_SIZE; i++)
-    {
-        for (int i1 = 0; i1 < 3; i1++)
-        {
-            std::cout << localRigthParts[i].getElement(i1) << " ";
-        }
-        std::cout << std::endl;
-    }*/
-
     outputPressureMatrix(matrixPressure, MATRIX_PRESSURE_SIZE);
 
     return 0;
@@ -333,7 +311,7 @@ void createGlobalPressureMatrixHLinear(double **&matrixPressure,
             finiteElementNumber++;
 
             //for bottom triangle
-            globalNodeNumbersIJK[0] = globalNodeNumbersIJK[1] + 1.0;
+            globalNodeNumbersIJK[0] = globalNodeNumbersIJK[1] + 1;
             std::swap(globalNodeNumbersIJK[1], globalNodeNumbersIJK[2]);
 
             for (int iterator1 = 0; iterator1 < 3; iterator1++)

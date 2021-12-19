@@ -13,3 +13,5 @@
 #include "common/classes/contribution_matrix/rectangle/RectangleRightPart.hpp"
 #include "common/classes/contribution_matrix/triangle/TriangleContributionMatrix.hpp"
 #include "common/classes/contribution_matrix/rectangle/RectangleContributionMatrix.hpp"
+#include "common/classes/contribution_matrix/triangle/TriangleRightPartSecondOrder.hpp"
+#include "common/classes/contribution_matrix/triangle/TriangleContributionMatrixSecondOrder.hpp"

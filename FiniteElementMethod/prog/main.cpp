@@ -14,6 +14,9 @@ int main()
     RectangleContributionMatrix *contributionMatrixR;
     RectangleRightPart *localRigthPartsR;
 
+    TriangleContributionMatrixSecondOrder *contributionMatrixQT;
+    TriangleRightPartSecondOrder *localRigthPartsQT;
+
     readSystemParameters(systemParameters, method);
 
     if (method == H_CONST)
@@ -35,6 +38,11 @@ int main()
     if (method == "rect")
         solveWithRectangleFiniteElements(contributionMatrixR, localRigthPartsR, coordinateMesh,
                                          matrixPressure, rightPart, systemParameters);
+
+    if (method == "qtrig")
+        solveWithTrianglesSecondOrder(contributionMatrixQT, localRigthPartsQT, coordinateMesh,
+                                         matrixPressure, rightPart, systemParameters);
+
 
     solveEquation(systemParameters.n * systemParameters.n);
 }

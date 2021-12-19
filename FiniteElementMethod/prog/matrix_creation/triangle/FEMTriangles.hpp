@@ -8,6 +8,8 @@
 #include "../../common/classes/system/SystemParameters.hpp"
 #include "../../common/classes/contribution_matrix/triangle/TriangleRightPart.hpp"
 #include "../../common/classes/contribution_matrix/triangle/TriangleContributionMatrix.hpp"
+#include "../../common/classes/contribution_matrix/triangle/TriangleRightPartSecondOrder.hpp"
+#include "../../common/classes/contribution_matrix/triangle/TriangleContributionMatrixSecondOrder.hpp"
 
 //Finite elements method funcs
 double countArea(Point pointI,
@@ -96,3 +98,49 @@ int solveWithHLinear(TriangleContributionMatrix *&contributionMatrix,
                      double **&matrixPressure,
                      double *&rightPart,
                      SystemParameters &systemParameters);
+
+//Quadratic
+void solveWithTrianglesSecondOrder(TriangleContributionMatrixSecondOrder *&contributionMatrix,
+                                   TriangleRightPartSecondOrder *&localRigthParts,
+                                   Point **&coordinateMesh,
+                                   double **&matrixPressure,
+                                   double *&rightPart,
+                                   SystemParameters &systemParameters);
+
+void createLocalContributionMatrixForQuardaticTriangleTop(TriangleContributionMatrixSecondOrder localMatrix,
+                                                          Point pointI,
+                                                          Point pointJ,
+                                                          Point pointK,
+                                                          Point pointL,
+                                                          Point pointM,
+                                                          Point pointN,
+                                                          TriangleRightPartSecondOrder localRightPart,
+                                                          SystemParameters &systemParameters);
+
+void createLocalContributionMatrixForQuardaticTriangleBottom(TriangleContributionMatrixSecondOrder localMatrix,
+                                                             Point pointI,
+                                                             Point pointJ,
+                                                             Point pointK,
+                                                             Point pointL,
+                                                             Point pointM,
+                                                             Point pointN,
+                                                             TriangleRightPartSecondOrder localRightPart,
+                                                             SystemParameters &systemParameters);
+
+void addBorderConditionsQuadraticTriangles(double **&matrixResult,
+                                           double *&rightPartParam,
+                                           int n,
+                                           int MATRIX_PRESSURE_SIZE,
+                                           int OTHER_BORDER,
+                                           int DOWN_BORDER);
+
+void createGlobalPressureMatrixQuadraticTriangles(double **&matrixPressure,
+                                                  TriangleContributionMatrixSecondOrder *&contributionMatrix,
+                                                  double *&rightPartParam,
+                                                  TriangleRightPartSecondOrder *&localRightPartsParam,
+                                                  int n);
+
+void createLocalMatrixForEveryElementQuadraticTriangles(TriangleContributionMatrixSecondOrder *&contributionMatrixParam,
+                                                        Point **&coordinateMeshParam,
+                                                        TriangleRightPartSecondOrder *&rightPartParam,
+                                                        SystemParameters &systemParameters);

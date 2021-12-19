@@ -93,7 +93,10 @@ bool readData(const std::string fileNameMatrix,
     return true;
 }
 
-bool solveWithGauss(double **&A, double *&B, double *&X, const int &size)
+bool solveWithGauss(double **&A,
+                    double *&B,
+                    double *&X,
+                    const int &size)
 {
     double m;
     double k;

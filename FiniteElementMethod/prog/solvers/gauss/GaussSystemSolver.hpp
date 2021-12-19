@@ -1,9 +1,9 @@
 #pragma once
-#include <iostream>
-#include <fstream>
-#include <vector>
 #include <cmath>
+#include <vector>
 #include <string>
+#include <fstream>
+#include <iostream>
 
 void solveEquation(const int size);
 

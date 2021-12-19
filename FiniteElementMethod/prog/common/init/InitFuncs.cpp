@@ -17,6 +17,9 @@ void displayMatrix(double **matrix, int row, int column)
     }
 }
 
+/**
+ * Show X and Y coordinates of the nodes of the mesh
+ * */
 void displayMesh(Point **coordinateMesh, int n)
 {
     for (int i = 0; i < n; i++)

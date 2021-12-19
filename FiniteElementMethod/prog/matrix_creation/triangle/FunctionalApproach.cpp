@@ -1,10 +1,9 @@
 #include "FEMTriangles.hpp"
-/**
- *  CONST PART
-*/
 
 void createLocalContributionMatrixForHConst(TriangleContributionMatrix localMatrix,
-                                            Point pointI, Point pointJ, Point pointK)
+                                            Point pointI,
+                                            Point pointJ,
+                                            Point pointK)
 {
     double valB, valG;
     double lambdaX = 1.0;
@@ -167,10 +166,10 @@ void createGlobalPressureMatrixHConst(double **&matrixPressure,
     }
 }
 
-int solveWithHConst(TriangleContributionMatrix *&contributionMatrix,
-                    Point **&coordinateMesh,
-                    double **&matrixPressure,
-                    SystemParameters &systemParameters)
+void solveWithHConst(TriangleContributionMatrix *&contributionMatrix,
+                     Point **&coordinateMesh,
+                     double **&matrixPressure,
+                     SystemParameters &systemParameters)
 {
     const int MATRIX_PRESSURE_SIZE = systemParameters.n * systemParameters.n;
     const int MATRIX_CONTRIBUTION_SIZE = (systemParameters.n - 1) * (systemParameters.n - 1) * 2;
@@ -190,7 +189,6 @@ int solveWithHConst(TriangleContributionMatrix *&contributionMatrix,
                               systemParameters.LOW_BORDER, systemParameters.HIGH_BORDER);
 
     outputPressureMatrix(matrixPressure, MATRIX_PRESSURE_SIZE);
-    return 0;
 }
 
 int solveWithHConstBCLR(TriangleContributionMatrix *&contributionMatrix,

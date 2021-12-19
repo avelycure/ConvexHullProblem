@@ -29,7 +29,7 @@ int solveWithHLinear(TriangleContributionMatrix *&contributionMatrix,
     addBorderConditionsHLinear(matrixPressure, rightPart, systemParameters.n, MATRIX_PRESSURE_SIZE,
                                systemParameters.LOW_BORDER, systemParameters.HIGH_BORDER);
 
-    std::cout << "Local matrix: " << std::endl;
+    /*std::cout << "Local matrix: " << std::endl;
     for (int i = 0; i < MATRIX_CONTRIBUTION_SIZE; i++)
     {
         for (int i1 = 0; i1 < 3; i1++)
@@ -39,9 +39,9 @@ int solveWithHLinear(TriangleContributionMatrix *&contributionMatrix,
             std::cout << std::endl;
         }
         std::cout << std::endl;
-    }
+    }*/
 
-    std::cout << "Local right parts: " << std::endl;
+    /*std::cout << "Local right parts: " << std::endl;
     for (int i = 0; i < MATRIX_CONTRIBUTION_SIZE; i++)
     {
         for (int i1 = 0; i1 < 3; i1++)
@@ -49,7 +49,7 @@ int solveWithHLinear(TriangleContributionMatrix *&contributionMatrix,
             std::cout << localRigthParts[i].getElement(i1) << " ";
         }
         std::cout << std::endl;
-    }
+    }*/
 
     outputPressureMatrix(matrixPressure, MATRIX_PRESSURE_SIZE);
 
@@ -90,7 +90,9 @@ int solveWithHLinearWithDerBC(TriangleContributionMatrix *&contributionMatrix,
 }
 
 int createLocalContributionMatrixForHLinearBottom(TriangleContributionMatrix localMatrix,
-                                                  Point pointI, Point pointJ, Point pointK,
+                                                  Point pointI,
+                                                  Point pointJ,
+                                                  Point pointK,
                                                   TriangleRightPart localRightPart,
                                                   SystemParameters &systemParameters)
 {
@@ -176,7 +178,9 @@ int createLocalContributionMatrixForHLinearBottom(TriangleContributionMatrix loc
 }
 
 int createLocalContributionMatrixForHLinearTop(TriangleContributionMatrix localMatrix,
-                                               Point pointI, Point pointJ, Point pointK,
+                                               Point pointI,
+                                               Point pointJ,
+                                               Point pointK,
                                                TriangleRightPart localRightPart,
                                                SystemParameters &systemParameters)
 {
@@ -244,6 +248,8 @@ int createLocalContributionMatrixForHLinearTop(TriangleContributionMatrix localM
         c[i] = c[i] / (2.0 * area);
     }
 
+    std::cout << "C: " << c[0] << " " << c[1] << " " << c[2] << std::endl;
+
     for (int i = 0; i < 3; i++)
     {
         for (int j = 0; j < 3; j++)
@@ -293,8 +299,11 @@ void createLocalMatrixForEveryElementHLinear(TriangleContributionMatrix *&contri
     }
 }
 
-void createGlobalPressureMatrixHLinear(double **&matrixPressure, TriangleContributionMatrix *&contributionMatrix,
-                                       double *&rightPartParam, TriangleRightPart *&localRightPartsParam, int n)
+void createGlobalPressureMatrixHLinear(double **&matrixPressure,
+                                       TriangleContributionMatrix *&contributionMatrix,
+                                       double *&rightPartParam,
+                                       TriangleRightPart *&localRightPartsParam,
+                                       int n)
 {
     int *globalNodeNumbersIJK = new int[3];
     int finiteElementNumber = 0;

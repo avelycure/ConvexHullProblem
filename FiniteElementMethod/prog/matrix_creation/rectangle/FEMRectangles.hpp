@@ -5,8 +5,8 @@
 #include <cmath>
 #include "../../common/init/InitFuncs.hpp"
 #include "../../common/classes/mesh/Point.hpp"
-#include "../../common/classes/contribution_matrix/RectangleContributionMatrix.hpp"
-#include "../../common/classes/contribution_matrix/RectangleRightPart.hpp"
+#include "../../common/classes/contribution_matrix/rectangle/RectangleContributionMatrix.hpp"
+#include "../../common/classes/contribution_matrix/rectangle/RectangleRightPart.hpp"
 #include "../../common/classes/system/SystemParameters.hpp"
 
 //Rectangle
@@ -30,9 +30,11 @@ void solveWithRectangleFiniteElements(RectangleContributionMatrix *&contribution
                                       double *&rightPart,
                                       SystemParameters &systemParameters);
 
-void createGlobalPressureMatrixForRectangleElement(
-    double **&matrixPressure, RectangleContributionMatrix *&contributionMatrix,
-    double *&rightPartParam, RectangleRightPart *&localRightPartsParam, int n);
+void createGlobalPressureMatrixForRectangleElement(double **&matrixPressure,
+                                                   RectangleContributionMatrix *&contributionMatrix,
+                                                   double *&rightPartParam,
+                                                   RectangleRightPart *&localRightPartsParam,
+                                                   int n);
 
 void addBorderConditionsForRectnangleElements(double **&matrixResult,
                                               double *&rightPartParam,
@@ -40,10 +42,3 @@ void addBorderConditionsForRectnangleElements(double **&matrixResult,
                                               int MATRIX_PRESSURE_SIZE,
                                               int OTHER_BORDER,
                                               int DOWN_BORDER);
-
-void addBorderConditionsForRectnangleElementsToLeftAndRight(double **&matrixResult,
-                                       int n,
-                                       double h,
-                                       int MATRIX_PRESSURE_SIZE,
-                                       double TOP_BORDER,
-                                       double BOTTOM_BORDER);

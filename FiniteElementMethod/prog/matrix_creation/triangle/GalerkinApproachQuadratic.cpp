@@ -33,7 +33,7 @@ void solveWithTrianglesSecondOrder(TriangleContributionMatrixSecondOrder *&contr
                                                  rightPart,
                                                  localRigthParts,
                                                  systemParameters.n);
-                                                 
+
     addBorderConditionsQuadraticTriangles(matrixPressure,
                                           rightPart,
                                           systemParameters.n,
@@ -69,7 +69,7 @@ void createLocalMatrixForEveryElementQuadraticTriangles(TriangleContributionMatr
                                                                  rightPartParam[finiteElementNumber],
                                                                  systemParameters);
             finiteElementNumber++;
-            createLocalContributionMatrixForQuardaticTriangleBottom(contributionMatrixParam[finiteElementNumber],
+            createLocalContributionMatrixForQuardaticTriangleTop(contributionMatrixParam[finiteElementNumber],
                                                                     coordinateMeshParam[i + 2][j + 2],
                                                                     coordinateMeshParam[i + 1][j + 2],
                                                                     coordinateMeshParam[i][j + 2],
@@ -92,6 +92,251 @@ void createLocalContributionMatrixForQuardaticTriangleTop(TriangleContributionMa
                                                           TriangleRightPartSecondOrder localRightPart,
                                                           SystemParameters &systemParameters)
 {
+    double hMin = systemParameters.hMin;
+    double k = systemParameters.k;
+
+    double k1 = (pointM.getX() - pointK.getX()) / (pointM.getY() - pointK.getY());
+    double k2 = pointK.getX() - pointK.getY() * ((pointM.getX() - pointK.getX()) / (pointM.getY() - pointK.getY()));
+
+    double A1 = pow(hMin, 3.0);
+    double A2 = 3.0 * pow(hMin, 2.0) * k;
+    double A3 = 3.0 * hMin * pow(k, 2.0);
+    double A4 = pow(k, 3.0);
+
+    double s1 = (1.0 / 1.0) * (pointM.getY() - pointI.getY());
+    double s2 = (1.0 / 2.0) * (pow(pointM.getY(), 2.0) - pow(pointI.getY(), 2.0));
+    double s3 = (1.0 / 3.0) * (pow(pointM.getY(), 3.0) - pow(pointI.getY(), 3.0));
+    double s4 = (1.0 / 4.0) * (pow(pointM.getY(), 4.0) - pow(pointI.getY(), 4.0));
+    double s5 = (1.0 / 5.0) * (pow(pointM.getY(), 5.0) - pow(pointI.getY(), 5.0));
+    double s6 = (1.0 / 6.0) * (pow(pointM.getY(), 6.0) - pow(pointI.getY(), 6.0));
+    double s7 = (1.0 / 7.0) * (pow(pointM.getY(), 7.0) - pow(pointI.getY(), 7.0));
+    double s8 = (1.0 / 8.0) * (pow(pointM.getY(), 8.0) - pow(pointI.getY(), 8.0));
+
+    double zi = pointI.getX();
+
+    //clR1
+    double c1 = A1 * k1 * s2 + A2 * k2 * s2 + A2 * k1 * s3 + A3 * k2 * s3 + A3 * k1 * s4 + A4 * k2 * s4 + A4 * k1 * s5 +
+                A1 * s1 * (k2 - zi) - A2 * s2 * zi - A3 * s3 * zi - A4 * s4 * zi;
+
+    //blR4
+    double c2 = A1 * k1 * s2 + A2 * k2 * s2 + A2 * k1 * s3 + A3 * k2 * s3 + A3 * k1 * s4 + A4 * k2 * s4 + A4 * k1 * s5 +
+                A1 * s1 * (k2 - zi) - A2 * s2 * zi - A3 * s3 * zi - A4 * s4 * zi;
+
+    //flR1
+    double c3 = 2.0 * A1 * k2 * s2 + 2 * A1 * k1 * s3 + 2 * A2 * k2 * s3 + 2 * A2 * k1 * s4 + 2 * A3 * k2 * s4 + 2 * A3 * k1 * s5 +
+                2 * A4 * k2 * s5 + 2 * A4 * k1 * s6 - 2 * A1 * s2 * zi - 2 * A2 * s3 * zi - 2 * A3 * s4 * zi - 2 * A4 * s5 * zi;
+
+    //clR3
+    double c4 = 2 * A1 * k2 * s2 + 2 * A1 * k1 * s3 + 2 * A2 * k2 * s3 + 2 * A2 * k1 * s4 +
+                2 * A3 * k2 * s4 + 2 * A3 * k1 * s5 + 2 * A4 * k2 * s5 + 2 * A4 * k1 * s6 -
+                2 * A1 * s2 * zi - 2 * A2 * s3 * zi - 2 * A3 * s4 * zi - 2 * A4 * s5 * zi;
+
+    //blR2
+    double c5 = A1 * k2 * s2 + A1 * k1 * s3 + A2 * k2 * s3 + A2 * k1 * s4 + A3 * k2 * s4 +
+                A3 * k1 * s5 + A4 * k2 * s5 + A4 * k1 * s6 - A1 * s2 * zi - A2 * s3 * zi - A3 * s4 * zi - A4 * s5 * zi;
+
+    //elR4
+    double c6 = A1 * k2 * s2 + A1 * k1 * s3 + A2 * k2 * s3 + A2 * k1 * s4 + A3 * k2 * s4 + A3 * k1 * s5 +
+                A4 * k2 * s5 + A4 * k1 * s6 - A1 * s2 * zi - A2 * s3 * zi - A3 * s4 * zi - A4 * s5 * zi;
+
+    //flR3
+    double c7 = 4 * A1 * k2 * s3 + 4 * A1 * k1 * s4 + 4 * A2 * k2 * s4 + 4 * A2 * k1 * s5 +
+                4 * A3 * k2 * s5 + 4 * A3 * k1 * s6 + 4 * A4 * k2 * s6 + 4 * A4 * k1 * s7 -
+                4 * A1 * s3 * zi - 4 * A2 * s4 * zi - 4 * A3 * s5 * zi - 4 * A4 * s6 * zi;
+
+    //dlR2
+    double c8 = A1 * k2 * k2 * s2 + 2 * A1 * k1 * k2 * s3 + A2 * k2 * k2 * s3 + A1 * k1 * k1 * s4 + 2 * A2 * k1 * k2 * s4 +
+                A3 * k2 * k2 * s4 + A2 * k1 * k1 * s5 + 2 * A3 * k1 * k2 * s5 + A4 * k2 * k2 * s5 + A3 * k1 * k1 * s6 +
+                2 * A4 * k1 * k2 * s6 + A4 * k1 * k1 * s7 - A1 * s2 * zi * zi - A2 * s3 * zi * zi -
+                A3 * s4 * zi * zi - A4 * s5 * zi * zi;
+
+    //flR2
+    double c9 = A1 * k2 * k2 * s2 + 2 * A1 * k1 * k2 * s3 + A2 * k2 * k2 * s3 +
+                A1 * k1 * k1 * s4 + 2 * A2 * k1 * k2 * s4 + A3 * k2 * k2 * s4 +
+                A2 * k1 * k1 * s5 + 2 * A3 * k1 * k2 * s5 + A4 * k2 * k2 * s5 +
+                A3 * k1 * k1 * s6 + 2 * A4 * k1 * k2 * s6 + A4 * k1 * k1 * s7 -
+                A1 * s2 * zi * zi - A2 * s3 * zi * zi - A3 * s4 * zi * zi - A4 * s5 * zi * zi;
+
+    //elR5
+    double c10 = A1 * k2 * k2 * s2 + 2 * A1 * k1 * k2 * s3 + A2 * k2 * k2 * s3 +
+                 A1 * k1 * k1 * s4 + 2 * A2 * k1 * k2 * s4 + A3 * k2 * k2 * s4 +
+                 A2 * k1 * k1 * s5 + 2 * A3 * k1 * k2 * s5 + A4 * k2 * k2 * s5 +
+                 A3 * k1 * k1 * s6 + 2 * A4 * k1 * k2 * s6 + A4 * k1 * k1 * s7 -
+                 A1 * s2 * zi * zi - A2 * s3 * zi * zi - A3 * s4 * zi * zi - A4 * s5 * zi * zi;
+
+    //elR3
+    double c11 = A1 * k2 * k2 * s2 + 2 * A1 * k1 * k2 * s3 + A2 * k2 * k2 * s3 +
+                 A1 * k1 * k1 * s4 + 2 * A2 * k1 * k2 * s4 + A3 * k2 * k2 * s4 +
+                 A2 * k1 * k1 * s5 + 2 * A3 * k1 * k2 * s5 + A4 * k2 * k2 * s5 +
+                 A3 * k1 * k1 * s6 + 2 * A4 * k1 * k2 * s6 + A4 * k1 * k1 * s7 -
+                 A1 * s2 * zi * zi - A2 * s3 * zi * zi - A3 * s4 * zi * zi - A4 * s5 * zi * zi;
+
+    //elR1
+    double c13 = A1 * k1 * k2 * s2 + 0.5 * A2 * k2 * k2 * s2 + 0.5 * A1 * k1 * k1 * s3 +
+                 A2 * k1 * k2 * s3 + 0.5 * A3 * k2 * k2 * s3 + 0.5 * A2 * k1 * k1 * s4 +
+                 A3 * k1 * k2 * s4 + 0.5 * A4 * k2 * k2 * s4 + 0.5 * A3 * k1 * k1 * s5 +
+                 A4 * k1 * k2 * s5 + 0.5 * A4 * k1 * k1 * s6 - 0.5 * A2 * s2 * zi * zi -
+                 0.5 * A3 * s3 * zi * zi - 0.5 * A4 * s4 * zi * zi + 0.5 * A1 * s1 * (k2 * k2 - zi * zi);
+
+    //clR2
+    double c14 = A1 * k1 * k2 * s2 + 0.5 * A2 * k2 * k2 * s2 + 0.5 * A1 * k1 * k1 * s3 +
+                 A2 * k1 * k2 * s3 + 0.5 * A3 * k2 * k2 * s3 + 0.5 * A2 * k1 * k1 * s4 +
+                 A3 * k1 * k2 * s4 + 0.5 * A4 * k2 * k2 * s4 + 0.5 * A3 * k1 * k1 * s5 +
+                 A4 * k1 * k2 * s5 + 0.5 * A4 * k1 * k1 * s6 - 0.5 * A2 * s2 * zi * zi -
+                 0.5 * A3 * s3 * zi * zi - 0.5 * A4 * s4 * zi * zi + 0.5 * A1 * s1 * (k2 * k2 - zi * zi);
+
+    //dlR4
+    double c15 = 2 * A1 * k1 * k2 * s2 + A2 * k2 * k2 * s2 + A1 * k1 * k1 * s3 + 2 * A2 * k1 * k2 * s3 +
+                 A3 * k2 * k2 * s3 + A2 * k1 * k1 * s4 + 2 * A3 * k1 * k2 * s4 +
+                 A4 * k2 * k2 * s4 + A3 * k1 * k1 * s5 + 2 * A4 * k1 * k2 * s5 +
+                 A4 * k1 * k1 * s6 - A2 * s2 * zi * zi - A3 * s3 * zi * zi -
+                 A4 * s4 * zi * zi + A1 * s1 * (k2 * k2 - zi * zi);
+
+    //blR5
+    double c16 = 2 * A1 * k1 * k2 * s2 + A2 * k2 * k2 * s2 + A1 * k1 * k1 * s3 + 2 * A2 * k1 * k2 * s3 +
+                 A3 * k2 * k2 * s3 + A2 * k1 * k1 * s4 + 2 * A3 * k1 * k2 * s4 +
+                 A4 * k2 * k2 * s4 + A3 * k1 * k1 * s5 + 2 * A4 * k1 * k2 * s5 +
+                 A4 * k1 * k1 * s6 - A2 * s2 * zi * zi - A3 * s3 * zi * zi -
+                 A4 * s4 * zi * zi + A1 * s1 * (k2 * k2 - zi * zi);
+
+    //elR2
+    double c18 = A1 * k1 * k2 * k2 * s2 + A2 * k2 * k2 * k2 * s2 / 3.0 + A1 * k2 * s3 +
+                 A1 * k1 * k1 * k2 * s3 + A2 * k1 * k2 * k2 * s3 + A3 * k2 * k2 * k2 * s3 / 3.0 +
+                 A1 * k1 * s4 + A1 * k1 * k1 * k1 * s4 / 3.0 + A2 * k2 * s4 +
+                 A2 * k1 * k1 * k2 * s4 + A3 * k1 * k2 * k2 * s4 + A4 * k2 * k2 * k2 * s4 / 3.0 +
+                 A2 * k1 * s5 + A3 * k2 * s5 +
+                 k1 * (A2 * k1 * k1 + 3 * A3 * k1 * k2 + 3 * A4 * k2 * k2) * s5 / 3.0 + A3 * k1 * s6 +
+                 A4 * k2 * s6 + k1 * k1 * (A3 * k1 + 3 * A4 * k2) * s6 / 3.0 + A4 * k1 * s7 +
+                 A4 * k1 * k1 * k1 * s7 / 3.0 - A1 * s3 * zi - A2 * s4 * zi - A3 * s5 * zi -
+                 A4 * s6 * zi - A2 * s2 * zi * zi * zi / 3.0 - A3 * s3 * zi * zi * zi / 3.0 -
+                 A4 * s4 * zi * zi * zi / 3.0 + A1 * s1 * (k2 * k2 * k2 - zi * zi * zi) / 3.0;
+
+    //dlR5 ???
+    double c19 = 4 * A1 * k1 * k2 * k2 * s2 + 4 * A2 * k2 * k2 * k2 * s2 / 3.0 + 4 * A1 * k1 * k1 * k2 * s3 +
+                 4 * A2 * k1 * k2 * k2 * s3 + 4 * A3 * k2 * k2 * k2 * s3 / 3.0 + 4 * A1 * k1 * k1 * k1 * s4 / 3.0 +
+                 4 * A2 * k1 * k1 * k2 * s4 + 4 * A3 * k1 * k2 * k2 * s4 + 4 * A4 * k2 * k2 * k2 * s4 / 3.0 +
+                 4 * k1 * (A2 * k1 * k1 + 3 * A3 * k1 * k2 + 3 * A4 * k2 * k2) * s5 / 3.0 +
+                 4 * k1 * k1 * (A3 * k1 + 3 * A4 * k2) * s6 / 3.0 + 4 * A4 * k1 * k1 * k1 * s7 / 3.0 -
+                 4 * A2 * s2 * zi * zi * zi / 3.0 - 4 * A3 * s3 * zi * zi * zi / 3.0 - 4 * A4 * s4 * zi * zi * zi / 3.0 +
+                 4.0 * A1 * s1 * (k2 * k2 * k2 - zi * zi * zi) / 3.0;
+
+    double R6 = 6.0 * systemParameters.mu * systemParameters.L * systemParameters.U * k /
+                (systemParameters.Hn * systemParameters.Hn * systemParameters.pMin);
+
+    double *a = new double[6];
+    double *b = new double[6];
+    double *c = new double[6];
+    double *d = new double[6];
+    double *e = new double[6];
+    double *f = new double[6];
+
+    a[0] = (pow(pointI.getX(), 2.0) * pointI.getY() * pointN.getY() +
+            pointJ.getX() * pointK.getX() * pointM.getY() * pointN.getY() +
+            pointI.getX() * pointI.getY() * (pointJ.getX() * (pointI.getY() - pointM.getY()) - pointN.getY() * (pointJ.getX() + pointK.getX()))) /
+           ((pointI.getX() - pointJ.getX()) * (pointI.getX() - pointK.getX()) * (pointI.getY() - pointM.getY()) * (pointI.getY() - pointN.getY()));
+    a[1] = (pointI.getX() * (-pointJ.getX() * pointI.getY() + pointK.getX() * pointN.getY())) /
+           ((pointI.getX() - pointJ.getX()) * (pointJ.getX() - pointK.getX()) * (pointI.getY() - pointN.getY()));
+    a[2] = (pointI.getX() * pointJ.getX()) / ((pointI.getX() - pointK.getX()) * (pointJ.getX() - pointK.getX()));
+    a[3] = (pointI.getX() * pointI.getY()) / ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointN.getY()));
+    a[4] = (pointI.getY() * pointN.getY()) / ((pointI.getY() - pointM.getY()) * (-pointM.getY() + pointN.getY()));
+    a[5] = (pointI.getY() * (pointJ.getX() * pointM.getY() - pointI.getX() * pointN.getY())) /
+           ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointN.getY()) * (-pointM.getY() + pointN.getY()));
+
+    b[0] = (-pointI.getY() * (pointI.getX() + pointJ.getX()) + pointN.getY() * (pointJ.getX() + pointK.getX())) /
+           ((pointI.getX() - pointJ.getX()) * (pointI.getX() - pointK.getX()) * (pointI.getY() - pointN.getY()));
+    b[1] = (pointI.getY() * (pointI.getX() + pointJ.getX()) - pointN.getY() * (pointI.getX() + pointK.getX())) /
+           ((pointI.getX() - pointJ.getX()) * (pointJ.getX() - pointK.getX()) * (pointI.getY() - pointN.getY()));
+    b[2] = (pointI.getX() + pointJ.getX()) / ((pointI.getX() - pointK.getX()) * (-pointJ.getX() + pointK.getX()));
+    b[3] = pointI.getY() / ((pointI.getX() - pointJ.getX()) * (-pointI.getY() + pointN.getY()));
+    b[4] = 0.0;
+    b[5] = pointI.getY() / ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointN.getY()));
+
+    c[0] = (-pointI.getX() * (pointI.getY() + pointN.getY()) + pointJ.getX() * (pointM.getY() + pointN.getY())) /
+           ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointM.getY()) * (pointI.getY() - pointN.getY()));
+    c[1] = pointI.getX() / ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointN.getY()));
+    c[2] = 0.0;
+    c[3] = pointI.getX() / ((pointI.getX() - pointJ.getX()) * (-pointI.getY() + pointN.getY()));
+    c[4] = (pointI.getY() + pointN.getY()) / ((pointI.getY() - pointM.getY()) * (pointM.getY() - pointN.getY()));
+    c[5] = (-pointJ.getX() * (pointI.getY() + pointM.getY()) + pointI.getX() * (pointI.getY() + pointN.getY())) /
+           ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointN.getY()) * (-pointM.getY() + pointN.getY()));
+
+    d[0] = 1.0 / ((pointI.getX() - pointJ.getX()) * (pointI.getX() - pointK.getX()));
+    d[1] = 1.0 / ((-pointI.getX() + pointJ.getX()) * (pointJ.getX() - pointK.getX()));
+    d[2] = 1.0 / ((pointI.getX() - pointK.getX()) * (pointJ.getX() - pointK.getX()));
+    d[3] = 0.0;
+    d[4] = 0.0;
+    d[5] = 0.0;
+
+    e[0] = 1.0 / ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointN.getY()));
+    e[1] = 1.0 / ((-pointI.getX() + pointJ.getX()) * (pointI.getY() - pointN.getY()));
+    e[2] = 0.0;
+    e[3] = 1.0 / ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointN.getY()));
+    e[4] = 0.0;
+    e[5] = 1.0 / ((-pointI.getX() + pointJ.getX()) * (pointI.getY() - pointN.getY()));
+
+    f[0] = 1.0 / ((pointI.getY() - pointM.getY()) * (pointI.getY() - pointN.getY()));
+    f[1] = 0.0;
+    f[2] = 0.0;
+    f[3] = 0.0;
+    f[4] = 1.0 / ((-pointI.getY() + pointM.getY()) * (pointM.getY() - pointN.getY()));
+    f[5] = 1.0 / ((pointI.getY() - pointN.getY()) * (pointM.getY() - pointN.getY()));
+
+    double valR1, valR2, valR3, valR4, valR5;
+    for (int i = 0; i < 6; i++)
+        for (int j = 0; j < 6; j++)
+        {
+            valR1 = c[j] * (c[i] * c1 + f[i] * c3 + e[i] * c13);
+            valR2 = e[j] * (b[i] * c5 + d[i] * c8 + f[i] * c9 + c[i] * c14 + e[i] * c18);
+            valR3 = f[j] * (c[i] * c4 + f[i] * c7 + e[i] * c11);
+            valR4 = b[j] * (b[i] * c2 + e[i] * c6 + d[i] * c15);
+            valR5 = d[j] * (e[i] * c10 + b[i] * c16 + d[i] * c19);
+            localMatrix.setElement(i, j, valR1 + valR2 + valR3 + valR4 + valR5);
+        }
+
+    /*for (int i = 0; i < 6; i++)
+        std::cout << a[i] << " ";
+    std::cout << std::endl;
+
+    for (int i = 0; i < 6; i++)
+        std::cout << b[i] << " ";
+    std::cout << std::endl;
+
+    for (int i = 0; i < 6; i++)
+        std::cout << c[i] << " ";
+    std::cout << std::endl;
+
+    for (int i = 0; i < 6; i++)
+        std::cout << d[i] << " ";
+    std::cout << std::endl;
+
+    for (int i = 0; i < 6; i++)
+        std::cout << e[i] << " ";
+    std::cout << std::endl;
+
+    for (int i = 0; i < 6; i++)
+        std::cout << f[i] << " ";
+    std::cout << std::endl;*/
+
+    //std::cout << s1 << " " << s2 << " " << s3 << " " << s4 << " " << s5 << " " << s6 << " " << s7 << " " << s8 << std::endl;
+    std::cout << c1 << " " << c2 << " " << c3 << " " << c4 << " " << c5 << " " << c6 << " " << c7 << " " << c8 << std::endl;
+    std::cout << c9 << " " << c10 << " " << c11 << " "
+              << " " << c13 << " " << c14 << " " << c15 << " " << c16 << std::endl;
+    std::cout << c18 << " " << c19 << std::endl;
+
+    double t;
+    //проверить там где в знаменателе 12
+    for (int i = 0; i < 6; i++)
+    {
+        t = -R6 * (a[i] * k1 * s2 + c[i] * k2 * s2 + b[i] * k1 * k2 * s2 + 0.5 * e[i] * k2 * k2 * s2 +
+                   d[i] * k1 * k2 * k2 * s2 + c[i] * k1 * s3 + 0.5 * b[i] * k1 * k1 * s3 +
+                   f[i] * k2 * s3 + e[i] * k1 * k2 * s3 + d[i] * k1 * k1 * k2 * s3 +
+                   f[i] * k1 * s4 + 0.5 * e[i] * k1 * k1 * s4 + d[i] * k1 * k1 * k1 * s4 / 3.0 +
+                   a[i] * s1 * (k2 - zi) - c[i] * s2 * zi - f[i] * s3 * zi - 0.5 * e[i] * s2 * zi * zi +
+                   0.5 * b[i] * s1 * (k2 * k2 - zi * zi) + d[i] * s1 * (k2 * k2 * k2 - zi * zi * zi) / 3.0);
+
+        std::cout << t << std::endl;
+        localRightPart.setElement(i, t);
+    }
 }
 
 void createLocalContributionMatrixForQuardaticTriangleBottom(TriangleContributionMatrixSecondOrder localMatrix,
@@ -104,6 +349,232 @@ void createLocalContributionMatrixForQuardaticTriangleBottom(TriangleContributio
                                                              TriangleRightPartSecondOrder localRightPart,
                                                              SystemParameters &systemParameters)
 {
+    double hMin = systemParameters.hMin;
+    double k = systemParameters.k;
+
+    double k1 = (pointM.getX() - pointK.getX()) / (pointM.getY() - pointK.getY());
+    double k2 = pointK.getX() - pointK.getY() * ((pointM.getX() - pointK.getX()) / (pointM.getY() - pointK.getY()));
+
+    double A1 = pow(hMin, 3.0);
+    double A2 = 3.0 * pow(hMin, 2.0) * k;
+    double A3 = 3.0 * hMin * pow(k, 2.0);
+    double A4 = pow(k, 3.0);
+
+    double s1 = (1.0 / 1.0) * (pointI.getY() - pointM.getY());
+    double s2 = (1.0 / 2.0) * (pow(pointI.getY(), 2.0) - pow(pointM.getY(), 2.0));
+    double s3 = (1.0 / 3.0) * (pow(pointI.getY(), 3.0) - pow(pointM.getY(), 3.0));
+    double s4 = (1.0 / 4.0) * (pow(pointI.getY(), 4.0) - pow(pointM.getY(), 4.0));
+    double s5 = (1.0 / 5.0) * (pow(pointI.getY(), 5.0) - pow(pointM.getY(), 5.0));
+    double s6 = (1.0 / 6.0) * (pow(pointI.getY(), 6.0) - pow(pointM.getY(), 6.0));
+    double s7 = (1.0 / 7.0) * (pow(pointI.getY(), 7.0) - pow(pointM.getY(), 7.0));
+    double s8 = (1.0 / 8.0) * (pow(pointI.getY(), 8.0) - pow(pointM.getY(), 8.0));
+
+    double zi = pointI.getX();
+
+    //clR1
+    double c1 = A1 * k1 * s2 + A2 * k2 * s2 + A2 * k1 * s3 + A3 * k2 * s3 + A3 * k1 * s4 + A4 * k2 * s4 + A4 * k1 * s5 +
+                A1 * s1 * (k2 - zi) - A2 * s2 * zi - A3 * s3 * zi - A4 * s4 * zi;
+
+    //blR4
+    double c2 = A1 * k1 * s2 + A2 * k2 * s2 + A2 * k1 * s3 + A3 * k2 * s3 + A3 * k1 * s4 + A4 * k2 * s4 + A4 * k1 * s5 +
+                A1 * s1 * (k2 - zi) - A2 * s2 * zi - A3 * s3 * zi - A4 * s4 * zi;
+
+    //flR1
+    double c3 = 2.0 * A1 * k2 * s2 + 2 * A1 * k1 * s3 + 2 * A2 * k2 * s3 + 2 * A2 * k1 * s4 + 2 * A3 * k2 * s4 + 2 * A3 * k1 * s5 +
+                2 * A4 * k2 * s5 + 2 * A4 * k1 * s6 - 2 * A1 * s2 * zi - 2 * A2 * s3 * zi - 2 * A3 * s4 * zi - 2 * A4 * s5 * zi;
+
+    //clR3
+    double c4 = 2 * A1 * k2 * s2 + 2 * A1 * k1 * s3 + 2 * A2 * k2 * s3 + 2 * A2 * k1 * s4 +
+                2 * A3 * k2 * s4 + 2 * A3 * k1 * s5 + 2 * A4 * k2 * s5 + 2 * A4 * k1 * s6 -
+                2 * A1 * s2 * zi - 2 * A2 * s3 * zi - 2 * A3 * s4 * zi - 2 * A4 * s5 * zi;
+
+    //blR2
+    double c5 = A1 * k2 * s2 + A1 * k1 * s3 + A2 * k2 * s3 + A2 * k1 * s4 + A3 * k2 * s4 +
+                A3 * k1 * s5 + A4 * k2 * s5 + A4 * k1 * s6 - A1 * s2 * zi - A2 * s3 * zi - A3 * s4 * zi - A4 * s5 * zi;
+
+    //elR4
+    double c6 = A1 * k2 * s2 + A1 * k1 * s3 + A2 * k2 * s3 + A2 * k1 * s4 + A3 * k2 * s4 + A3 * k1 * s5 +
+                A4 * k2 * s5 + A4 * k1 * s6 - A1 * s2 * zi - A2 * s3 * zi - A3 * s4 * zi - A4 * s5 * zi;
+
+    //flR3
+    double c7 = 4 * A1 * k2 * s3 + 4 * A1 * k1 * s4 + 4 * A2 * k2 * s4 + 4 * A2 * k1 * s5 +
+                4 * A3 * k2 * s5 + 4 * A3 * k1 * s6 + 4 * A4 * k2 * s6 + 4 * A4 * k1 * s7 -
+                4 * A1 * s3 * zi - 4 * A2 * s4 * zi - 4 * A3 * s5 * zi - 4 * A4 * s6 * zi;
+
+    //dlR2
+    double c8 = A1 * k2 * k2 * s2 + 2 * A1 * k1 * k2 * s3 + A2 * k2 * k2 * s3 + A1 * k1 * k1 * s4 + 2 * A2 * k1 * k2 * s4 +
+                A3 * k2 * k2 * s4 + A2 * k1 * k1 * s5 + 2 * A3 * k1 * k2 * s5 + A4 * k2 * k2 * s5 + A3 * k1 * k1 * s6 +
+                2 * A4 * k1 * k2 * s6 + A4 * k1 * k1 * s7 - A1 * s2 * zi * zi - A2 * s3 * zi * zi -
+                A3 * s4 * zi * zi - A4 * s5 * zi * zi;
+
+    //flR2
+    double c9 = A1 * k2 * k2 * s2 + 2 * A1 * k1 * k2 * s3 + A2 * k2 * k2 * s3 +
+                A1 * k1 * k1 * s4 + 2 * A2 * k1 * k2 * s4 + A3 * k2 * k2 * s4 +
+                A2 * k1 * k1 * s5 + 2 * A3 * k1 * k2 * s5 + A4 * k2 * k2 * s5 +
+                A3 * k1 * k1 * s6 + 2 * A4 * k1 * k2 * s6 + A4 * k1 * k1 * s7 -
+                A1 * s2 * zi * zi - A2 * s3 * zi * zi - A3 * s4 * zi * zi - A4 * s5 * zi * zi;
+
+    //elR5
+    double c10 = A1 * k2 * k2 * s2 + 2 * A1 * k1 * k2 * s3 + A2 * k2 * k2 * s3 +
+                 A1 * k1 * k1 * s4 + 2 * A2 * k1 * k2 * s4 + A3 * k2 * k2 * s4 +
+                 A2 * k1 * k1 * s5 + 2 * A3 * k1 * k2 * s5 + A4 * k2 * k2 * s5 +
+                 A3 * k1 * k1 * s6 + 2 * A4 * k1 * k2 * s6 + A4 * k1 * k1 * s7 -
+                 A1 * s2 * zi * zi - A2 * s3 * zi * zi - A3 * s4 * zi * zi - A4 * s5 * zi * zi;
+
+    //elR3
+    double c11 = A1 * k2 * k2 * s2 + 2 * A1 * k1 * k2 * s3 + A2 * k2 * k2 * s3 +
+                 A1 * k1 * k1 * s4 + 2 * A2 * k1 * k2 * s4 + A3 * k2 * k2 * s4 +
+                 A2 * k1 * k1 * s5 + 2 * A3 * k1 * k2 * s5 + A4 * k2 * k2 * s5 +
+                 A3 * k1 * k1 * s6 + 2 * A4 * k1 * k2 * s6 + A4 * k1 * k1 * s7 -
+                 A1 * s2 * zi * zi - A2 * s3 * zi * zi - A3 * s4 * zi * zi - A4 * s5 * zi * zi;
+
+    //elR1
+    double c13 = A1 * k1 * k2 * s2 + 0.5 * A2 * k2 * k2 * s2 + 0.5 * A1 * k1 * k1 * s3 +
+                 A2 * k1 * k2 * s3 + 0.5 * A3 * k2 * k2 * s3 + 0.5 * A2 * k1 * k1 * s4 +
+                 A3 * k1 * k2 * s4 + 0.5 * A4 * k2 * k2 * s4 + 0.5 * A3 * k1 * k1 * s5 +
+                 A4 * k1 * k2 * s5 + 0.5 * A4 * k1 * k1 * s6 - 0.5 * A2 * s2 * zi * zi -
+                 0.5 * A3 * s3 * zi * zi - 0.5 * A4 * s4 * zi * zi + 0.5 * A1 * s1 * (k2 * k2 - zi * zi);
+
+    //clR2
+    double c14 = A1 * k1 * k2 * s2 + 0.5 * A2 * k2 * k2 * s2 + 0.5 * A1 * k1 * k1 * s3 +
+                 A2 * k1 * k2 * s3 + 0.5 * A3 * k2 * k2 * s3 + 0.5 * A2 * k1 * k1 * s4 +
+                 A3 * k1 * k2 * s4 + 0.5 * A4 * k2 * k2 * s4 + 0.5 * A3 * k1 * k1 * s5 +
+                 A4 * k1 * k2 * s5 + 0.5 * A4 * k1 * k1 * s6 - 0.5 * A2 * s2 * zi * zi -
+                 0.5 * A3 * s3 * zi * zi - 0.5 * A4 * s4 * zi * zi + 0.5 * A1 * s1 * (k2 * k2 - zi * zi);
+
+    //dlR4
+    double c15 = 2 * A1 * k1 * k2 * s2 + A2 * k2 * k2 * s2 + A1 * k1 * k1 * s3 + 2 * A2 * k1 * k2 * s3 +
+                 A3 * k2 * k2 * s3 + A2 * k1 * k1 * s4 + 2 * A3 * k1 * k2 * s4 +
+                 A4 * k2 * k2 * s4 + A3 * k1 * k1 * s5 + 2 * A4 * k1 * k2 * s5 +
+                 A4 * k1 * k1 * s6 - A2 * s2 * zi * zi - A3 * s3 * zi * zi -
+                 A4 * s4 * zi * zi + A1 * s1 * (k2 * k2 - zi * zi);
+
+    //blR5
+    double c16 = 2 * A1 * k1 * k2 * s2 + A2 * k2 * k2 * s2 + A1 * k1 * k1 * s3 + 2 * A2 * k1 * k2 * s3 +
+                 A3 * k2 * k2 * s3 + A2 * k1 * k1 * s4 + 2 * A3 * k1 * k2 * s4 +
+                 A4 * k2 * k2 * s4 + A3 * k1 * k1 * s5 + 2 * A4 * k1 * k2 * s5 +
+                 A4 * k1 * k1 * s6 - A2 * s2 * zi * zi - A3 * s3 * zi * zi -
+                 A4 * s4 * zi * zi + A1 * s1 * (k2 * k2 - zi * zi);
+
+    //elR2
+    double c18 = A1 * k1 * k2 * k2 * s2 + A2 * k2 * k2 * k2 * s2 / 3.0 + A1 * k2 * s3 +
+                 A1 * k1 * k1 * k2 * s3 + A2 * k1 * k2 * k2 * s3 + A3 * k2 * k2 * k2 * s3 / 3.0 +
+                 A1 * k1 * s4 + A1 * k1 * k1 * k1 * s4 / 3.0 + A2 * k2 * s4 +
+                 A2 * k1 * k1 * k2 * s4 + A3 * k1 * k2 * k2 * s4 + A4 * k2 * k2 * k2 * s4 / 3.0 +
+                 A2 * k1 * s5 + A3 * k2 * s5 +
+                 k1 * (A2 * k1 * k1 + 3 * A3 * k1 * k2 + 3 * A4 * k2 * k2) * s5 / 3.0 + A3 * k1 * s6 +
+                 A4 * k2 * s6 + k1 * k1 * (A3 * k1 + 3 * A4 * k2) * s6 / 3.0 + A4 * k1 * s7 +
+                 A4 * k1 * k1 * k1 * s7 / 3.0 - A1 * s3 * zi - A2 * s4 * zi - A3 * s5 * zi -
+                 A4 * s6 * zi - A2 * s2 * zi * zi * zi / 3.0 - A3 * s3 * zi * zi * zi / 3.0 -
+                 A4 * s4 * zi * zi * zi / 3.0 + A1 * s1 * (k2 * k2 * k2 - zi * zi * zi) / 3.0;
+
+    //dlR5 ???
+    double c19 = 4 * A1 * k1 * k2 * k2 * s2 + 4 * A2 * k2 * k2 * k2 * s2 / 3.0 + 4 * A1 * k1 * k1 * k2 * s3 +
+                 4 * A2 * k1 * k2 * k2 * s3 + 4 * A3 * k2 * k2 * k2 * s3 / 3.0 + 4 * A1 * k1 * k1 * k1 * s4 / 3.0 +
+                 4 * A2 * k1 * k1 * k2 * s4 + 4 * A3 * k1 * k2 * k2 * s4 + 4 * A4 * k2 * k2 * k2 * s4 / 3.0 +
+                 4 * k1 * (A2 * k1 * k1 + 3 * A3 * k1 * k2 + 3 * A4 * k2 * k2) * s5 / 3.0 +
+                 4 * k1 * k1 * (A3 * k1 + 3 * A4 * k2) * s6 / 3.0 + 4 * A4 * k1 * k1 * k1 * s7 / 3.0 -
+                 4 * A2 * s2 * zi * zi * zi / 3.0 - 4 * A3 * s3 * zi * zi * zi / 3.0 - 4 * A4 * s4 * zi * zi * zi / 3.0 +
+                 4.0 * A1 * s1 * (k2 * k2 * k2 - zi * zi * zi) / 3.0;
+
+    c1 *= -1;
+    c2 *= -1;
+    c3 *= -1;
+    c4 *= -1;
+    c5 *= -1;
+    c6 *= -1;
+    c7 *= -1;
+    c8 *= -1;
+    c9 *= -1;
+    c10 *= -1;
+    c11 *= -1;
+    c13 *= -1;
+    c14 *= -1;
+    c15 *= -1;
+    c16 *= -1;
+    c18 *= -1;
+    c19 *= -1;
+
+    double R6 = 6.0 * systemParameters.mu * systemParameters.L * systemParameters.U * k /
+                (systemParameters.Hn * systemParameters.Hn * systemParameters.pMin);
+
+    double *a = new double[6];
+    double *b = new double[6];
+    double *c = new double[6];
+    double *d = new double[6];
+    double *e = new double[6];
+    double *f = new double[6];
+
+    a[0] = (pow(pointI.getX(), 2.0) * pointI.getY() * pointN.getY() +
+            pointJ.getX() * pointK.getX() * pointM.getY() * pointN.getY() +
+            pointI.getX() * pointI.getY() * (pointJ.getX() * (pointI.getY() - pointM.getY()) - pointN.getY() * (pointJ.getX() + pointK.getX()))) /
+           ((pointI.getX() - pointJ.getX()) * (pointI.getX() - pointK.getX()) * (pointI.getY() - pointM.getY()) * (pointI.getY() - pointN.getY()));
+    a[1] = (pointI.getX() * (-pointJ.getX() * pointI.getY() + pointK.getX() * pointN.getY())) /
+           ((pointI.getX() - pointJ.getX()) * (pointJ.getX() - pointK.getX()) * (pointI.getY() - pointN.getY()));
+    a[2] = (pointI.getX() * pointJ.getX()) / ((pointI.getX() - pointK.getX()) * (pointJ.getX() - pointK.getX()));
+    a[3] = (pointI.getX() * pointI.getY()) / ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointN.getY()));
+    a[4] = (pointI.getY() * pointN.getY()) / ((pointI.getY() - pointM.getY()) * (-pointM.getY() + pointN.getY()));
+    a[5] = (pointI.getY() * (pointJ.getX() * pointM.getY() - pointI.getX() * pointN.getY())) /
+           ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointN.getY()) * (-pointM.getY() + pointN.getY()));
+
+    b[0] = (-pointI.getY() * (pointI.getX() + pointJ.getX()) + pointN.getY() * (pointJ.getX() + pointK.getX())) /
+           ((pointI.getX() - pointJ.getX()) * (pointI.getX() - pointK.getX()) * (pointI.getY() - pointN.getY()));
+    b[1] = (pointI.getY() * (pointI.getX() + pointJ.getX()) - pointN.getY() * (pointI.getX() + pointK.getX())) /
+           ((pointI.getX() - pointJ.getX()) * (pointJ.getX() - pointK.getX()) * (pointI.getY() - pointN.getY()));
+    b[2] = (pointI.getX() + pointJ.getX()) / ((pointI.getX() - pointK.getX()) * (-pointJ.getX() + pointK.getX()));
+    b[3] = pointI.getY() / ((pointI.getX() - pointJ.getX()) * (-pointI.getY() + pointN.getY()));
+    b[4] = 0.0;
+    b[5] = pointI.getY() / ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointN.getY()));
+
+    c[0] = (-pointI.getX() * (pointI.getY() + pointN.getY()) + pointJ.getX() * (pointM.getY() + pointN.getY())) /
+           ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointM.getY()) * (pointI.getY() - pointN.getY()));
+    c[1] = (pointI.getX()) / ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointN.getY()));
+    c[2] = 0.0;
+    c[3] = pointI.getX() / ((pointI.getX() - pointJ.getX()) * (-pointI.getY() + pointN.getY()));
+    c[4] = (pointI.getY() + pointN.getY()) / ((pointI.getY() - pointM.getY()) * (pointM.getY() - pointN.getY()));
+    c[5] = (-pointJ.getX() * (pointI.getY() + pointM.getY()) + pointI.getX() * (pointI.getY() + pointN.getY())) /
+           ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointN.getY()) * (-pointM.getY() + pointN.getY()));
+
+    d[0] = 1.0 / ((pointI.getX() - pointJ.getX()) * (pointI.getX() - pointK.getX()));
+    d[1] = 1.0 / ((-pointI.getX() + pointJ.getX()) * (pointJ.getX() - pointK.getX()));
+    d[2] = 1.0 / ((pointI.getX() - pointK.getX()) * (pointJ.getX() - pointK.getX()));
+    d[3] = 0.0;
+    d[4] = 0.0;
+    d[5] = 0.0;
+
+    e[0] = 1.0 / ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointN.getY()));
+    e[1] = 1.0 / ((-pointI.getX() + pointJ.getX()) * (pointI.getY() - pointN.getY()));
+    e[2] = 0.0;
+    e[3] = 1.0 / ((pointI.getX() - pointJ.getX()) * (pointI.getY() * pointN.getY()));
+    e[4] = 0.0;
+    e[5] = 1.0 / ((-pointI.getX() + pointJ.getX()) * (pointI.getY() - pointN.getY()));
+
+    f[0] = 1.0 / ((pointI.getY() - pointM.getY()) * (pointI.getY() - pointN.getY()));
+    f[1] = 0.0;
+    f[2] = 0.0;
+    f[3] = 0.0;
+    f[4] = 1.0 / ((-pointI.getY() + pointM.getY()) * (pointM.getY() - pointN.getY()));
+    f[5] = 1.0 / ((pointI.getY() - pointN.getY()) * (pointM.getY() - pointN.getY()));
+
+    double valR1, valR2, valR3, valR4, valR5;
+    for (int i = 0; i < 6; i++)
+        for (int j = 0; j < 6; j++)
+        {
+            valR1 = c[j] * (c[i] * c1 + f[i] * c3 + e[i] * c13);
+            valR2 = e[j] * (b[i] * c5 + d[i] * c8 + f[i] * c9 + c[i] * c14 + e[i] * c18);
+            valR3 = f[j] * (c[i] * c4 + f[i] * c7 + e[i] * c11);
+            valR4 = b[j] * (b[i] * c2 + e[i] * c6 + d[i] * c15);
+            valR5 = d[j] * (e[i] * c10 + b[i] * c16 + d[i] * c19);
+            localMatrix.setElement(i, j, valR1 + valR2 + valR3 + valR4 + valR5);
+        }
+
+    for (int i = 0; i < 6; i++)
+        localRightPart.setElement(i, R6 * (a[i] * k1 * s2 + c[i] * k2 * s2 + b[i] * k1 * k2 * s2 + 0.5 * e[i] * k2 * k2 * s2 +
+                                           d[i] * k1 * k2 * k2 * s2 + c[i] * k1 * s3 + 0.5 * b[i] * k1 * k1 * s3 +
+                                           f[i] * k2 * s3 + e[i] * k1 * k2 * s3 + d[i] * k1 * k1 * k2 * s3 +
+                                           f[i] * k1 * s4 + 0.5 * e[i] * k1 * k1 * s4 + d[i] * k1 * k1 * k1 * s4 / 3.0 +
+                                           a[i] * s1 * (k2 - zi) - c[i] * s2 * zi - f[i] * s3 * zi - 0.5 * e[i] * s2 * zi * zi +
+                                           0.5 * b[i] * s1 * (k2 * k2 - zi * zi) + d[i] * s1 * (k2 * k2 * k2 - zi * zi * zi) / 3.0));
 }
 
 void createGlobalPressureMatrixQuadraticTriangles(double **&matrixPressure,

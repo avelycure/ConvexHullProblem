@@ -9,6 +9,7 @@
 #include "matrix_creation/triangle/FEMTriangles.hpp"
 #include "common/classes/system/SystemParameters.hpp"
 #include "matrix_creation/rectangle/FEMRectangles.hpp"
+#include "matrix_creation/border_conditions/BorderConditions.hpp"
 #include "common/classes/contribution_matrix/triangle/TriangleRightPart.hpp"
 #include "common/classes/contribution_matrix/rectangle/RectangleRightPart.hpp"
 #include "common/classes/contribution_matrix/triangle/TriangleContributionMatrix.hpp"

@@ -6,6 +6,7 @@
 #include "../../common/init/InitFuncs.hpp"
 #include "../../common/classes/mesh/Point.hpp"
 #include "../../common/classes/system/SystemParameters.hpp"
+#include "../border_conditions/BorderConditions.hpp"
 #include "../../common/classes/contribution_matrix/triangle/TriangleRightPart.hpp"
 #include "../../common/classes/contribution_matrix/triangle/TriangleContributionMatrix.hpp"
 #include "../../common/classes/contribution_matrix/triangle/TriangleRightPartSecondOrder.hpp"
@@ -25,12 +26,6 @@ void createLocalMatrixForEveryElementHConst(TriangleContributionMatrix *&contrib
                                             Point **&coordinateMeshParam,
                                             int n);
 
-void addBorderConditionsHConst(double **&matrixResult,
-                               int n,
-                               int MATRIX_PRESSURE_SIZE,
-                               int OTHER_BORDER,
-                               int DOWN_BORDER);
-
 void createGlobalPressureMatrixHConst(double **&matrixPressure,
                                       TriangleContributionMatrix *&contributionMatrix,
                                       int n);
@@ -38,6 +33,7 @@ void createGlobalPressureMatrixHConst(double **&matrixPressure,
 void solveWithHConst(TriangleContributionMatrix *&contributionMatrix,
                      Point **&coordinateMesh,
                      double **&matrixPressure,
+                     double *&rightPart,
                      SystemParameters &systemParameters);
 
 int createLocalContributionMatrixForHLinearTop(TriangleContributionMatrix localMatrix,
@@ -63,12 +59,6 @@ void createGlobalPressureMatrixHLinear(double **&matrixPressure,
                                        double *&rightPartParam,
                                        TriangleRightPart *&localRightPartsParam,
                                        int n);
-
-void addBorderConditionsHLinear(double **&matrixResult,
-                                double *&rightPartParam, int n,
-                                int MATRIX_PRESSURE_SIZE,
-                                int OTHER_BORDER,
-                                int DOWN_BORDER);
 
 /**
  * Right border == left border
@@ -107,7 +97,7 @@ void solveWithTrianglesSecondOrder(TriangleContributionMatrixSecondOrder *&contr
                                    double *&rightPart,
                                    SystemParameters &systemParameters);
 
-void createLocalContributionMatrixForQuardaticTriangleTop(TriangleContributionMatrixSecondOrder localMatrix,
+void createLocalContributionMatrixForQuardaticTriangle(TriangleContributionMatrixSecondOrder localMatrix,
                                                           Point pointI,
                                                           Point pointJ,
                                                           Point pointK,
@@ -116,16 +106,6 @@ void createLocalContributionMatrixForQuardaticTriangleTop(TriangleContributionMa
                                                           Point pointN,
                                                           TriangleRightPartSecondOrder localRightPart,
                                                           SystemParameters &systemParameters);
-
-void createLocalContributionMatrixForQuardaticTriangleBottom(TriangleContributionMatrixSecondOrder localMatrix,
-                                                             Point pointI,
-                                                             Point pointJ,
-                                                             Point pointK,
-                                                             Point pointL,
-                                                             Point pointM,
-                                                             Point pointN,
-                                                             TriangleRightPartSecondOrder localRightPart,
-                                                             SystemParameters &systemParameters);
 
 void addBorderConditionsQuadraticTriangles(double **&matrixResult,
                                            double *&rightPartParam,

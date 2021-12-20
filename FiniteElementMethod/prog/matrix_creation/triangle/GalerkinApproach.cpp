@@ -26,8 +26,8 @@ int solveWithHLinear(TriangleContributionMatrix *&contributionMatrix,
     createLocalMatrixForEveryElementHLinear(contributionMatrix, coordinateMesh, localRigthParts, systemParameters);
 
     createGlobalPressureMatrixHLinear(matrixPressure, contributionMatrix, rightPart, localRigthParts, systemParameters.n);
-    addBorderConditionsHLinear(matrixPressure, rightPart, systemParameters.n, MATRIX_PRESSURE_SIZE,
-                               systemParameters.LOW_BORDER, systemParameters.HIGH_BORDER);
+    addBorderConditionsOnPressureValues(matrixPressure, rightPart, systemParameters.n, MATRIX_PRESSURE_SIZE,
+                                        systemParameters.LOW_BORDER, systemParameters.HIGH_BORDER);
 
     outputPressureMatrix(matrixPressure, MATRIX_PRESSURE_SIZE);
 
@@ -139,14 +139,12 @@ int createLocalContributionMatrixForHLinearBottom(TriangleContributionMatrix loc
     }
 
     for (int i = 0; i < 3; i++)
-    {
         for (int j = 0; j < 3; j++)
         {
             valB = b[i] * b[j] * coefT1;
             valG = c[i] * c[j] * coefT1;
             localMatrix.setElement(i, j, valB + valG);
         }
-    }
 
     //creating local vector
     for (int i = 0; i < 3; i++)
@@ -226,17 +224,13 @@ int createLocalContributionMatrixForHLinearTop(TriangleContributionMatrix localM
         c[i] = c[i] / (2.0 * area);
     }
 
-    std::cout << "C: " << c[0] << " " << c[1] << " " << c[2] << std::endl;
-
     for (int i = 0; i < 3; i++)
-    {
         for (int j = 0; j < 3; j++)
         {
             valB = b[i] * b[j] * coefT1;
             valG = c[i] * c[j] * coefT1;
             localMatrix.setElement(i, j, valB + valG);
         }
-    }
 
     //creating local vector
     for (int i = 0; i < 3; i++)
@@ -256,7 +250,6 @@ void createLocalMatrixForEveryElementHLinear(TriangleContributionMatrix *&contri
 
     int finiteElementNumber = -1;
     for (int i = 0; i < n - 1; i++)
-    {
         for (int j = 0; j < n - 1; j++)
         {
             finiteElementNumber++;
@@ -274,7 +267,6 @@ void createLocalMatrixForEveryElementHLinear(TriangleContributionMatrix *&contri
                                                           rightPartParam[finiteElementNumber],
                                                           systemParameters);
         }
-    }
 }
 
 void createGlobalPressureMatrixHLinear(double **&matrixPressure,
@@ -296,13 +288,9 @@ void createGlobalPressureMatrixHLinear(double **&matrixPressure,
             /*k*/ globalNodeNumbersIJK[2] = globalNodeNumbersIJK[0] + 1;
 
             for (int iterator1 = 0; iterator1 < 3; iterator1++)
-            {
                 for (int iterator2 = 0; iterator2 < 3; iterator2++)
-                {
                     matrixPressure[globalNodeNumbersIJK[iterator1]][globalNodeNumbersIJK[iterator2]] +=
                         contributionMatrix[finiteElementNumber].matrix[iterator1][iterator2];
-                }
-            }
 
             for (int iterator1 = 0; iterator1 < 3; iterator1++)
             {
@@ -332,65 +320,6 @@ void createGlobalPressureMatrixHLinear(double **&matrixPressure,
     }
 }
 
-void addBorderConditionsHLinear(double **&matrixResult,
-                                double *&rightPartParam,
-                                int n,
-                                int MATRIX_PRESSURE_SIZE,
-                                int OTHER_BORDER,
-                                int DOWN_BORDER)
-{
-    //0 row
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-        {
-            matrixResult[i][j] = 0.0;
-        }
-        matrixResult[i][i] = 1.0;
-        rightPartParam[i] = DOWN_BORDER;
-    }
-
-    //left
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-        {
-            matrixResult[i * n][j] = 0.0;
-        }
-        matrixResult[i * n][i * n] = 1.0;
-        rightPartParam[i * n] = OTHER_BORDER;
-    }
-
-    //right
-    for (int i = 1; i <= n; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-        {
-            matrixResult[i * n - 1][j] = 0.0;
-        }
-        matrixResult[i * n - 1][i * n - 1] = 1.0;
-        rightPartParam[i * n - 1] = OTHER_BORDER;
-    }
-
-    //n row
-    for (int i = MATRIX_PRESSURE_SIZE - n; i < MATRIX_PRESSURE_SIZE; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-        {
-            matrixResult[i][j] = 0.0;
-        }
-        matrixResult[i][i] = 1.0;
-        rightPartParam[i] = OTHER_BORDER;
-    }
-
-    //displayMatrix(matrixResult, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
-
-    std::fstream myFile;
-    myFile.open("data/fem_output/rightPart.txt", std::fstream::out);
-    for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
-        myFile << rightPartParam[i] << std::endl;
-}
-
 /**
  * Right border == left border
  * */
@@ -401,8 +330,8 @@ void addBorderConditionsToLeftAndRight(double **&matrixResult,
                                        double TOP_BORDER,
                                        double BOTTOM_BORDER)
 {
-    std::cout << "Before" << std::endl;
-    displayMatrix(matrixResult, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
+    //std::cout << "Before" << std::endl;
+    //displayMatrix(matrixResult, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
 
     double *rightPart = new double[MATRIX_PRESSURE_SIZE];
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
@@ -457,10 +386,10 @@ void addBorderConditionsToLeftAndRight(double **&matrixResult,
         rightPart[i] = BOTTOM_BORDER;
     }
 
-    std::cout << "After" << std::endl;
-    displayMatrix(matrixResult, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
+    //std::cout << "After" << std::endl;
+    //displayMatrix(matrixResult, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
 
-    displayVector(rightPart, MATRIX_PRESSURE_SIZE);
+    //displayVector(rightPart, MATRIX_PRESSURE_SIZE);
 
     std::fstream myFile;
     myFile.open("data/fem_output/rightPart.txt", std::fstream::out);

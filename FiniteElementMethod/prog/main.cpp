@@ -20,7 +20,7 @@ int main()
     readSystemParameters(systemParameters, method);
 
     if (method == H_CONST)
-        solveWithHConst(contributionMatrix, coordinateMesh, matrixPressure,
+        solveWithHConst(contributionMatrix, coordinateMesh, matrixPressure, rightPart,
                         systemParameters);
 
     if (method == H_LINEAR)

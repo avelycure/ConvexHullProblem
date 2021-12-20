@@ -5,6 +5,7 @@
 #include <cmath>
 #include "../../common/init/InitFuncs.hpp"
 #include "../../common/classes/mesh/Point.hpp"
+#include "../border_conditions/BorderConditions.hpp"
 #include "../../common/classes/contribution_matrix/rectangle/RectangleContributionMatrix.hpp"
 #include "../../common/classes/contribution_matrix/rectangle/RectangleRightPart.hpp"
 #include "../../common/classes/system/SystemParameters.hpp"
@@ -35,10 +36,3 @@ void createGlobalPressureMatrixForRectangleElement(double **&matrixPressure,
                                                    double *&rightPartParam,
                                                    RectangleRightPart *&localRightPartsParam,
                                                    int n);
-
-void addBorderConditionsForRectnangleElements(double **&matrixResult,
-                                              double *&rightPartParam,
-                                              int n,
-                                              int MATRIX_PRESSURE_SIZE,
-                                              int OTHER_BORDER,
-                                              int DOWN_BORDER);

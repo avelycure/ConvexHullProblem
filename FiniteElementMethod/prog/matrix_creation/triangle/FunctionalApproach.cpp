@@ -61,71 +61,6 @@ void createLocalMatrixForEveryElementHConst(TriangleContributionMatrix *&contrib
     }
 }
 
-void addBorderConditionsHConst(double **&matrixResult,
-                               int n,
-                               int MATRIX_PRESSURE_SIZE,
-                               int LOW_BORDER,
-                               int HIGH_BORDER)
-{
-    double *rightPart = new double[MATRIX_PRESSURE_SIZE];
-
-    //left
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-            matrixResult[i * n][j] = 0.0;
-
-        matrixResult[i * n][i * n] = 1.0;
-        rightPart[i * n] = LOW_BORDER;
-    }
-
-    //right
-    for (int i = 1; i <= n; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-            matrixResult[i * n - 1][j] = 0.0;
-
-        matrixResult[i * n - 1][i * n - 1] = 1.0;
-        rightPart[i * n - 1] = LOW_BORDER;
-    }
-
-    //n row
-    for (int i = MATRIX_PRESSURE_SIZE - n; i < MATRIX_PRESSURE_SIZE; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-            matrixResult[i][j] = 0.0;
-
-        matrixResult[i][i] = 1.0;
-        rightPart[i] = LOW_BORDER;
-    }
-
-    //0 row
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-            matrixResult[i][j] = 0.0;
-
-        matrixResult[i][i] = 1.0;
-        rightPart[i] = HIGH_BORDER;
-    }
-
-    //displayMatrix(matrixResult, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
-
-    std::fstream myFile;
-    myFile.open("data/fem_output/rightPart.txt", std::fstream::out);
-    for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
-        myFile << rightPart[i] << std::endl;
-
-    std::fstream myFile2;
-    myFile2.open("data/fem_output/matrixPressureForSol.txt", std::fstream::out);
-    for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-            myFile2 << matrixResult[i][j] << " ";
-        myFile2 << std::endl;
-    }
-}
-
 void createGlobalPressureMatrixHConst(double **&matrixPressure,
                                       TriangleContributionMatrix *&contributionMatrix,
                                       int n)
@@ -169,6 +104,7 @@ void createGlobalPressureMatrixHConst(double **&matrixPressure,
 void solveWithHConst(TriangleContributionMatrix *&contributionMatrix,
                      Point **&coordinateMesh,
                      double **&matrixPressure,
+                     double *&rightPart,
                      SystemParameters &systemParameters)
 {
     const int MATRIX_PRESSURE_SIZE = systemParameters.n * systemParameters.n;
@@ -180,13 +116,17 @@ void solveWithHConst(TriangleContributionMatrix *&contributionMatrix,
             matrixPressure[i][j] = 0.0;
     initMesh(coordinateMesh, systemParameters);
 
+    initVector(rightPart, MATRIX_PRESSURE_SIZE);
+    for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
+        rightPart[i] = 0.0;
+
     initContributionMatrix(contributionMatrix, MATRIX_CONTRIBUTION_SIZE);
 
     createLocalMatrixForEveryElementHConst(contributionMatrix, coordinateMesh, systemParameters.n);
     createGlobalPressureMatrixHConst(matrixPressure, contributionMatrix, systemParameters.n);
 
-    addBorderConditionsHConst(matrixPressure, systemParameters.n, MATRIX_PRESSURE_SIZE,
-                              systemParameters.LOW_BORDER, systemParameters.HIGH_BORDER);
+    addBorderConditionsOnPressureValues(matrixPressure, rightPart, systemParameters.n, MATRIX_PRESSURE_SIZE,
+                                        systemParameters.LOW_BORDER, systemParameters.HIGH_BORDER);
 
     outputPressureMatrix(matrixPressure, MATRIX_PRESSURE_SIZE);
 }

@@ -1,11 +1,11 @@
 #include "../../main.hpp"
 
 void solveWithRectangleFiniteElements(RectangleContributionMatrix *&contributionMatrix,
-                                        RectangleRightPart *&localRigthParts,
-                                        Point **&coordinateMesh,
-                                        double **&matrixPressure,
-                                        double *&rightPart,
-                                        SystemParameters &systemParameters)
+                                      RectangleRightPart *&localRigthParts,
+                                      Point **&coordinateMesh,
+                                      double **&matrixPressure,
+                                      double *&rightPart,
+                                      SystemParameters &systemParameters)
 {
     const int MATRIX_PRESSURE_SIZE = systemParameters.n * systemParameters.n;
     const int MATRIX_CONTRIBUTION_SIZE = (systemParameters.n - 1) * (systemParameters.n - 1);
@@ -24,25 +24,30 @@ void solveWithRectangleFiniteElements(RectangleContributionMatrix *&contribution
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
         rightPart[i] = 0.0;
 
-    createLocalMatrixForEveryRectangleElement(contributionMatrix, coordinateMesh, localRigthParts, systemParameters);
+    createLocalMatrixForEveryRectangleElement(contributionMatrix,
+                                              coordinateMesh,
+                                              localRigthParts,
+                                              systemParameters);
 
-    createGlobalPressureMatrixForRectangleElement(matrixPressure, contributionMatrix, rightPart, localRigthParts, systemParameters.n);
-    addBorderConditionsForRectnangleElements(matrixPressure, rightPart, systemParameters.n, MATRIX_PRESSURE_SIZE,
-                                               systemParameters.LOW_BORDER, systemParameters.HIGH_BORDER);
-    //исправлял гу
-    //double h = systemParameters.borderLength / (systemParameters.n - 1);
-
-    //addBorderConditionsForRectnangleElementsToLeftAndRight(
-    //    matrixPressure, systemParameters.n, fabs(coordinateMesh[0]->getX() - coordinateMesh[1]->getX()), MATRIX_PRESSURE_SIZE,
-    //   systemParameters.LOW_BORDER, systemParameters.HIGH_BORDER);
+    createGlobalPressureMatrixForRectangleElement(matrixPressure,
+                                                  contributionMatrix,
+                                                  rightPart,
+                                                  localRigthParts,
+                                                  systemParameters.n);
+    addBorderConditionsOnPressureValues(matrixPressure,
+                                        rightPart,
+                                        systemParameters.n,
+                                        MATRIX_PRESSURE_SIZE,
+                                        systemParameters.LOW_BORDER,
+                                        systemParameters.HIGH_BORDER);
 
     outputPressureMatrix(matrixPressure, MATRIX_PRESSURE_SIZE);
 }
 
 void createLocalMatrixForEveryRectangleElement(RectangleContributionMatrix *&contributionMatrixParam,
-                                                 Point **&coordinateMeshParam,
-                                                 RectangleRightPart *&rightPartParam,
-                                                 SystemParameters &systemParameters)
+                                               Point **&coordinateMeshParam,
+                                               RectangleRightPart *&rightPartParam,
+                                               SystemParameters &systemParameters)
 {
     int n = systemParameters.n;
     int element = 0;
@@ -51,23 +56,23 @@ void createLocalMatrixForEveryRectangleElement(RectangleContributionMatrix *&con
         for (int j = 0; j < n - 1; j++)
         {
             createLocalContributionMatrixForRectangleElement(contributionMatrixParam[element],
-                                                               coordinateMeshParam[i][j],
-                                                               coordinateMeshParam[i + 1][j],
-                                                               coordinateMeshParam[i + 1][j + 1],
-                                                               coordinateMeshParam[i][j + 1],
-                                                               rightPartParam[element],
-                                                               systemParameters);
+                                                             coordinateMeshParam[i][j],
+                                                             coordinateMeshParam[i + 1][j],
+                                                             coordinateMeshParam[i + 1][j + 1],
+                                                             coordinateMeshParam[i][j + 1],
+                                                             rightPartParam[element],
+                                                             systemParameters);
             element++;
         }
 }
 
 void createLocalContributionMatrixForRectangleElement(RectangleContributionMatrix &localMatrix,
-                                                        Point pointI,
-                                                        Point pointJ,
-                                                        Point pointK,
-                                                        Point pointM,
-                                                        RectangleRightPart &localRightPart,
-                                                        SystemParameters &systemParameters)
+                                                      Point pointI,
+                                                      Point pointJ,
+                                                      Point pointK,
+                                                      Point pointM,
+                                                      RectangleRightPart &localRightPart,
+                                                      SystemParameters &systemParameters)
 {
     double hMin = systemParameters.hMin;
     double k = systemParameters.k;
@@ -156,10 +161,10 @@ void createLocalContributionMatrixForRectangleElement(RectangleContributionMatri
 }
 
 void createGlobalPressureMatrixForRectangleElement(double **&matrixPressure,
-                                                     RectangleContributionMatrix *&contributionMatrix,
-                                                     double *&rightPartParam,
-                                                     RectangleRightPart *&localRightPartsParam,
-                                                     int n)
+                                                   RectangleContributionMatrix *&contributionMatrix,
+                                                   double *&rightPartParam,
+                                                   RectangleRightPart *&localRightPartsParam,
+                                                   int n)
 {
     int *globalNodeNumbersIJK = new int[4];
     int finiteElementNumber = 0;
@@ -183,63 +188,4 @@ void createGlobalPressureMatrixForRectangleElement(double **&matrixPressure,
 
             finiteElementNumber++;
         }
-}
-
-void addBorderConditionsForRectnangleElements(double **&matrixResult,
-                                                double *&rightPartParam,
-                                                int n,
-                                                int MATRIX_PRESSURE_SIZE,
-                                                int OTHER_BORDER,
-                                                int DOWN_BORDER)
-{
-    //displayMatrix(matrixResult, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
-
-    //0 row
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-        {
-            matrixResult[i][j] = 0.0;
-        }
-        matrixResult[i][i] = 1.0;
-        rightPartParam[i] = DOWN_BORDER;
-    }
-
-    //left
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-        {
-            matrixResult[i * n][j] = 0.0;
-        }
-        matrixResult[i * n][i * n] = 1.0;
-        rightPartParam[i * n] = OTHER_BORDER;
-    }
-
-    //right
-    for (int i = 1; i <= n; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-        {
-            matrixResult[i * n - 1][j] = 0.0;
-        }
-        matrixResult[i * n - 1][i * n - 1] = 1.0;
-        rightPartParam[i * n - 1] = OTHER_BORDER;
-    }
-
-    //n row
-    for (int i = MATRIX_PRESSURE_SIZE - n; i < MATRIX_PRESSURE_SIZE; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-        {
-            matrixResult[i][j] = 0.0;
-        }
-        matrixResult[i][i] = 1.0;
-        rightPartParam[i] = OTHER_BORDER;
-    }
-
-    std::fstream myFile;
-    myFile.open("data/fem_output/rightPart.txt", std::fstream::out);
-    for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
-        myFile << rightPartParam[i] << std::endl;
 }

@@ -1,4 +1,4 @@
-#include "../../main.hpp"
+#include "FEMRectanglesFirstOrder.hpp"
 
 void solveWithRectangleFiniteElements(RectangleContributionMatrix *&contributionMatrix,
                                       RectangleRightPart *&localRigthParts,

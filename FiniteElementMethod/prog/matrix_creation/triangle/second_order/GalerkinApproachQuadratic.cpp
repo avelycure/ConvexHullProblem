@@ -1,4 +1,4 @@
-#include "FEMTriangles.hpp"
+#include "FEMTrianglesSecondOrder.hpp"
 
 void solveWithTrianglesSecondOrder(TriangleContributionMatrixSecondOrder *&contributionMatrix,
                                    TriangleRightPartSecondOrder *&localRigthParts,

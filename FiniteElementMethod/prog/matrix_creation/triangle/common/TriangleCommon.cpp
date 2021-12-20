@@ -1,4 +1,4 @@
-#include "FEMTriangles.hpp"
+#include "TriangleCommon.hpp"
 
 /**
  * Calculate area of the triangle using coordinates of its nodes

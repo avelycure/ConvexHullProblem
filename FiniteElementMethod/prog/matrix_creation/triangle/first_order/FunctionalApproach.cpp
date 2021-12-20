@@ -1,4 +1,4 @@
-#include "FEMTriangles.hpp"
+#include "FEMTrianglesFirstOrder.hpp"
 
 void createLocalContributionMatrixForHConst(TriangleContributionMatrix localMatrix,
                                             Point pointI,
@@ -28,14 +28,12 @@ void createLocalContributionMatrixForHConst(TriangleContributionMatrix localMatr
     }
 
     for (int i = 0; i < 3; i++)
-    {
         for (int j = 0; j < 3; j++)
         {
             valB = lambdaX * area * b[i] * b[j];
             valG = lambdaY * area * c[i] * c[j];
             localMatrix.setElement(i, j, valB + valG);
         }
-    }
 }
 
 void createLocalMatrixForEveryElementHConst(TriangleContributionMatrix *&contributionMatrixParam,
@@ -129,31 +127,4 @@ void solveWithHConst(TriangleContributionMatrix *&contributionMatrix,
                                         systemParameters.LOW_BORDER, systemParameters.HIGH_BORDER);
 
     outputPressureMatrix(matrixPressure, MATRIX_PRESSURE_SIZE);
-}
-
-int solveWithHConstBCLR(TriangleContributionMatrix *&contributionMatrix,
-                        Point **&coordinateMesh,
-                        double **&matrixPressure,
-                        SystemParameters &systemParameters)
-{
-    const int MATRIX_PRESSURE_SIZE = systemParameters.n * systemParameters.n;
-    const int MATRIX_CONTRIBUTION_SIZE = (systemParameters.n - 1) * (systemParameters.n - 1) * 2;
-
-    initMatrix(matrixPressure, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
-    for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-            matrixPressure[i][j] = 0.0;
-
-    initMesh(coordinateMesh, systemParameters);
-
-    initContributionMatrix(contributionMatrix, MATRIX_CONTRIBUTION_SIZE);
-
-    createLocalMatrixForEveryElementHConst(contributionMatrix, coordinateMesh, systemParameters.n);
-    createGlobalPressureMatrixHConst(matrixPressure, contributionMatrix, systemParameters.n);
-
-    addBorderConditionsToLeftAndRight(matrixPressure, systemParameters.n, 0.0, MATRIX_PRESSURE_SIZE,
-                                      systemParameters.LOW_BORDER, systemParameters.HIGH_BORDER);
-
-    outputPressureMatrix(matrixPressure, MATRIX_PRESSURE_SIZE);
-    return 0;
 }

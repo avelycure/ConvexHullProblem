@@ -27,14 +27,6 @@ int main()
         solveWithHLinear(contributionMatrix, localRigthParts, coordinateMesh,
                          matrixPressure, rightPart, systemParameters);
 
-    if (method == "der")
-        solveWithHLinearWithDerBC(contributionMatrix, localRigthParts, coordinateMesh,
-                                  matrixPressure, rightPart, systemParameters);
-
-    if (method == "derh")
-        solveWithHConstBCLR(contributionMatrix, coordinateMesh, matrixPressure,
-                            systemParameters);
-
     if (method == "rect")
         solveWithRectangleFiniteElements(contributionMatrixR, localRigthPartsR, coordinateMesh,
                                          matrixPressure, rightPart, systemParameters);

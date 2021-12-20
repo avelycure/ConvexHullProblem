@@ -3,12 +3,12 @@
 #include <fstream>
 #include <string>
 #include <cmath>
-#include "../../common/init/InitFuncs.hpp"
-#include "../../common/classes/mesh/Point.hpp"
-#include "../border_conditions/BorderConditions.hpp"
-#include "../../common/classes/contribution_matrix/rectangle/RectangleContributionMatrix.hpp"
-#include "../../common/classes/contribution_matrix/rectangle/RectangleRightPart.hpp"
-#include "../../common/classes/system/SystemParameters.hpp"
+#include "../../../common/init/InitFuncs.hpp"
+#include "../../../common/classes/mesh/Point.hpp"
+#include "../../border_conditions/BorderConditions.hpp"
+#include "../../../common/classes/contribution_matrix/rectangle/RectangleContributionMatrix.hpp"
+#include "../../../common/classes/contribution_matrix/rectangle/RectangleRightPart.hpp"
+#include "../../../common/classes/system/SystemParameters.hpp"
 
 //Rectangle
 void createLocalMatrixForEveryRectangleElement(RectangleContributionMatrix *&contributionMatrixParam,

@@ -266,7 +266,7 @@
             "pMin": 100000.0,
             "lowBorder": 1.0,
             "highBorder": 2.0,
-            "method": "rect",
+            "method": "qtrig",
             "borderLength": 1.0,
             "systemtype": "16best"
         },
@@ -316,8 +316,8 @@
             "yOrigin": 0.0,
             "pMin": 1.0,
             "lowBorder": 1.0,
-            "highBorder": 2.0,
-            "method": "hConst",
+            "highBorder": 1.0,
+            "method": "qtrig",
             "borderLength": 1.0,
             "systemtype": "19"
         }

@@ -6,33 +6,33 @@
 #include "../../../common/init/InitFuncs.hpp"
 #include "../../../common/classes/mesh/Point.hpp"
 #include "../../border_conditions/BorderConditions.hpp"
-#include "../../../common/classes/contribution_matrix/rectangle/RectangleContributionMatrix.hpp"
-#include "../../../common/classes/contribution_matrix/rectangle/RectangleRightPart.hpp"
+#include "../../../common/classes/contribution_matrix/rectangle/first_order/FirstOrderRectangleContributionMatrix.hpp"
+#include "../../../common/classes/contribution_matrix/rectangle/first_order/FirstOrderRectangleRightPart.hpp"
 #include "../../../common/classes/system/SystemParameters.hpp"
 
 //Rectangle
-void createLocalMatrixForEveryRectangleElement(RectangleContributionMatrix *&contributionMatrixParam,
+void createLocalMatrixForEveryRectangleElement(FirstOrderRectangleContributionMatrix *&contributionMatrixParam,
                                                Point **&coordinateMeshParam,
-                                               RectangleRightPart *&rightPartParam,
+                                               FirstOrderRectangleRightPart *&rightPartParam,
                                                SystemParameters &systemParameters);
 
-void createLocalContributionMatrixForRectangleElement(RectangleContributionMatrix &localMatrix,
+void createLocalContributionMatrixForRectangleElement(FirstOrderRectangleContributionMatrix &localMatrix,
                                                       Point pointI,
                                                       Point pointJ,
                                                       Point pointK,
                                                       Point pointM,
-                                                      RectangleRightPart &localRightPart,
+                                                      FirstOrderRectangleRightPart &localRightPart,
                                                       SystemParameters &systemParameters);
 
-void solveWithRectangleFiniteElements(RectangleContributionMatrix *&contributionMatrix,
-                                      RectangleRightPart *&localRigthParts,
+void solveWithRectangleFiniteElements(FirstOrderRectangleContributionMatrix *&contributionMatrix,
+                                      FirstOrderRectangleRightPart *&localRigthParts,
                                       Point **&coordinateMesh,
                                       double **&matrixPressure,
                                       double *&rightPart,
                                       SystemParameters &systemParameters);
 
 void createGlobalPressureMatrixForRectangleElement(double **&matrixPressure,
-                                                   RectangleContributionMatrix *&contributionMatrix,
+                                                   FirstOrderRectangleContributionMatrix *&contributionMatrix,
                                                    double *&rightPartParam,
-                                                   RectangleRightPart *&localRightPartsParam,
+                                                   FirstOrderRectangleRightPart *&localRightPartsParam,
                                                    int n);

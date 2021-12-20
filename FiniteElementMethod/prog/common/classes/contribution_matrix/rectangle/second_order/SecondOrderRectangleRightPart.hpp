@@ -3,10 +3,10 @@
 /**
  * Right part of the local contribution matrix using rectangle finite elements
  * */
-class RectangleRightPart
+class SecondOrderRectangleRightPart
 {
 private:
-    const int ROWS = 4;
+    const int ROWS = 8;
     double *vector;
 
 public:
@@ -20,7 +20,7 @@ public:
         vector[i] = value;
     }
 
-    RectangleRightPart()
+    SecondOrderRectangleRightPart()
     {
         vector = new double[ROWS];
 

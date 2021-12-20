@@ -53,7 +53,7 @@ void addBorderConditionsOnPressureValues(double **&matrixResult,
         myFile1 << rightPart[i] << std::endl;
 
     std::fstream myFile2;
-    myFile2.open("data/fem_output/matrixPressureForSol.txt", std::fstream::out);
+    myFile2.open("data/fem_output/matrixPressure.txt", std::fstream::out);
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
     {
         for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)

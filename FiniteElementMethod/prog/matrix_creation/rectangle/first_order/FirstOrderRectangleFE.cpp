@@ -1,7 +1,7 @@
-#include "FEMRectanglesFirstOrder.hpp"
+#include "FirstOrderRectangleFE.hpp"
 
-void solveWithRectangleFiniteElements(RectangleContributionMatrix *&contributionMatrix,
-                                      RectangleRightPart *&localRigthParts,
+void solveWithRectangleFiniteElements(FirstOrderRectangleContributionMatrix *&contributionMatrix,
+                                      FirstOrderRectangleRightPart *&localRigthParts,
                                       Point **&coordinateMesh,
                                       double **&matrixPressure,
                                       double *&rightPart,
@@ -16,9 +16,9 @@ void solveWithRectangleFiniteElements(RectangleContributionMatrix *&contribution
             matrixPressure[i][j] = 0.0;
     initMesh(coordinateMesh, systemParameters);
 
-    contributionMatrix = new RectangleContributionMatrix[MATRIX_CONTRIBUTION_SIZE];
+    contributionMatrix = new FirstOrderRectangleContributionMatrix[MATRIX_CONTRIBUTION_SIZE];
 
-    localRigthParts = new RectangleRightPart[MATRIX_CONTRIBUTION_SIZE];
+    localRigthParts = new FirstOrderRectangleRightPart[MATRIX_CONTRIBUTION_SIZE];
 
     rightPart = new double[MATRIX_PRESSURE_SIZE];
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
@@ -44,9 +44,9 @@ void solveWithRectangleFiniteElements(RectangleContributionMatrix *&contribution
     outputPressureMatrix(matrixPressure, MATRIX_PRESSURE_SIZE);
 }
 
-void createLocalMatrixForEveryRectangleElement(RectangleContributionMatrix *&contributionMatrixParam,
+void createLocalMatrixForEveryRectangleElement(FirstOrderRectangleContributionMatrix *&contributionMatrixParam,
                                                Point **&coordinateMeshParam,
-                                               RectangleRightPart *&rightPartParam,
+                                               FirstOrderRectangleRightPart *&rightPartParam,
                                                SystemParameters &systemParameters)
 {
     int n = systemParameters.n;
@@ -66,12 +66,12 @@ void createLocalMatrixForEveryRectangleElement(RectangleContributionMatrix *&con
         }
 }
 
-void createLocalContributionMatrixForRectangleElement(RectangleContributionMatrix &localMatrix,
+void createLocalContributionMatrixForRectangleElement(FirstOrderRectangleContributionMatrix &localMatrix,
                                                       Point pointI,
                                                       Point pointJ,
                                                       Point pointK,
                                                       Point pointM,
-                                                      RectangleRightPart &localRightPart,
+                                                      FirstOrderRectangleRightPart &localRightPart,
                                                       SystemParameters &systemParameters)
 {
     double hMin = systemParameters.hMin;
@@ -161,9 +161,9 @@ void createLocalContributionMatrixForRectangleElement(RectangleContributionMatri
 }
 
 void createGlobalPressureMatrixForRectangleElement(double **&matrixPressure,
-                                                   RectangleContributionMatrix *&contributionMatrix,
+                                                   FirstOrderRectangleContributionMatrix *&contributionMatrix,
                                                    double *&rightPartParam,
-                                                   RectangleRightPart *&localRightPartsParam,
+                                                   FirstOrderRectangleRightPart *&localRightPartsParam,
                                                    int n)
 {
     int *globalNodeNumbersIJK = new int[4];

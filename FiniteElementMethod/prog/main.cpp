@@ -11,11 +11,11 @@ int main()
     TriangleContributionMatrix *contributionMatrix;
     TriangleRightPart *localRigthParts;
 
-    RectangleContributionMatrix *contributionMatrixR;
-    RectangleRightPart *localRigthPartsR;
+    FirstOrderRectangleContributionMatrix *contributionMatrixRectangle;
+    FirstOrderRectangleRightPart *localRigthPartsRectangle;
 
-    TriangleContributionMatrixSecondOrder *contributionMatrixQT;
-    TriangleRightPartSecondOrder *localRigthPartsQT;
+    TriangleContributionMatrixSecondOrder *contributionMatrixSecondOrder;
+    TriangleRightPartSecondOrder *localRigthPartsSecondOrder;
 
     readSystemParameters(systemParameters, method);
 
@@ -28,11 +28,11 @@ int main()
                          matrixPressure, rightPart, systemParameters);
 
     if (method == "rect")
-        solveWithRectangleFiniteElements(contributionMatrixR, localRigthPartsR, coordinateMesh,
+        solveWithRectangleFiniteElements(contributionMatrixRectangle, localRigthPartsRectangle, coordinateMesh,
                                          matrixPressure, rightPart, systemParameters);
 
     if (method == "qtrig")
-        solveWithTrianglesSecondOrder(contributionMatrixQT, localRigthPartsQT, coordinateMesh,
+        solveWithTrianglesSecondOrder(contributionMatrixSecondOrder, localRigthPartsSecondOrder, coordinateMesh,
                                          matrixPressure, rightPart, systemParameters);
 
 

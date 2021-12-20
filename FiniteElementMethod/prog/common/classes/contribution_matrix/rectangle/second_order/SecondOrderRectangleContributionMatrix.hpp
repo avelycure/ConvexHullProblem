@@ -3,11 +3,11 @@
 /**
  * Data class for storing information about local contribution matrix
  * */
-class RectangleContributionMatrix
+class SecondOrderRectangleContributionMatrix
 {
 private:
-    const int ROW = 4;
-    const int COLUMN = 4;
+    const int ROW = 8;
+    const int COLUMN = 8;
     double **matrix;
 
 public:
@@ -21,7 +21,7 @@ public:
         matrix[i][j] = value;
     }
 
-    RectangleContributionMatrix()
+    SecondOrderRectangleContributionMatrix()
     {
         matrix = new double *[ROW];
         for (int i = 0; i < ROW; i++)

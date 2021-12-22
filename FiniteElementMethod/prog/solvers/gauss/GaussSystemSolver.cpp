@@ -1,7 +1,7 @@
 #include "GaussSystemSolver.hpp"
 
 const double epsilon = 1e-12;
-std::string FILENAME_MATRIX_PRESSURE = "data/fem_output/pressureMatrix.txt";
+std::string FILENAME_MATRIX_PRESSURE = "data/fem_output/matrixPressure.txt";
 std::string FILENAME_RIGHT_PART = "data/fem_output/rightPart.txt";
 std::string FILENAME_SOLUTION = "data/gauss_output/solution.txt";
 

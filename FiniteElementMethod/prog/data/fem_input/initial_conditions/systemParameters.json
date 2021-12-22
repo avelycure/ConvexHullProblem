@@ -237,7 +237,7 @@
             "systemtype": "nice14"
         },
         {
-            "n": 30,
+            "n": 29,
             "L": 0.02,
             "k": -0.2,
             "mu": 0.09,
@@ -249,7 +249,7 @@
             "pMin": 100000.0,
             "lowBorder": 1.0,
             "highBorder": 2.0,
-            "method": "hLinear",
+            "method": "rect2",
             "borderLength": 1.0,
             "systemtype": "15best"
         },
@@ -266,7 +266,7 @@
             "pMin": 100000.0,
             "lowBorder": 1.0,
             "highBorder": 2.0,
-            "method": "qtrig",
+            "method": "rect2",
             "borderLength": 1.0,
             "systemtype": "16best"
         },
@@ -283,7 +283,7 @@
             "pMin": 1.0,
             "lowBorder": 1.0,
             "highBorder": 2.0,
-            "method": "hConst",
+            "method": "rect2",
             "borderLength": 1.0,
             "systemtype": "17best"
         },
@@ -305,7 +305,7 @@
             "systemtype": "18"
         },
         {
-            "n": 24,
+            "n": 23,
             "L": 0.02,
             "k": 0.0,
             "mu": 0.9,
@@ -316,8 +316,8 @@
             "yOrigin": 0.0,
             "pMin": 1.0,
             "lowBorder": 1.0,
-            "highBorder": 1.0,
-            "method": "hLinear",
+            "highBorder": 2.0,
+            "method": "rect2",
             "borderLength": 1.0,
             "systemtype": "19"
         }

@@ -14,6 +14,9 @@ int main()
     FirstOrderRectangleContributionMatrix *contributionMatrixRectangle;
     FirstOrderRectangleRightPart *localRigthPartsRectangle;
 
+    SecondOrderRectangleContributionMatrix *contributionMatrixRectangleSecondOrder;
+    SecondOrderRectangleRightPart *localRigthPartsRectangleSecondOrder;
+
     TriangleContributionMatrixSecondOrder *contributionMatrixSecondOrder;
     TriangleRightPartSecondOrder *localRigthPartsSecondOrder;
 
@@ -33,8 +36,16 @@ int main()
 
     if (method == "qtrig")
         solveWithTrianglesSecondOrder(contributionMatrixSecondOrder, localRigthPartsSecondOrder, coordinateMesh,
-                                         matrixPressure, rightPart, systemParameters);
+                                      matrixPressure, rightPart, systemParameters);
 
+    if (method == "rect2")
+        solveWithSecondOrderRectangleFE(contributionMatrixRectangleSecondOrder, localRigthPartsRectangleSecondOrder, coordinateMesh,
+                                        matrixPressure, rightPart, systemParameters);
 
-    solveEquation(systemParameters.n * systemParameters.n);
+    int numberOfRectFE = ((systemParameters.n - 1) / 2) * ((systemParameters.n - 1) / 2);
+    std::cout << systemParameters.n * systemParameters.n - numberOfRectFE << std::endl;
+    if (method != "rect2")
+        solveEquation(systemParameters.n * systemParameters.n);
+    else
+        solveEquation(systemParameters.n * systemParameters.n - numberOfRectFE);
 }

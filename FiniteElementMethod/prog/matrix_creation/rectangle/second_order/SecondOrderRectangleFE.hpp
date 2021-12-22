@@ -33,3 +33,10 @@ void createLocalContributionMatrixForRectangleElementSecondOrder(SecondOrderRect
                                                       Point pointQ,
                                                       SecondOrderRectangleRightPart &localRightPart,
                                                       SystemParameters &systemParameters);
+
+
+void createGlobalPressureMatrixForRectangleElementSecondOrder(double **&matrixPressure,
+                                                              SecondOrderRectangleContributionMatrix *&contributionMatrix,
+                                                              double *&rightPartParam,
+                                                              SecondOrderRectangleRightPart *&localRightPartsParam,
+                                                              int n);

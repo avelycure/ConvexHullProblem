@@ -14,3 +14,10 @@ void addBorderConditionsPressureDerivatives(double **&matrixResult,
                                             int MATRIX_PRESSURE_SIZE,
                                             double LOW_BORDER,
                                             double HIGH_BORDER);
+
+void addBorderConditionsForRectangleSecondOrder(double **&matrixResult,
+                                                double *&rightPart,
+                                                int n,
+                                                int MATRIX_PRESSURE_SIZE,
+                                                double LOW_BORDER,
+                                                double HIGH_BORDER);

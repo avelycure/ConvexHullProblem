@@ -11,6 +11,11 @@ private:
     double **matrix;
 
 public:
+    double** getMatrix()
+    {
+        return matrix;
+    }
+
     double getElement(int i, int j)
     {
         return matrix[i][j];

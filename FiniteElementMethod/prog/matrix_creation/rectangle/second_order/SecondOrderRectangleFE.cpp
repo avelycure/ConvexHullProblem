@@ -45,12 +45,6 @@ void solveWithSecondOrderRectangleFE(SecondOrderRectangleContributionMatrix *&co
                                                systemParameters.LOW_BORDER,
                                                systemParameters.HIGH_BORDER);
 
-    /*for (int i = 0; i < MATRIX_CONTRIBUTION_SIZE; i++)
-    {
-        displayMatrix(contributionMatrix[i].getMatrix(), 8, 8);
-        std::cout << std::endl;
-    }*/
-
     outputPressureMatrix(matrixPressure, MATRIX_PRESSURE_SIZE);
 }
 
@@ -116,143 +110,16 @@ void createLocalContributionMatrixForRectangleElementSecondOrder(SecondOrderRect
     double z4 = (1.0 / 4.0) * (pow(pointK.getX(), 4.0) - pow(pointI.getX(), 4.0));
     double z5 = (1.0 / 5.0) * (pow(pointK.getX(), 5.0) - pow(pointI.getX(), 5.0));
 
-    std::cout << "S: " << std::endl;
-    std::cout << s1 << " " << s2 << " " << s3 << " " << s4 << " " << s5 << " " << s6 << " " << s7 << " " << s8 << std::endl;
-    std::cout << "Z: " << std::endl;
-    std::cout << z1 << " " << z2 << " " << z3 << " " << z4 << " " << z5 << std::endl;
+    double c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17,
+        c18, c19, c20, c21, c22, c23, c24, c25, c26, c27, c28, c29, c30, c31, c32, c33,
+        c34, c35, c36, c37, c38, c39, c40, c41;
 
-    //clR1
-    double c1 = A1 * s1 * z1 + A2 * s2 * z1 + A3 * s3 * z1 + A4 * s4 * z1;
-
-    //blR6
-    double c2 = A1 * s1 * z1 + A2 * s2 * z1 + A3 * s3 * z1 + A4 * s4 * z1;
-
-    //blR2
-    double c3 = A1 * s2 * z1 + A2 * s3 * z1 + A3 * s4 * z1 + A4 * s5 * z1;
-
-    //dlR6
-    double c4 = A1 * s2 * z1 + A2 * s3 * z1 + A3 * s4 * z1 + A4 * s5 * z1;
-
-    //flR1
-    double c5 = 2.0 * A1 * s2 * z1 + 2.0 * A2 * s3 * z1 + 2.0 * A3 * s4 * z1 + 2.0 * A4 * s5 * z1;
-
-    //clR3
-    double c6 = 2.0 * A1 * s2 * z1 + 2.0 * A2 * s3 * z1 + 2.0 * A3 * s4 * z1 + 2.0 * A4 * s5 * z1;
-
-    //blR5
-    double c7 = A1 * s3 * z1 + A2 * s4 * z1 + A3 * s5 * z1 + A4 * s6 * z1;
-
-    //tlR6
-    double c8 = A1 * s3 * z1 + A2 * s4 * z1 + A3 * s5 * z1 + A4 * s6 * z1;
-
-    //flR3
-    double c9 = 4.0 * A1 * s3 * z1 + 4.0 * A2 * s4 * z1 + 4.0 * A3 * s5 * z1 + 4.0 * A4 * s6 * z1;
-
-    //dlR1
-    double c10 = A1 * s1 * z2 + A2 * s2 * z2 + A3 * s3 * z2 + A4 * s4 * z2;
-
-    //clR2
-    double c11 = A1 * s1 * z2 + A2 * s2 * z2 + A3 * s3 * z2 + A4 * s4 * z2;
-
-    //elR6
-    double c12 = 2.0 * A1 * s1 * z2 + 2.0 * A2 * s2 * z2 + 2.0 * A3 * s3 * z2 + 2.0 * A4 * s4 * z2;
-
-    //blR7
-    double c40 = 2.0 * A1 * s1 * z2 + 2.0 * A2 * s2 * z2 + 2.0 * A3 * s3 * z2 + 2.0 * A4 * s4 * z2;
-
-    //elR2
-    double c41 = 2.0 * A1 * s2 * z2 + 2.0 * A2 * s3 * z2 + 2.0 * A3 * s4 * z2 + 2.0 * A4 * s5 * z2;
-
-    //flR2
-    double c13 = 2.0 * A1 * s2 * z2 + 2.0 * A2 * s3 * z2 + 2.0 * A3 * s4 * z2 + 2.0 * A4 * s5 * z2;
-
-    //dlR3
-    double c14 = 2.0 * A1 * s2 * z2 + 2.0 * A2 * s3 * z2 + 2.0 * A3 * s4 * z2 + 2.0 * A4 * s5 * z2;
-
-    //blR4
-    double c15 = 2.0 * A1 * s2 * z2 + 2.0 * A2 * s3 * z2 + 2.0 * A3 * s4 * z2 + 2.0 * A4 * s5 * z2;
-
-    //clR5
-    double c16 = 2.0 * A1 * s2 * z2 + 2.0 * A2 * s3 * z2 + 2.0 * A3 * s4 * z2 + 2.0 * A4 * s5 * z2;
-
-    //glR6
-    double c17 = 2.0 * A1 * s2 * z2 + 2.0 * A2 * s3 * z2 + 2.0 * A3 * s4 * z2 + 2.0 * A4 * s5 * z2;
-
-    //dlR7
-    double c18 = 2 * A1 * s2 * z2 + 2 * A2 * s3 * z2 + 2 * A3 * s4 * z2 + 2 * A4 * s5 * z2;
-
-    //tlR1
-    double c19 = 2.0 * A1 * s2 * z2 + 2.0 * A2 * s3 * z2 + 2.0 * A3 * s4 * z2 + 2.0 * A4 * s5 * z2;
-
-    //elR5
-    double c20 = 2.0 * A1 * s3 * z2 + 2.0 * A2 * s4 * z2 + 2.0 * A3 * s5 * z2 + 2.0 * A4 * s6 * z2;
-
-    //tlR7
-    double c21 = 2.0 * A1 * s3 * z2 + 2.0 * A2 * s4 * z2 + 2.0 * A3 * s5 * z2 + 2.0 * A4 * s6 * z2;
-
-    //flR5
-    double c22 = 4.0 * A1 * s3 * z2 + 4.0 * A2 * s4 * z2 + 4.0 * A3 * s5 * z2 + 4.0 * A4 * s6 * z2;
-
-    //tlR3
-    double c23 = 4.0 * A1 * s3 * z2 + 4.0 * A2 * s4 * z2 + 4.0 * A3 * s5 * z2 + 4.0 * A4 * s6 * z2;
-
-    //glR1
-    double c24 = A1 * s1 * z3 + A2 * s2 * z3 + A3 * s3 * z3 + A4 * s4 * z3;
-
-    //clR4
-    double c25 = A1 * s1 * z3 + A2 * s2 * z3 + A3 * s3 * z3 + A4 * s4 * z3;
-
-    //dlR2
-    double c26 = A1 * s3 * z1 + A2 * s4 * z1 + A3 * s5 * z1 + A4 * s6 * z1 +
-                 A1 * s1 * z3 + A2 * s2 * z3 + A3 * s3 * z3 + A4 * s4 * z3;
-
-    //elR7
-    double c27 = 4.0 * A1 * s1 * z3 + 4.0 * A2 * s2 * z3 + 4.0 * A3 * s3 * z3 + 4.0 * A4 * s4 * z3;
-
-    //flR4
-    double c28 = 2.0 * A1 * s2 * z3 + 2.0 * A2 * s3 * z3 + 2.0 * A3 * s4 * z3 + 2.0 * A4 * s5 * z3;
-
-    //dlR5
-    double c29 = A1 * s4 * z1 + A2 * s5 * z1 + A3 * s6 * z1 + A4 * s7 * z1 +
-                 2.0 * A1 * s2 * z3 + 2.0 * A2 * s3 * z3 + 2.0 * A3 * s4 * z3 + 2.0 * A4 * s5 * z3;
-
-    //tlR2
-    double c30 = A1 * s4 * z1 + A2 * s5 * z1 + A3 * s6 * z1 + A4 * s7 * z1 +
-                 2.0 * A1 * s2 * z3 + 2.0 * A2 * s3 * z3 + 2.0 * A3 * s4 * z3 + 2.0 * A4 * s5 * z3;
-
-    //elR4
-    double c31 = 4.0 * A1 * s2 * z3 + 4.0 * A2 * s3 * z3 + 4.0 * A3 * s4 * z3 + 4.0 * A4 * s5 * z3;
-
-    //glR7
-    double c32 = 4.0 * A1 * s2 * z3 + 4.0 * A2 * s3 * z3 + 4.0 * A3 * s4 * z3 + 4.0 * A4 * s5 * z3;
-
-    //glR3
-    double c33 = 2.0 * A1 * s2 * z3 + 2.0 * A2 * s3 * z3 + 2.0 * A3 * s4 * z3 +
-                 2.0 * A4 * s5 * z3;
-
-    //tlR5
-    double c34 = A1 * s5 * z1 + A2 * s6 * z1 + A3 * s7 * z1 + A4 * s8 * z1 +
-                 4.0 * A1 * s3 * z3 + 4.0 * A2 * s4 * z3 + 4.0 * A3 * s5 * z3 + 4.0 * A4 * s6 * z3;
-
-    //glR2
-    double c35 = 2.0 * A1 * s3 * z2 + 2.0 * A2 * s4 * z2 + 2.0 * A3 * s5 * z2 + 2.0 * A4 * s6 * z2 +
-                 A1 * s1 * z4 + A2 * s2 * z4 + A3 * s3 * z4 + A4 * s4 * z4;
-
-    //dlR4
-    double c36 = 2.0 * A1 * s3 * z2 + 2.0 * A2 * s4 * z2 + 2.0 * A3 * s5 * z2 + 2.0 * A4 * s6 * z2 +
-                 A1 * s1 * z4 + A2 * s2 * z4 + A3 * s3 * z4 + A4 * s4 * z4;
-
-    //glR5
-    double c37 = 2.0 * A1 * s4 * z2 + 2.0 * A2 * s5 * z2 + 2.0 * A3 * s6 * z2 + 2.0 * A4 * s7 * z2 +
-                 2.0 * A1 * s2 * z4 + 2.0 * A2 * s3 * z4 + 2.0 * A3 * s4 * z4 + 2.0 * A4 * s5 * z4;
-
-    //tlR4
-    double c38 = 2.0 * A1 * s4 * z2 + 2.0 * A2 * s5 * z2 + 2.0 * A3 * s6 * z2 + 2.0 * A4 * s7 * z2 +
-                 2.0 * A1 * s2 * z4 + 2.0 * A2 * s3 * z4 + 2.0 * A3 * s4 * z4 + 2.0 * A4 * s5 * z4;
-
-    //glR4
-    double c39 = 4.0 * A1 * s3 * z3 + 4.0 * A2 * s4 * z3 + 4.0 * A3 * s5 * z3 + 4.0 * A4 * s6 * z3 +
-                 A1 * s1 * z5 + A2 * s2 * z5 + A3 * s3 * z5 + A4 * s4 * z5;
+    setCoefficients(c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17,
+                    c18, c19, c20, c21, c22, c23, c24, c25, c26, c27, c28, c29, c30, c31, c32, c33,
+                    c34, c35, c36, c37, c38, c39, c40, c41,
+                    A1, A2, A3, A4,
+                    s1, s2, s3, s4, s5, s6, s7, s8,
+                    z1, z2, z3, z4, z5);
 
     //coefficient R8 = 6 * mu * k * L * ...
     double R8 = 6.0 * systemParameters.mu * systemParameters.L * systemParameters.U * k /
@@ -267,95 +134,7 @@ void createLocalContributionMatrixForRectangleElementSecondOrder(SecondOrderRect
     double *g = new double[8];
     double *t = new double[8];
 
-    double xm = pointM.getX();
-    double ym = pointM.getY();
-
-    double xi = pointI.getX();
-    double yi = pointI.getY();
-
-    a[0] = (xm * ym * (xi * (-3 * yi + ym) + xm * (yi + ym))) / ((xi - xm) * (xi - xm) * (yi - ym) * (yi - ym));
-    a[1] = (4 * xi * xm * ym) / ((xi - xm) * (xi - xm) * (yi - ym));
-    a[2] = (xi * ym * (xm * (-3 * yi + ym) + xi * (yi + ym))) / ((xi - xm) * (xi - xm) * (yi - ym) * (yi - ym));
-    a[3] = -((4 * xi * yi * ym) / ((xi - xm) * (yi - ym) * (yi - ym)));
-    a[4] = (xi * yi * (xm * (yi - 3 * ym) + xi * (yi + ym))) / ((xi - xm) * (xi - xm) * (yi - ym) * (yi - ym));
-    a[5] = (4 * xi * xm * yi) / ((xi - xm) * (xi - xm) * (-yi + ym));
-    a[6] = (xm * yi * (xi * (yi - 3 * ym) + xm * (yi + ym))) / ((xi - xm) * (xi - xm) * (yi - ym) * (yi - ym));
-    a[7] = (4 * xm * yi * ym) / ((xi - xm) * (yi - ym) * (yi - ym));
-
-    b[0] = (ym * ((3 * xi + xm) * yi - (xi + 3 * xm) * ym)) / ((xi - xm) * (xi - xm) * (yi - ym) * (yi - ym));
-    b[1] = -((4 * (xi + xm) * ym) / ((xi - xm) * (xi - xm) * (yi - ym)));
-    b[2] = (ym * ((xi + 3 * xm) * yi - (3 * xi + xm) * ym)) / ((xi - xm) * (xi - xm) * (yi - ym) * (yi - ym));
-    b[3] = (4 * yi * ym) / ((xi - xm) * (yi - ym) * (yi - ym));
-    b[4] = (yi * (-(3 * xi + xm) * yi + (xi + 3 * xm) * ym)) / ((xi - xm) * (xi - xm) * (yi - ym) * (yi - ym));
-    b[5] = (4 * (xi + xm) * yi) / ((xi - xm) * (xi - xm) * (yi - ym));
-    b[6] = (yi * (-(xi + 3 * xm) * yi + (3 * xi + xm) * ym)) / ((xi - xm) * (xi - xm) * (yi - ym) * (yi - ym));
-    b[7] = -((4 * yi * ym) / ((xi - xm) * (yi - ym) * (yi - ym)));
-
-    c[0] = (xm * (xi * (3 * yi + ym) - xm * (yi + 3 * ym))) / ((xi - xm) * (xi - xm) * (yi - ym) * (yi - ym));
-    c[1] = (4 * xi * xm) / ((xi - xm) * (xi - xm) * (-yi + ym));
-    c[2] = (xi * (xm * (3 * yi + ym) - xi * (yi + 3 * ym))) / ((xi - xm) * (xi - xm) * (yi - ym) * (yi - ym));
-    c[3] = (4 * xi * (yi + ym)) / ((xi - xm) * (yi - ym) * (yi - ym));
-    c[4] = (xi * (-xi * (3 * yi + ym) + xm * (yi + 3 * ym))) / ((xi - xm) * (xi - xm) * (yi - ym) * (yi - ym));
-    c[5] = (4 * xi * xm) / ((xi - xm) * (xi - xm) * (yi - ym));
-    c[6] = (xm * (-xm * (3 * yi + ym) + xi * (yi + 3 * ym))) / ((xi - xm) * (xi - xm) * (yi - ym) * (yi - ym));
-    c[7] = -((4 * xm * (yi + ym)) / ((xi - xm) * (yi - ym) * (yi - ym)));
-
-    d[0] = -((xm * (yi - 5 * ym) + xi * (3 * yi + ym)) / ((xi - xm) * (xi - xm) * (yi - ym) * (yi - ym)));
-    d[1] = (4 * (xi + xm)) / ((xi - xm) * (xi - xm) * (yi - ym));
-    d[2] = -((xi * (yi - 5 * ym) + xm * (3 * yi + ym)) / ((xi - xm) * (xi - xm) * (yi - ym) * (yi - ym)));
-    d[3] = -((4 * (yi + ym)) / ((xi - xm) * (yi - ym) * (yi - ym)));
-    d[4] = -((xi * (-5 * yi + ym) + xm * (yi + 3 * ym)) / ((xi - xm) * (xi - xm) * (yi - ym) * (yi - ym)));
-    d[5] = (4 * (xi + xm)) / ((xi - xm) * (xi - xm) * (-yi + ym));
-    d[6] = -((xm * (-5 * yi + ym) + xi * (yi + 3 * ym)) / ((xi - xm) * (xi - xm) * (yi - ym) * (yi - ym)));
-    d[7] = (4 * (yi + ym)) / ((xi - xm) * (yi - ym) * (yi - ym));
-
-    e[0] = (2 * ym) / ((xi - xm) * (xi - xm) * (-yi + ym));
-    e[1] = (4 * ym) / ((xi - xm) * (xi - xm) * (yi - ym));
-    e[2] = (2 * ym) / ((xi - xm) * (xi - xm) * (-yi + ym));
-    e[3] = 0.0;
-    e[4] = (2 * yi) / ((xi - xm) * (xi - xm) * (yi - ym));
-    e[5] = (4 * yi) / ((xi - xm) * (xi - xm) * (-yi + ym));
-    e[6] = (2 * yi) / ((xi - xm) * (xi - xm) * (yi - ym));
-    e[7] = 0;
-
-    f[0] = (2 * xm) / ((-xi + xm) * (yi - ym) * (yi - ym));
-    f[1] = 0.0;
-    f[2] = (2 * xi) / ((xi - xm) * (yi - ym) * (yi - ym));
-    f[3] = -((4 * xi) / ((xi - xm) * (yi - ym) * (yi - ym)));
-    f[4] = (2 * xi) / ((xi - xm) * (yi - ym) * (yi - ym));
-    f[5] = 0.0;
-    f[6] = (2 * xm) / ((-xi + xm) * (yi - ym) * (yi - ym));
-    f[7] = (4 * xm) / ((xi - xm) * (yi - ym) * (yi - ym));
-
-    g[0] = 2 / ((xi - xm) * (xi - xm) * (yi - ym));
-    g[1] = 4 / ((xi - xm) * (xi - xm) * (-yi + ym));
-    g[2] = 2 / ((xi - xm) * (xi - xm) * (yi - ym));
-    g[3] = 0.0;
-    g[4] = 2 / ((xi - xm) * (xi - xm) * (-yi + ym));
-    g[5] = 4 / ((xi - xm) * (xi - xm) * (yi - ym));
-    g[6] = 2 / ((xi - xm) * (xi - xm) * (-yi + ym));
-    g[7] = 0.0;
-
-    t[0] = 2 / ((xi - xm) * (yi - ym) * (yi - ym));
-    t[1] = 0.0;
-    t[2] = -(2 / ((xi - xm) * (yi - ym) * (yi - ym)));
-    t[3] = 4 / ((xi - xm) * (yi - ym) * (yi - ym));
-    t[4] = -(2 / ((xi - xm) * (yi - ym) * (yi - ym)));
-    t[5] = 0.0;
-    t[6] = 2 / ((xi - xm) * (yi - ym) * (yi - ym));
-    t[7] = -(4 / ((xi - xm) * (yi - ym) * (yi - ym)));
-    //std::cout << "Coefs: (" << pointI.getX() << ", " <<pointI.getY() << ") ("<< pointM.getX() << ", " <<pointM.getY() << ") "<<std::endl;
-
-    //for (int i = 0; i < 8; i++)
-    //    std::cout << a[i] << " " << b[i] << " " << c[i] << " " << d[i] << " " << e[i] << " " << f[i] << " " << g[i] << " " << t[i] << std::endl;
-    std::cout << "********" << std::endl;
-    std::cout << c1 << " " << c2 << " " << c3 << " " << c4 << " " << c5 << " " << c6 << " " << c7 << " " << c8 << std::endl;
-    std::cout << c9 << " " << c10 << " " << c11 << " " << c12 << " " << c13 << " " << c14 << " " << c15 << " " << c16 << std::endl;
-    std::cout << c17 << " " << c18 << " " << c19 << " " << c20 << " " << c21 << " " << c22 << " " << c23 << " " << c24 << std::endl;
-    std::cout << c25 << " " << c26 << " " << c27 << " " << c28 << " " << c29 << " " << c30 << " " << c31 << " " << c32 << std::endl;
-    std::cout << c33 << " " << c34 << " " << c35 << " " << c36 << " " << c37 << " " << c38 << " " << c39 << " " << c40 << std::endl;
-    std::cout << c41 << std::endl;
-    std::cout << "********" << std::endl;
+    setFormFunctionsCoefficients(a, b, c, d, e, f, g, t, pointI, pointM);
 
     double valR1, valR2, valR3, valR4, valR5, valR6, valR7;
 

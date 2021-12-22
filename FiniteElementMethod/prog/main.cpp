@@ -23,12 +23,16 @@ int main()
     readSystemParameters(systemParameters, method);
 
     if (method == H_CONST)
-        solveWithHConst(contributionMatrix, coordinateMesh, matrixPressure, rightPart,
-                        systemParameters);
+        solveWithFirstOrderTriangleFEConstantHeight(contributionMatrix,
+                                                  coordinateMesh,
+                                                  matrixPressure,
+                                                  rightPart,
+                                                  systemParameters);
 
     if (method == H_LINEAR)
-        solveWithHLinear(contributionMatrix, localRigthParts, coordinateMesh,
-                         matrixPressure, rightPart, systemParameters);
+        //solveWithHLinear(contributionMatrix, localRigthParts, coordinateMesh,
+        solveWithFirstOrderTriangleFE(contributionMatrix, localRigthParts, coordinateMesh,
+                                      matrixPressure, rightPart, systemParameters);
 
     if (method == "rect")
         solveWithRectangleFiniteElements(contributionMatrixRectangle, localRigthPartsRectangle, coordinateMesh,

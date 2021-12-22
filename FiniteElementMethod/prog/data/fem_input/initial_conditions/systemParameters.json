@@ -249,7 +249,7 @@
             "pMin": 100000.0,
             "lowBorder": 1.0,
             "highBorder": 2.0,
-            "method": "rect2",
+            "method": "hLinear",
             "borderLength": 1.0,
             "systemtype": "15best"
         },
@@ -266,7 +266,7 @@
             "pMin": 100000.0,
             "lowBorder": 1.0,
             "highBorder": 2.0,
-            "method": "rect2",
+            "method": "hLinear",
             "borderLength": 1.0,
             "systemtype": "16best"
         },
@@ -283,7 +283,7 @@
             "pMin": 1.0,
             "lowBorder": 1.0,
             "highBorder": 2.0,
-            "method": "rect2",
+            "method": "hConst",
             "borderLength": 1.0,
             "systemtype": "17best"
         },
@@ -317,7 +317,7 @@
             "pMin": 1.0,
             "lowBorder": 1.0,
             "highBorder": 2.0,
-            "method": "rect2",
+            "method": "hLinear",
             "borderLength": 1.0,
             "systemtype": "19"
         }

@@ -17,8 +17,9 @@
 #include "matrix_creation/border_conditions/BorderConditions.hpp"
 
 //triangles
-#include "matrix_creation/triangle/first_order/FEMTrianglesFirstOrder.hpp"
-#include "matrix_creation/triangle/second_order/FEMTrianglesSecondOrder.hpp"
+#include "matrix_creation/triangle/first_order/FirstOrderTriangleFEFA.hpp"
+#include "matrix_creation/triangle/first_order/FirstOrderTriangleFEGA.hpp"
+#include "matrix_creation/triangle/second_order/SecondOrderTriangleFE.hpp"
 #include "common/classes/contribution_matrix/triangle/TriangleRightPart.hpp"
 #include "common/classes/contribution_matrix/triangle/TriangleRightPartSecondOrder.hpp"
 #include "common/classes/contribution_matrix/triangle/TriangleContributionMatrixSecondOrder.hpp"

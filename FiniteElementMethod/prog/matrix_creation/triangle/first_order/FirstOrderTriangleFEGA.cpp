@@ -47,6 +47,7 @@ void createLocalContributionMatrix(TriangleContributionMatrix localMatrix,
     double k = systemParameters.k;
 
     //coefficients of polynom
+    //безразмерное к
     double A1 = pow(hMin, 3.0);
     double A2 = 3.0 * pow(hMin, 2.0) * k;
     double A3 = 3.0 * hMin * pow(k, 2.0);
@@ -69,6 +70,7 @@ void createLocalContributionMatrix(TriangleContributionMatrix localMatrix,
                 s4 * (A3 * k1 + A4 * k2 - A4 * pointI.getX());
 
     //coefficient R3 6 * mu * k * L * ...
+    //тут вроде бы безразмерное к
     double R3 = 6.0 * systemParameters.mu * systemParameters.L * systemParameters.U * k /
                 (systemParameters.Hn * systemParameters.Hn * systemParameters.pMin);
 
@@ -113,11 +115,9 @@ void createLocalMatrixes(TriangleContributionMatrix *&contributionMatrixParam,
                          TriangleRightPart *&rightPartParam,
                          SystemParameters &systemParameters)
 {
-    double k = systemParameters.k;
-    double hMin = systemParameters.hMin;
     int n = systemParameters.n;
-
     int finiteElementNumber = -1;
+    
     for (int i = 0; i < n - 1; i++)
         for (int j = 0; j < n - 1; j++)
         {

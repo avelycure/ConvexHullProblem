@@ -24,7 +24,7 @@ void createLocalContributionMatrixForRectangleElement(FirstOrderRectangleContrib
                                                       FirstOrderRectangleRightPart &localRightPart,
                                                       SystemParameters &systemParameters);
 
-void solveWithRectangleFiniteElements(FirstOrderRectangleContributionMatrix *&contributionMatrix,
+void solveWithFirstOrderRectangleFE(FirstOrderRectangleContributionMatrix *&contributionMatrix,
                                       FirstOrderRectangleRightPart *&localRigthParts,
                                       Point **&coordinateMesh,
                                       double **&matrixPressure,

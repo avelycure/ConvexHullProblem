@@ -266,7 +266,7 @@
             "pMin": 100000.0,
             "lowBorder": 1.0,
             "highBorder": 2.0,
-            "method": "hLinear",
+            "method": "trian2",
             "borderLength": 1.0,
             "systemtype": "16best"
         },
@@ -283,7 +283,7 @@
             "pMin": 1.0,
             "lowBorder": 1.0,
             "highBorder": 2.0,
-            "method": "hConst",
+            "method": "trian1",
             "borderLength": 1.0,
             "systemtype": "17best"
         },
@@ -305,19 +305,19 @@
             "systemtype": "18"
         },
         {
-            "n": 23,
+            "n": 25,
             "L": 0.02,
-            "k": 0.0,
-            "mu": 0.9,
+            "k": -0.18,
+            "mu": 0.01,
             "hMin": 1.0,
-            "Hn": 0.02,
-            "U": 120000.0,
+            "Hn": 0.0002,
+            "U": 120.0,
             "xOrigin": 0.0,
             "yOrigin": 0.0,
-            "pMin": 1.0,
+            "pMin": 100000.0,
             "lowBorder": 1.0,
             "highBorder": 2.0,
-            "method": "hLinear",
+            "method": "rect2",
             "borderLength": 1.0,
             "systemtype": "19"
         }

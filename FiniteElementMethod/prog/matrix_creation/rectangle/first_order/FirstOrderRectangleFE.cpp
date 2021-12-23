@@ -1,6 +1,6 @@
 #include "FirstOrderRectangleFE.hpp"
 
-void solveWithRectangleFiniteElements(FirstOrderRectangleContributionMatrix *&contributionMatrix,
+void solveWithFirstOrderRectangleFE(FirstOrderRectangleContributionMatrix *&contributionMatrix,
                                       FirstOrderRectangleRightPart *&localRigthParts,
                                       Point **&coordinateMesh,
                                       double **&matrixPressure,

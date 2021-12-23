@@ -6,19 +6,36 @@
 class SystemParameters
 {
 public:
+    //number of nodes in each direction
     int n;
+    
+    //length of domain
     double L;
+
+    //speed of the liquid
     double U;
+
+    //incline of the surface
     double k;
+
+    //viscosity of the liquide
     double mu;
-    double Hn;
-    double hMin;
-    double pMin;
+
+    //beginning of the coordinate system
     double xOrigin;
     double yOrigin;
+
+    //border conditions on values of pressure
     double LOW_BORDER;
     double HIGH_BORDER;
+
+    //characteristic size of pressure for dimensionlessness
+    double pMin;
+
+
     double borderLength;
+    double hMin;
+    double Hn;
 
     SystemParameters()
     {

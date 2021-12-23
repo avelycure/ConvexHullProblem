@@ -3,6 +3,7 @@
 int main()
 {
     std::string method;
+    Methods programMethods;
     double *rightPart;
     Point **coordinateMesh;
     double **matrixPressure;
@@ -22,34 +23,46 @@ int main()
 
     readSystemParameters(systemParameters, method);
 
-    if (method == H_CONST)
+    if (method == programMethods.TRIANGLE_CONSTANT_HEIGHT)
         solveWithFirstOrderTriangleFEConstantHeight(contributionMatrix,
-                                                  coordinateMesh,
-                                                  matrixPressure,
-                                                  rightPart,
-                                                  systemParameters);
+                                                    coordinateMesh,
+                                                    matrixPressure,
+                                                    rightPart,
+                                                    systemParameters);
 
-    if (method == H_LINEAR)
-        //solveWithHLinear(contributionMatrix, localRigthParts, coordinateMesh,
-        solveWithFirstOrderTriangleFE(contributionMatrix, localRigthParts, coordinateMesh,
-                                      matrixPressure, rightPart, systemParameters);
+    if (method == programMethods.TRIANGLE_FIRST_ORDER)
+        solveWithFirstOrderTriangleFE(contributionMatrix,
+                                      localRigthParts,
+                                      coordinateMesh,
+                                      matrixPressure,
+                                      rightPart,
+                                      systemParameters);
 
-    if (method == "rect")
-        solveWithRectangleFiniteElements(contributionMatrixRectangle, localRigthPartsRectangle, coordinateMesh,
-                                         matrixPressure, rightPart, systemParameters);
+    if (method == programMethods.TRIANGLE_SECOND_ORDER)
+        solveWithSecondOrderTriangleFE(contributionMatrixSecondOrder,
+                                       localRigthPartsSecondOrder, coordinateMesh,
+                                       matrixPressure,
+                                       rightPart,
+                                       systemParameters);
 
-    if (method == "qtrig")
-        solveWithTrianglesSecondOrder(contributionMatrixSecondOrder, localRigthPartsSecondOrder, coordinateMesh,
-                                      matrixPressure, rightPart, systemParameters);
+    if (method == programMethods.RECTANGLE_FIRST_ORDER)
+        solveWithFirstOrderRectangleFE(contributionMatrixRectangle,
+                                       localRigthPartsRectangle,
+                                       coordinateMesh,
+                                       matrixPressure,
+                                       rightPart,
+                                       systemParameters);
 
-    if (method == "rect2")
-        solveWithSecondOrderRectangleFE(contributionMatrixRectangleSecondOrder, localRigthPartsRectangleSecondOrder, coordinateMesh,
-                                        matrixPressure, rightPart, systemParameters);
+    if (method == programMethods.RECTANGLE_SECOND_ORDER)
+        solveWithSecondOrderRectangleFE(contributionMatrixRectangleSecondOrder,
+                                        localRigthPartsRectangleSecondOrder,
+                                        coordinateMesh,
+                                        matrixPressure,
+                                        rightPart,
+                                        systemParameters);
 
-    int numberOfRectFE = ((systemParameters.n - 1) / 2) * ((systemParameters.n - 1) / 2);
-    std::cout << systemParameters.n * systemParameters.n - numberOfRectFE << std::endl;
-    if (method != "rect2")
+    if (method != programMethods.RECTANGLE_SECOND_ORDER)
         solveEquation(systemParameters.n * systemParameters.n);
     else
-        solveEquation(systemParameters.n * systemParameters.n - numberOfRectFE);
+        solveEquation(systemParameters.n * systemParameters.n - ((systemParameters.n - 1) / 2) * ((systemParameters.n - 1) / 2));
 }

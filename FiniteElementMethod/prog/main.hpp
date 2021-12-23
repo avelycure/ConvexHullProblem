@@ -10,6 +10,10 @@
 //input and output
 #include "libs/single_include/nlohmann/json.hpp"
 #include "common/classes/system/SystemParameters.hpp"
+#include "common/classes/system/Methods.hpp"
+
+//comparision with analytic solution
+#include "comparision_with_analytic/Comparision.hpp"
 
 //common funcs for all methods
 #include "common/init/InitFuncs.hpp"

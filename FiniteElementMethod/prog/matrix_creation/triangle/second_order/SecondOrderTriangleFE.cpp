@@ -1,11 +1,11 @@
 #include "SecondOrderTriangleFE.hpp"
 
-void solveWithTrianglesSecondOrder(TriangleContributionMatrixSecondOrder *&contributionMatrix,
-                                   TriangleRightPartSecondOrder *&localRigthParts,
-                                   Point **&coordinateMesh,
-                                   double **&matrixPressure,
-                                   double *&rightPart,
-                                   SystemParameters &systemParameters)
+void solveWithSecondOrderTriangleFE(TriangleContributionMatrixSecondOrder *&contributionMatrix,
+                                    TriangleRightPartSecondOrder *&localRigthParts,
+                                    Point **&coordinateMesh,
+                                    double **&matrixPressure,
+                                    double *&rightPart,
+                                    SystemParameters &systemParameters)
 {
     const int MATRIX_PRESSURE_SIZE = systemParameters.n * systemParameters.n;
     const int MATRIX_CONTRIBUTION_SIZE = (systemParameters.n - 1) * (systemParameters.n - 1) * 2;
@@ -49,13 +49,10 @@ void createLocalMatrixForEveryElementQuadraticTriangles(TriangleContributionMatr
                                                         TriangleRightPartSecondOrder *&rightPartParam,
                                                         SystemParameters &systemParameters)
 {
-    double k = systemParameters.k;
-    double hMin = systemParameters.hMin;
     int n = systemParameters.n;
-
     int finiteElementNumber = -1;
+
     for (int i = 0; i < n - 2; i += 2)
-    {
         for (int j = 0; j < n - 2; j += 2)
         {
             finiteElementNumber++;
@@ -79,7 +76,6 @@ void createLocalMatrixForEveryElementQuadraticTriangles(TriangleContributionMatr
                                                               rightPartParam[finiteElementNumber],
                                                               systemParameters);
         }
-    }
 }
 
 void createLocalContributionMatrixForQuardaticTriangle(TriangleContributionMatrixSecondOrder localMatrix,
@@ -114,111 +110,12 @@ void createLocalContributionMatrixForQuardaticTriangle(TriangleContributionMatri
 
     double zi = pointI.getX();
 
-    //clR1
-    double c1 = A1 * k1 * s2 + A2 * k2 * s2 + A2 * k1 * s3 + A3 * k2 * s3 + A3 * k1 * s4 + A4 * k2 * s4 + A4 * k1 * s5 +
-                A1 * s1 * (k2 - zi) - A2 * s2 * zi - A3 * s3 * zi - A4 * s4 * zi;
-
-    //blR4
-    double c2 = A1 * k1 * s2 + A2 * k2 * s2 + A2 * k1 * s3 + A3 * k2 * s3 + A3 * k1 * s4 + A4 * k2 * s4 + A4 * k1 * s5 +
-                A1 * s1 * (k2 - zi) - A2 * s2 * zi - A3 * s3 * zi - A4 * s4 * zi;
-
-    //flR1
-    double c3 = 2.0 * A1 * k2 * s2 + 2 * A1 * k1 * s3 + 2 * A2 * k2 * s3 + 2 * A2 * k1 * s4 + 2 * A3 * k2 * s4 + 2 * A3 * k1 * s5 +
-                2 * A4 * k2 * s5 + 2 * A4 * k1 * s6 - 2 * A1 * s2 * zi - 2 * A2 * s3 * zi - 2 * A3 * s4 * zi - 2 * A4 * s5 * zi;
-
-    //clR3
-    double c4 = 2 * A1 * k2 * s2 + 2 * A1 * k1 * s3 + 2 * A2 * k2 * s3 + 2 * A2 * k1 * s4 +
-                2 * A3 * k2 * s4 + 2 * A3 * k1 * s5 + 2 * A4 * k2 * s5 + 2 * A4 * k1 * s6 -
-                2 * A1 * s2 * zi - 2 * A2 * s3 * zi - 2 * A3 * s4 * zi - 2 * A4 * s5 * zi;
-
-    //blR2
-    double c5 = A1 * k2 * s2 + A1 * k1 * s3 + A2 * k2 * s3 + A2 * k1 * s4 + A3 * k2 * s4 +
-                A3 * k1 * s5 + A4 * k2 * s5 + A4 * k1 * s6 - A1 * s2 * zi - A2 * s3 * zi - A3 * s4 * zi - A4 * s5 * zi;
-
-    //elR4
-    double c6 = A1 * k2 * s2 + A1 * k1 * s3 + A2 * k2 * s3 + A2 * k1 * s4 + A3 * k2 * s4 + A3 * k1 * s5 +
-                A4 * k2 * s5 + A4 * k1 * s6 - A1 * s2 * zi - A2 * s3 * zi - A3 * s4 * zi - A4 * s5 * zi;
-
-    //flR3
-    double c7 = 4 * A1 * k2 * s3 + 4 * A1 * k1 * s4 + 4 * A2 * k2 * s4 + 4 * A2 * k1 * s5 +
-                4 * A3 * k2 * s5 + 4 * A3 * k1 * s6 + 4 * A4 * k2 * s6 + 4 * A4 * k1 * s7 -
-                4 * A1 * s3 * zi - 4 * A2 * s4 * zi - 4 * A3 * s5 * zi - 4 * A4 * s6 * zi;
-
-    //dlR2
-    double c8 = A1 * k2 * k2 * s2 + 2 * A1 * k1 * k2 * s3 + A2 * k2 * k2 * s3 + A1 * k1 * k1 * s4 + 2 * A2 * k1 * k2 * s4 +
-                A3 * k2 * k2 * s4 + A2 * k1 * k1 * s5 + 2 * A3 * k1 * k2 * s5 + A4 * k2 * k2 * s5 + A3 * k1 * k1 * s6 +
-                2 * A4 * k1 * k2 * s6 + A4 * k1 * k1 * s7 - A1 * s2 * zi * zi - A2 * s3 * zi * zi -
-                A3 * s4 * zi * zi - A4 * s5 * zi * zi;
-
-    //flR2
-    double c9 = A1 * k2 * k2 * s2 + 2 * A1 * k1 * k2 * s3 + A2 * k2 * k2 * s3 +
-                A1 * k1 * k1 * s4 + 2 * A2 * k1 * k2 * s4 + A3 * k2 * k2 * s4 +
-                A2 * k1 * k1 * s5 + 2 * A3 * k1 * k2 * s5 + A4 * k2 * k2 * s5 +
-                A3 * k1 * k1 * s6 + 2 * A4 * k1 * k2 * s6 + A4 * k1 * k1 * s7 -
-                A1 * s2 * zi * zi - A2 * s3 * zi * zi - A3 * s4 * zi * zi - A4 * s5 * zi * zi;
-
-    //elR5
-    double c10 = A1 * k2 * k2 * s2 + 2 * A1 * k1 * k2 * s3 + A2 * k2 * k2 * s3 +
-                 A1 * k1 * k1 * s4 + 2 * A2 * k1 * k2 * s4 + A3 * k2 * k2 * s4 +
-                 A2 * k1 * k1 * s5 + 2 * A3 * k1 * k2 * s5 + A4 * k2 * k2 * s5 +
-                 A3 * k1 * k1 * s6 + 2 * A4 * k1 * k2 * s6 + A4 * k1 * k1 * s7 -
-                 A1 * s2 * zi * zi - A2 * s3 * zi * zi - A3 * s4 * zi * zi - A4 * s5 * zi * zi;
-
-    //elR3
-    double c11 = A1 * k2 * k2 * s2 + 2 * A1 * k1 * k2 * s3 + A2 * k2 * k2 * s3 +
-                 A1 * k1 * k1 * s4 + 2 * A2 * k1 * k2 * s4 + A3 * k2 * k2 * s4 +
-                 A2 * k1 * k1 * s5 + 2 * A3 * k1 * k2 * s5 + A4 * k2 * k2 * s5 +
-                 A3 * k1 * k1 * s6 + 2 * A4 * k1 * k2 * s6 + A4 * k1 * k1 * s7 -
-                 A1 * s2 * zi * zi - A2 * s3 * zi * zi - A3 * s4 * zi * zi - A4 * s5 * zi * zi;
-
-    //elR1
-    double c13 = A1 * k1 * k2 * s2 + 0.5 * A2 * k2 * k2 * s2 + 0.5 * A1 * k1 * k1 * s3 +
-                 A2 * k1 * k2 * s3 + 0.5 * A3 * k2 * k2 * s3 + 0.5 * A2 * k1 * k1 * s4 +
-                 A3 * k1 * k2 * s4 + 0.5 * A4 * k2 * k2 * s4 + 0.5 * A3 * k1 * k1 * s5 +
-                 A4 * k1 * k2 * s5 + 0.5 * A4 * k1 * k1 * s6 - 0.5 * A2 * s2 * zi * zi -
-                 0.5 * A3 * s3 * zi * zi - 0.5 * A4 * s4 * zi * zi + 0.5 * A1 * s1 * (k2 * k2 - zi * zi);
-
-    //clR2
-    double c14 = A1 * k1 * k2 * s2 + 0.5 * A2 * k2 * k2 * s2 + 0.5 * A1 * k1 * k1 * s3 +
-                 A2 * k1 * k2 * s3 + 0.5 * A3 * k2 * k2 * s3 + 0.5 * A2 * k1 * k1 * s4 +
-                 A3 * k1 * k2 * s4 + 0.5 * A4 * k2 * k2 * s4 + 0.5 * A3 * k1 * k1 * s5 +
-                 A4 * k1 * k2 * s5 + 0.5 * A4 * k1 * k1 * s6 - 0.5 * A2 * s2 * zi * zi -
-                 0.5 * A3 * s3 * zi * zi - 0.5 * A4 * s4 * zi * zi + 0.5 * A1 * s1 * (k2 * k2 - zi * zi);
-
-    //dlR4
-    double c15 = 2 * A1 * k1 * k2 * s2 + A2 * k2 * k2 * s2 + A1 * k1 * k1 * s3 + 2 * A2 * k1 * k2 * s3 +
-                 A3 * k2 * k2 * s3 + A2 * k1 * k1 * s4 + 2 * A3 * k1 * k2 * s4 +
-                 A4 * k2 * k2 * s4 + A3 * k1 * k1 * s5 + 2 * A4 * k1 * k2 * s5 +
-                 A4 * k1 * k1 * s6 - A2 * s2 * zi * zi - A3 * s3 * zi * zi -
-                 A4 * s4 * zi * zi + A1 * s1 * (k2 * k2 - zi * zi);
-
-    //blR5
-    double c16 = 2 * A1 * k1 * k2 * s2 + A2 * k2 * k2 * s2 + A1 * k1 * k1 * s3 + 2 * A2 * k1 * k2 * s3 +
-                 A3 * k2 * k2 * s3 + A2 * k1 * k1 * s4 + 2 * A3 * k1 * k2 * s4 +
-                 A4 * k2 * k2 * s4 + A3 * k1 * k1 * s5 + 2 * A4 * k1 * k2 * s5 +
-                 A4 * k1 * k1 * s6 - A2 * s2 * zi * zi - A3 * s3 * zi * zi -
-                 A4 * s4 * zi * zi + A1 * s1 * (k2 * k2 - zi * zi);
-
-    //elR2
-    double c18 = A1 * k1 * k2 * k2 * s2 + A2 * k2 * k2 * k2 * s2 / 3.0 + A1 * k2 * s3 +
-                 A1 * k1 * k1 * k2 * s3 + A2 * k1 * k2 * k2 * s3 + A3 * k2 * k2 * k2 * s3 / 3.0 +
-                 A1 * k1 * s4 + A1 * k1 * k1 * k1 * s4 / 3.0 + A2 * k2 * s4 +
-                 A2 * k1 * k1 * k2 * s4 + A3 * k1 * k2 * k2 * s4 + A4 * k2 * k2 * k2 * s4 / 3.0 +
-                 A2 * k1 * s5 + A3 * k2 * s5 +
-                 k1 * (A2 * k1 * k1 + 3 * A3 * k1 * k2 + 3 * A4 * k2 * k2) * s5 / 3.0 + A3 * k1 * s6 +
-                 A4 * k2 * s6 + k1 * k1 * (A3 * k1 + 3 * A4 * k2) * s6 / 3.0 + A4 * k1 * s7 +
-                 A4 * k1 * k1 * k1 * s7 / 3.0 - A1 * s3 * zi - A2 * s4 * zi - A3 * s5 * zi -
-                 A4 * s6 * zi - A2 * s2 * zi * zi * zi / 3.0 - A3 * s3 * zi * zi * zi / 3.0 -
-                 A4 * s4 * zi * zi * zi / 3.0 + A1 * s1 * (k2 * k2 * k2 - zi * zi * zi) / 3.0;
-
-    //dlR5 ???
-    double c19 = 4 * A1 * k1 * k2 * k2 * s2 + 4 * A2 * k2 * k2 * k2 * s2 / 3.0 + 4 * A1 * k1 * k1 * k2 * s3 +
-                 4 * A2 * k1 * k2 * k2 * s3 + 4 * A3 * k2 * k2 * k2 * s3 / 3.0 + 4 * A1 * k1 * k1 * k1 * s4 / 3.0 +
-                 4 * A2 * k1 * k1 * k2 * s4 + 4 * A3 * k1 * k2 * k2 * s4 + 4 * A4 * k2 * k2 * k2 * s4 / 3.0 +
-                 4 * k1 * (A2 * k1 * k1 + 3 * A3 * k1 * k2 + 3 * A4 * k2 * k2) * s5 / 3.0 +
-                 4 * k1 * k1 * (A3 * k1 + 3 * A4 * k2) * s6 / 3.0 + 4 * A4 * k1 * k1 * k1 * s7 / 3.0 -
-                 4 * A2 * s2 * zi * zi * zi / 3.0 - 4 * A3 * s3 * zi * zi * zi / 3.0 - 4 * A4 * s4 * zi * zi * zi / 3.0 +
-                 4.0 * A1 * s1 * (k2 * k2 * k2 - zi * zi * zi) / 3.0;
+    double c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c18, c19;
+    setCoefficients(c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c18, c19,
+                    s1, s2, s3, s4, s5, s6, s7,
+                    k1, k2,
+                    A1, A2, A3, A4,
+                    zi);
 
     double R6 = 6.0 * systemParameters.mu * systemParameters.L * systemParameters.U * k /
                 (systemParameters.Hn * systemParameters.Hn * systemParameters.pMin);
@@ -303,6 +200,13 @@ void createLocalContributionMatrixForQuardaticTriangle(TriangleContributionMatri
                                             a[i] * s1 * (k2 - zi) - c[i] * s2 * zi - f[i] * s3 * zi - 0.5 * e[i] * s2 * zi * zi +
                                             0.5 * b[i] * s1 * (k2 * k2 - zi * zi) + d[i] * s1 * (k2 * k2 * k2 - zi * zi * zi) / 3.0));
     }
+
+    delete[] a;
+    delete[] b;
+    delete[] c;
+    delete[] d;
+    delete[] e;
+    delete[] f;
 }
 
 void createGlobalPressureMatrixQuadraticTriangles(double **&matrixPressure,
@@ -353,63 +257,4 @@ void createGlobalPressureMatrixQuadraticTriangles(double **&matrixPressure,
 
             finiteElementNumber++;
         }
-}
-
-void addBorderConditionsQuadraticTriangles(double **&matrixResult,
-                                           double *&rightPartParam,
-                                           int n,
-                                           int MATRIX_PRESSURE_SIZE,
-                                           int OTHER_BORDER,
-                                           int DOWN_BORDER)
-{
-    //0 row
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-        {
-            matrixResult[i][j] = 0.0;
-        }
-        matrixResult[i][i] = 1.0;
-        rightPartParam[i] = DOWN_BORDER;
-    }
-
-    //left
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-        {
-            matrixResult[i * n][j] = 0.0;
-        }
-        matrixResult[i * n][i * n] = 1.0;
-        rightPartParam[i * n] = OTHER_BORDER;
-    }
-
-    //right
-    for (int i = 1; i <= n; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-        {
-            matrixResult[i * n - 1][j] = 0.0;
-        }
-        matrixResult[i * n - 1][i * n - 1] = 1.0;
-        rightPartParam[i * n - 1] = OTHER_BORDER;
-    }
-
-    //n row
-    for (int i = MATRIX_PRESSURE_SIZE - n; i < MATRIX_PRESSURE_SIZE; i++)
-    {
-        for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-        {
-            matrixResult[i][j] = 0.0;
-        }
-        matrixResult[i][i] = 1.0;
-        rightPartParam[i] = OTHER_BORDER;
-    }
-
-    //displayMatrix(matrixResult, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
-
-    std::fstream myFile;
-    myFile.open("data/fem_output/rightPart.txt", std::fstream::out);
-    for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
-        myFile << rightPartParam[i] << std::endl;
 }

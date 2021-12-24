@@ -60,9 +60,26 @@ int main()
                                         matrixPressure,
                                         rightPart,
                                         systemParameters);
-
+    double errorSum = -10;
+    double errorMax = -10;
     if (method != programMethods.RECTANGLE_SECOND_ORDER)
+    {
         solveEquation(systemParameters.n * systemParameters.n);
+        errorSum = compareWithAnalyticNormSum(coordinateMesh,
+                                              systemParameters.n,
+                                              systemParameters);
+        errorMax = compareWithAnalyticNormMax(coordinateMesh,
+                                              systemParameters.n,
+                                              systemParameters);
+    }
     else
+    {
         solveEquation(systemParameters.n * systemParameters.n - ((systemParameters.n - 1) / 2) * ((systemParameters.n - 1) / 2));
+        errorMax = compareWithAnalyticRectangleSecondOrderNormMax(coordinateMesh,
+                                                                  systemParameters.n,
+                                                                  systemParameters);
+    }
+
+    std::cout << "Error(sum) on analytic solution of Laplas equation is: " << errorSum << std::endl;
+    std::cout << "Error(max) on analytic solution of Laplas equation is: " << errorMax << std::endl;
 }

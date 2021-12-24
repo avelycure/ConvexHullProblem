@@ -1,11 +1,11 @@
 #include "FirstOrderRectangleFE.hpp"
 
 void solveWithFirstOrderRectangleFE(FirstOrderRectangleContributionMatrix *&contributionMatrix,
-                                      FirstOrderRectangleRightPart *&localRigthParts,
-                                      Point **&coordinateMesh,
-                                      double **&matrixPressure,
-                                      double *&rightPart,
-                                      SystemParameters &systemParameters)
+                                    FirstOrderRectangleRightPart *&localRigthParts,
+                                    Point **&coordinateMesh,
+                                    double **&matrixPressure,
+                                    double *&rightPart,
+                                    SystemParameters &systemParameters)
 {
     const int MATRIX_PRESSURE_SIZE = systemParameters.n * systemParameters.n;
     const int MATRIX_CONTRIBUTION_SIZE = (systemParameters.n - 1) * (systemParameters.n - 1);
@@ -84,29 +84,37 @@ void createLocalContributionMatrixForRectangleElement(FirstOrderRectangleContrib
     double A4 = pow(k, 3.0);
 
     double s1 = pointM.getY() - pointI.getY();
-    double s2 = 0.5 * (pow(pointM.getY(), 2.0) - pow(pointI.getY(), 2.0));
+    double s2 = (1.0 / 2.0) * (pow(pointM.getY(), 2.0) - pow(pointI.getY(), 2.0));
     double s3 = (1.0 / 3.0) * (pow(pointM.getY(), 3.0) - pow(pointI.getY(), 3.0));
-    double s4 = 0.25 * (pow(pointM.getY(), 4.0) - pow(pointI.getY(), 4.0));
-    double s5 = 0.2 * (pow(pointM.getY(), 5.0) - pow(pointI.getY(), 5.0));
+    double s4 = (1.0 / 4.0) * (pow(pointM.getY(), 4.0) - pow(pointI.getY(), 4.0));
+    double s5 = (1.0 / 5.0) * (pow(pointM.getY(), 5.0) - pow(pointI.getY(), 5.0));
     double s6 = (1.0 / 6.0) * (pow(pointM.getY(), 6.0) - pow(pointI.getY(), 6.0));
 
     double z1 = pointJ.getX() - pointI.getX();
-    double z2 = 0.5 * (pow(pointJ.getX(), 2.0) - pow(pointI.getX(), 2.0));
+    double z2 = (1.0 / 2.0) * (pow(pointJ.getX(), 2.0) - pow(pointI.getX(), 2.0));
     double z3 = (1.0 / 3.0) * (pow(pointJ.getX(), 3.0) - pow(pointI.getX(), 3.0));
 
-    double coef1 = A1 * s1 * z1 + A2 * s2 * z1 + A3 * s3 * z1 + A4 * s4 * z1; //before cl R1
+    //before cl R1
+    double coef1 = A1 * s1 * z1 + A2 * s2 * z1 + A3 * s3 * z1 + A4 * s4 * z1;
 
-    double coef2 = A1 * s1 * z1 + A2 * s2 * z1 + A3 * s3 * z1 + A4 * s4 * z1; //before bl R2
+    //before bl R2
+    double coef2 = A1 * s1 * z1 + A2 * s2 * z1 + A3 * s3 * z1 + A4 * s4 * z1;
 
-    double coef3 = A1 * s2 * z1 + A2 * s3 * z1 + A3 * s4 * z1 + A4 * s5 * z1; //before dl R2
+    //before dl R2
+    double coef3 = A1 * s2 * z1 + A2 * s3 * z1 + A3 * s4 * z1 + A4 * s5 * z1;
 
-    double coef4 = A1 * s2 * z1 + A2 * s3 * z1 + A3 * s4 * z1 + A4 * s5 * z1; //before blR4
+    //before blR4
+    double coef4 = A1 * s2 * z1 + A2 * s3 * z1 + A3 * s4 * z1 + A4 * s5 * z1;
 
-    double coef5 = A1 * s1 * z2 + A2 * s2 * z2 + A3 * s3 * z2 + A4 * s4 * z2; //before dlR1
+    //before dlR1
+    double coef5 = A1 * s1 * z2 + A2 * s2 * z2 + A3 * s3 * z2 + A4 * s4 * z2;
 
-    double coef6 = A1 * s1 * z2 + A2 * s2 * z2 + A3 * s3 * z2 + A4 * s4 * z2; //before clR4
+    //before clR4
+    double coef6 = A1 * s1 * z2 + A2 * s2 * z2 + A3 * s3 * z2 + A4 * s4 * z2;
 
-    double coef7 = A1 * s3 * z1 + A2 * s4 * z1 + A3 * s5 * z1 + A4 * s6 * z1 + A1 * s1 * z3 + A2 * s2 * z3 + A3 * s3 * z3 + A4 * s4 * z3; //before dlR4
+    //before dlR4
+    double coef7 = A1 * s3 * z1 + A2 * s4 * z1 + A3 * s5 * z1 + A4 * s6 * z1 +
+                   A1 * s1 * z3 + A2 * s2 * z3 + A3 * s3 * z3 + A4 * s4 * z3;
 
     //coefficient R3 6 * mu * k * L * ...
     double R3 = 6.0 * systemParameters.mu * systemParameters.L * systemParameters.U * k /

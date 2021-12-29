@@ -305,9 +305,9 @@
             "systemtype": "18"
         },
         {
-            "n": 23,
+            "n": 33,
             "L": 0.02,
-            "k": 0.0,
+            "k": 0.2,
             "mu": 0.01,
             "hMin": 1.0,
             "Hn": 0.0002,
@@ -317,7 +317,7 @@
             "pMin": 100000.0,
             "lowBorder": 1.0,
             "highBorder": 2.0,
-            "method": "rect2",
+            "method": "rect1",
             "borderLength": 1.0,
             "systemtype": "19"
         }

@@ -51,11 +51,22 @@ void outputPressureMatrix(double **matrixPressure, int MATRIX_PRESSURE_SIZE)
 {
     std::fstream myFile;
 
+    int prec = std::numeric_limits<double>::digits10 + 2;
+    int exponent_digits = std::log10(std::numeric_limits<double>::max_exponent10) + 1; // generally 3
+    int exponent_sign = 1;                                                             // 1.e-123
+    int exponent_symbol = 1;                                                           // 'e' 'E'
+    int digits_sign = 1;
+    int digits_dot = 1; // 1.2
+
+    int division_extra_space = 1;
+    int width = prec + exponent_digits + digits_sign + exponent_sign + digits_dot + exponent_symbol + division_extra_space;
+
+
     myFile.open("data/fem_output/matrixPressure.txt", std::fstream::out);
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
     {
         for (int j = 0; j < MATRIX_PRESSURE_SIZE; j++)
-            myFile << matrixPressure[i][j] << " ";
+            myFile << std::setprecision(prec) << std::setw(width) << matrixPressure[i][j] << " ";
         myFile << std::endl;
     }
 }

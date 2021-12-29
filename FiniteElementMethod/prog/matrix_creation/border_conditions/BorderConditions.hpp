@@ -1,5 +1,9 @@
 #pragma once
 #include <fstream>
+#include<iostream>
+#include<iomanip>
+#include<limits>
+#include<cmath>
 
 void addBorderConditionsOnPressureValues(double **&matrixResult,
                                          double *&rightPart,

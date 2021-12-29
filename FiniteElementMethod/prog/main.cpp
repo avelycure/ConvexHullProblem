@@ -4,9 +4,11 @@ int main()
 {
     std::string method;
     Methods programMethods;
+
     double *rightPart;
     Point **coordinateMesh;
     double **matrixPressure;
+    
     SystemParameters systemParameters;
 
     TriangleContributionMatrix *contributionMatrix;
@@ -60,6 +62,7 @@ int main()
                                         matrixPressure,
                                         rightPart,
                                         systemParameters);
+    
     double errorSum = -10;
     double errorMax = -10;
     if (method != programMethods.RECTANGLE_SECOND_ORDER)
@@ -75,6 +78,9 @@ int main()
     else
     {
         solveEquation(systemParameters.n * systemParameters.n - ((systemParameters.n - 1) / 2) * ((systemParameters.n - 1) / 2));
+        errorSum = compareWithAnalyticRectangleSecondOrderNormSum(coordinateMesh,
+                                                                  systemParameters.n,
+                                                                  systemParameters);
         errorMax = compareWithAnalyticRectangleSecondOrderNormMax(coordinateMesh,
                                                                   systemParameters.n,
                                                                   systemParameters);

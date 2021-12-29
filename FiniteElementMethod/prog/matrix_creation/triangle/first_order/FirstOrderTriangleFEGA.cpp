@@ -53,11 +53,12 @@ void createLocalContributionMatrix(TriangleContributionMatrix localMatrix,
     double A3 = 3.0 * hMin * pow(k, 2.0);
     double A4 = pow(k, 3.0);
 
-    double s1 = pointI.getY() - pointK.getY();
-    double s2 = (1.0 / 2.0) * (pow(pointI.getY(), 2.0) - pow(pointK.getY(), 2.0));
-    double s3 = (1.0 / 3.0) * (pow(pointI.getY(), 3.0) - pow(pointK.getY(), 3.0));
-    double s4 = (1.0 / 4.0) * (pow(pointI.getY(), 4.0) - pow(pointK.getY(), 4.0));
-    double s5 = (1.0 / 5.0) * (pow(pointI.getY(), 5.0) - pow(pointK.getY(), 5.0));
+    //
+    double s1 = pointK.getY() - pointI.getY();
+    double s2 = (1.0 / 2.0) * (pow(pointK.getY(), 2.0) - pow(pointI.getY(), 2.0));
+    double s3 = (1.0 / 3.0) * (pow(pointK.getY(), 3.0) - pow(pointI.getY(), 3.0));
+    double s4 = (1.0 / 4.0) * (pow(pointK.getY(), 4.0) - pow(pointI.getY(), 4.0));
+    double s5 = (1.0 / 5.0) * (pow(pointK.getY(), 5.0) - pow(pointI.getY(), 5.0));
 
     //blR1
     double c1 = A1 * k1 * s2 + A2 * k2 * s2 + A2 * k1 * s3 + A3 * k2 * s3 +
@@ -101,9 +102,9 @@ void createLocalContributionMatrix(TriangleContributionMatrix localMatrix,
 
     //creating local vector
     for (int i = 0; i < 3; i++)
-        localRightPart.setElement(i, -R3 * (a[i] * k1 * s2 + c[i] * k2 * s2 + b[i] * k1 * k2 * s2 + c[i] * k1 * s3 +
-                                            0.5 * b[i] * k1 * k1 * s3 + a[i] * s1 * (k2 - pointI.getX()) - c[i] * s2 * pointI.getX() +
-                                            0.5 * b[i] * s1 * (k2 * k2 - pointI.getX() * pointI.getX())));
+        localRightPart.setElement(i, -R3 * (a[i] * k1 * s2 + b[i] * k2 * s2 + c[i] * k1 * k2 * s2 + b[i] * k1 * s3 +
+                                            0.5 * c[i] * k1 * k1 * s3 + a[i] * s1 * (k2 - pointI.getX()) - b[i] * s2 * pointI.getX() +
+                                            0.5 * c[i] * s1 * (k2 * k2 - pointI.getX() * pointI.getX())));
 
     delete[] a;
     delete[] b;

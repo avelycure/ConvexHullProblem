@@ -17,6 +17,10 @@ double compareWithAnalyticRectangleSecondOrderNormMax(Point **&coordinateMesh,
                                                       int n,
                                                       SystemParameters systemParameters);
 
+double compareWithAnalyticRectangleSecondOrderNormSum(Point **&coordinateMesh,
+                                                      int n,
+                                                      SystemParameters systemParameters);
+
 double analyticOfLaplasEquation(double x, double y, SystemParameters systemParameters);
 
 bool readSolution(const std::string fileNameVector,
@@ -38,6 +42,12 @@ void outputAnalyticSolutionOnSquareMesh(Point **&coordinateMesh,
                                         std::string fileNameOutput,
                                         const int &n,
                                         SystemParameters systemParameters);
+
+void outputDifferenceOnSquareMesh(double *&solution,
+                                  Point **&coordinateMesh,
+                                  std::string fileNameOutput,
+                                  const int &n,
+                                  SystemParameters systemParameters);
 
 double a(int n);
 

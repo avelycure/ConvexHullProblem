@@ -8,7 +8,7 @@ void solveWithSecondOrderTriangleFE(TriangleContributionMatrixSecondOrder *&cont
                                     SystemParameters &systemParameters)
 {
     const int MATRIX_PRESSURE_SIZE = systemParameters.n * systemParameters.n;
-    const int MATRIX_CONTRIBUTION_SIZE = (systemParameters.n - 1) * (systemParameters.n - 1) * 2;
+    const int MATRIX_CONTRIBUTION_SIZE = (systemParameters.n - 1) * (systemParameters.n - 1) / 2;
 
     initMatrix(matrixPressure, MATRIX_PRESSURE_SIZE, MATRIX_PRESSURE_SIZE);
     for (int i = 0; i < MATRIX_PRESSURE_SIZE; i++)
@@ -111,6 +111,7 @@ void createLocalContributionMatrixForQuardaticTriangle(TriangleContributionMatri
     double zi = pointI.getX();
 
     double c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c18, c19;
+
     setCoefficients(c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c18, c19,
                     s1, s2, s3, s4, s5, s6, s7,
                     k1, k2,
@@ -127,56 +128,7 @@ void createLocalContributionMatrixForQuardaticTriangle(TriangleContributionMatri
     double *e = new double[6];
     double *f = new double[6];
 
-    a[0] = (pow(pointI.getX(), 2.0) * pointI.getY() * pointN.getY() +
-            pointJ.getX() * pointK.getX() * pointM.getY() * pointN.getY() +
-            pointI.getX() * pointI.getY() * (pointJ.getX() * (pointI.getY() - pointM.getY()) - pointN.getY() * (pointJ.getX() + pointK.getX()))) /
-           ((pointI.getX() - pointJ.getX()) * (pointI.getX() - pointK.getX()) * (pointI.getY() - pointM.getY()) * (pointI.getY() - pointN.getY()));
-    a[1] = (pointI.getX() * (-pointJ.getX() * pointI.getY() + pointK.getX() * pointN.getY())) /
-           ((pointI.getX() - pointJ.getX()) * (pointJ.getX() - pointK.getX()) * (pointI.getY() - pointN.getY()));
-    a[2] = (pointI.getX() * pointJ.getX()) / ((pointI.getX() - pointK.getX()) * (pointJ.getX() - pointK.getX()));
-    a[3] = (pointI.getX() * pointI.getY()) / ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointN.getY()));
-    a[4] = (pointI.getY() * pointN.getY()) / ((pointI.getY() - pointM.getY()) * (-pointM.getY() + pointN.getY()));
-    a[5] = (pointI.getY() * (pointJ.getX() * pointM.getY() - pointI.getX() * pointN.getY())) /
-           ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointN.getY()) * (-pointM.getY() + pointN.getY()));
-
-    b[0] = (-pointI.getY() * (pointI.getX() + pointJ.getX()) + pointN.getY() * (pointJ.getX() + pointK.getX())) /
-           ((pointI.getX() - pointJ.getX()) * (pointI.getX() - pointK.getX()) * (pointI.getY() - pointN.getY()));
-    b[1] = (pointI.getY() * (pointI.getX() + pointJ.getX()) - pointN.getY() * (pointI.getX() + pointK.getX())) /
-           ((pointI.getX() - pointJ.getX()) * (pointJ.getX() - pointK.getX()) * (pointI.getY() - pointN.getY()));
-    b[2] = (pointI.getX() + pointJ.getX()) / ((pointI.getX() - pointK.getX()) * (-pointJ.getX() + pointK.getX()));
-    b[3] = pointI.getY() / ((pointI.getX() - pointJ.getX()) * (-pointI.getY() + pointN.getY()));
-    b[4] = 0.0;
-    b[5] = pointI.getY() / ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointN.getY()));
-
-    c[0] = (-pointI.getX() * (pointI.getY() + pointN.getY()) + pointJ.getX() * (pointM.getY() + pointN.getY())) /
-           ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointM.getY()) * (pointI.getY() - pointN.getY()));
-    c[1] = pointI.getX() / ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointN.getY()));
-    c[2] = 0.0;
-    c[3] = pointI.getX() / ((pointI.getX() - pointJ.getX()) * (-pointI.getY() + pointN.getY()));
-    c[4] = (pointI.getY() + pointN.getY()) / ((pointI.getY() - pointM.getY()) * (pointM.getY() - pointN.getY()));
-    c[5] = (-pointJ.getX() * (pointI.getY() + pointM.getY()) + pointI.getX() * (pointI.getY() + pointN.getY())) /
-           ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointN.getY()) * (-pointM.getY() + pointN.getY()));
-
-    d[0] = 1.0 / ((pointI.getX() - pointJ.getX()) * (pointI.getX() - pointK.getX()));
-    d[1] = 1.0 / ((-pointI.getX() + pointJ.getX()) * (pointJ.getX() - pointK.getX()));
-    d[2] = 1.0 / ((pointI.getX() - pointK.getX()) * (pointJ.getX() - pointK.getX()));
-    d[3] = 0.0;
-    d[4] = 0.0;
-    d[5] = 0.0;
-
-    e[0] = 1.0 / ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointN.getY()));
-    e[1] = 1.0 / ((-pointI.getX() + pointJ.getX()) * (pointI.getY() - pointN.getY()));
-    e[2] = 0.0;
-    e[3] = 1.0 / ((pointI.getX() - pointJ.getX()) * (pointI.getY() - pointN.getY()));
-    e[4] = 0.0;
-    e[5] = 1.0 / ((-pointI.getX() + pointJ.getX()) * (pointI.getY() - pointN.getY()));
-
-    f[0] = 1.0 / ((pointI.getY() - pointM.getY()) * (pointI.getY() - pointN.getY()));
-    f[1] = 0.0;
-    f[2] = 0.0;
-    f[3] = 0.0;
-    f[4] = 1.0 / ((-pointI.getY() + pointM.getY()) * (pointM.getY() - pointN.getY()));
-    f[5] = 1.0 / ((pointI.getY() - pointN.getY()) * (pointM.getY() - pointN.getY()));
+    setFormFunctionsCoefficients(a, b, c, d, e, f, pointI, pointJ, pointK, pointM, pointN);
 
     double valR1, valR2, valR3, valR4, valR5;
     for (int i = 0; i < 6; i++)
@@ -190,16 +142,13 @@ void createLocalContributionMatrixForQuardaticTriangle(TriangleContributionMatri
             localMatrix.setElement(i, j, valR1 + valR2 + valR3 + valR4 + valR5);
         }
 
-    //проверить там где в знаменателе 12
     for (int i = 0; i < 6; i++)
-    {
         localRightPart.setElement(i, -R6 * (a[i] * k1 * s2 + c[i] * k2 * s2 + b[i] * k1 * k2 * s2 + 0.5 * e[i] * k2 * k2 * s2 +
                                             d[i] * k1 * k2 * k2 * s2 + c[i] * k1 * s3 + 0.5 * b[i] * k1 * k1 * s3 +
                                             f[i] * k2 * s3 + e[i] * k1 * k2 * s3 + d[i] * k1 * k1 * k2 * s3 +
                                             f[i] * k1 * s4 + 0.5 * e[i] * k1 * k1 * s4 + d[i] * k1 * k1 * k1 * s4 / 3.0 +
                                             a[i] * s1 * (k2 - zi) - c[i] * s2 * zi - f[i] * s3 * zi - 0.5 * e[i] * s2 * zi * zi +
                                             0.5 * b[i] * s1 * (k2 * k2 - zi * zi) + d[i] * s1 * (k2 * k2 * k2 - zi * zi * zi) / 3.0));
-    }
 
     delete[] a;
     delete[] b;

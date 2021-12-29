@@ -16,9 +16,9 @@ double compareWithAnalyticNormSum(Point **&coordinateMesh,
 
     for (int i = 1; i < n - 1; i++)
         for (int j = 1; j < n - 1; j++)
-            norm += fabs(solution[i * n + j] - analyticOfLaplasEquation(coordinateMesh[i][j].getX(),
+            norm += pow(solution[i * n + j] - analyticOfLaplasEquation(coordinateMesh[i][j].getX(),
                                                                         coordinateMesh[i][j].getY(),
-                                                                        systemParameters));
+                                                                        systemParameters),2.0);
 
     outputLaplasSolution(coordinateMesh,
                          "data/gauss_output/a_solution.txt",
@@ -26,7 +26,7 @@ double compareWithAnalyticNormSum(Point **&coordinateMesh,
                          systemParameters);
 
     delete[] solution;
-    return norm;
+    return sqrt(norm);
 }
 
 double compareWithAnalyticNormMax(Point **&coordinateMesh,
@@ -46,7 +46,7 @@ double compareWithAnalyticNormMax(Point **&coordinateMesh,
                 norm = fabs(solution[i * n + j] - analyticOfLaplasEquation(coordinateMesh[i][j].getX(),
                                                                            coordinateMesh[i][j].getY(),
                                                                            systemParameters));
-                std::cout << i << " " << j << std::endl;
+                //std::cout << i << " " << j << std::endl;
             }
     outputLaplasSolution(coordinateMesh,
                          "data/gauss_output/a_solution.txt",
@@ -90,7 +90,7 @@ double compareWithAnalyticRectangleSecondOrderNormMax(Point **&coordinateMesh,
                                                                           coordinateMesh[i][j].getY(),
                                                                           systemParameters));
                 }
-                std::cout << "0Node: " << node << " (" << coordinateMesh[i][j].getX() << " " << coordinateMesh[i][j].getY() << ")" << std::endl;
+                //std::cout << "0Node: " << node << " (" << coordinateMesh[i][j].getX() << " " << coordinateMesh[i][j].getY() << ")" << std::endl;
                 node++;
             }
         }
@@ -110,7 +110,7 @@ double compareWithAnalyticRectangleSecondOrderNormMax(Point **&coordinateMesh,
                                                                               coordinateMesh[i][j].getY(),
                                                                               systemParameters));
 
-                    std::cout << "1Node: " << node << " (" << coordinateMesh[i][j].getX() << " " << coordinateMesh[i][j].getY() << ")" << std::endl;
+                    //std::cout << "1Node: " << node << " (" << coordinateMesh[i][j].getX() << " " << coordinateMesh[i][j].getY() << ")" << std::endl;
                     node++;
                 }
             }
@@ -124,7 +124,72 @@ double compareWithAnalyticRectangleSecondOrderNormMax(Point **&coordinateMesh,
                                        n,
                                        systemParameters);
 
+    outputDifferenceOnSquareMesh(solution,
+                                 coordinateMesh,
+                                 "data/gauss_output/d_solution.txt",
+                                 n,
+                                 systemParameters);
+
     return norm;
+}
+
+double compareWithAnalyticRectangleSecondOrderNormSum(Point **&coordinateMesh,
+                                                      int n,
+                                                      SystemParameters systemParameters)
+{
+    double norm = 0.0;
+    int solutionLenght = systemParameters.n * systemParameters.n - ((systemParameters.n - 1) / 2) * ((systemParameters.n - 1) / 2);
+    double *solution = new double[solutionLenght];
+
+    readSolution("data/gauss_output/solution.txt", solution, solutionLenght);
+
+    int node = n;
+
+    for (int i = 1; i < n - 1; i++)
+    {
+        if (i % 2 == 0)
+        {
+            node++;
+            for (int j = 1; j < n - 1; j++)
+            {
+                norm += pow(solution[node] - analyticOfLaplasEquation(coordinateMesh[i][j].getX(),
+                                                                       coordinateMesh[i][j].getY(),
+                                                                       systemParameters),2.0);
+                node++;
+            }
+        }
+
+        if (i % 2 == 1)
+        {
+            node++;
+            for (int j = 2; j < n - 2; j++)
+            {
+                if (j % 2 == 0)
+                {
+                    norm += pow(solution[node] - analyticOfLaplasEquation(coordinateMesh[i][j].getX(),
+                                                                           coordinateMesh[i][j].getY(),
+                                                                           systemParameters),2.0);
+                    node++;
+                }
+            }
+        }
+
+        node++;
+    }
+
+    outputAnalyticSolutionOnSquareMesh(coordinateMesh,
+                                       "data/gauss_output/a_solution.txt",
+                                       n,
+                                       systemParameters);
+
+    outputDifferenceOnSquareMesh(solution,
+                                 coordinateMesh,
+                                 "data/gauss_output/d_solution.txt",
+                                 n,
+                                 systemParameters);
+    
+    delete[] solution;
+    return sqrt(norm);
 }
 
 double analyticOfLaplasEquation(double x, double y, SystemParameters systemParameters)
@@ -215,14 +280,8 @@ void outputDifference(double *&solution,
 
     for (int i = 0; i < n; i++)
         for (int j = 0; j < n; j++)
-            if (i == 0 && j == 0)
-                fileOutput << 0.0 /*systemParameters.HIGH_BORDER*/ << "\n";
-            else if (i == n - 1 && j == 0)
-                fileOutput << 0.0 /*systemParameters.LOW_BORDER*/ << "\n";
-            else if (i == n - 1 && j == n - 1)
-                fileOutput << 0.0 /*systemParameters.LOW_BORDER*/ << "\n";
-            else if (i == 0 && j == n - 1)
-                fileOutput << 0.0 /*systemParameters.LOW_BORDER*/ << "\n";
+            if (i == 0 || j == 0 || i == n - 1 || j == n - 1)
+                fileOutput << 0.0 << "\n";
             else
                 fileOutput << fabs(solution[i * n + j] - analyticOfLaplasEquation(coordinateMesh[i][j].getX(),
                                                                                   coordinateMesh[i][j].getY(),
@@ -242,19 +301,19 @@ void outputLaplasSolution(Point **&coordinateMesh,
 
     for (int i = 0; i < n; i++)
         for (int j = 0; j < n; j++)
-            /*if (i == 0 && j == 0)
+            if (i == 0)
                 fileOutput << systemParameters.HIGH_BORDER << "\n";
-            else if (i == n - 1 && j == 0)
+            else if (j == 0 && i != 0)
                 fileOutput << systemParameters.LOW_BORDER << "\n";
-            else if (i == n - 1 && j == n - 1)
+            else if (j == n - 1 && i != 0)
                 fileOutput << systemParameters.LOW_BORDER << "\n";
-            else if (i == 0 && j == n - 1)
+            else if (i == n - 1)
                 fileOutput << systemParameters.LOW_BORDER << "\n";
-            else*/
-            fileOutput << analyticOfLaplasEquation(coordinateMesh[i][j].getX(),
-                                                   coordinateMesh[i][j].getY(),
-                                                   systemParameters)
-                       << "\n";
+            else
+                fileOutput << analyticOfLaplasEquation(coordinateMesh[i][j].getX(),
+                                                       coordinateMesh[i][j].getY(),
+                                                       systemParameters)
+                           << "\n";
 
     fileOutput.close();
 }
@@ -264,12 +323,10 @@ void outputAnalyticSolutionOnSquareMesh(Point **&coordinateMesh,
                                         const int &n,
                                         SystemParameters systemParameters)
 {
-    int solutionLenght = systemParameters.n * systemParameters.n - ((systemParameters.n - 1) / 2) * ((systemParameters.n - 1) / 2);
-
     std::ofstream fileOutput;
     fileOutput.open(fileNameOutput);
 
-    int node = n;
+    int node = -1;
 
     for (int i = 0; i < n; i++)
     {
@@ -278,10 +335,17 @@ void outputAnalyticSolutionOnSquareMesh(Point **&coordinateMesh,
             node++;
             for (int j = 0; j < n; j++)
             {
-                fileOutput << analyticOfLaplasEquation(coordinateMesh[i][j].getX(),
-                                                       coordinateMesh[i][j].getY(),
-                                                       systemParameters)
-                           << "\n";
+                if (i == 0 && j == 0)
+                    fileOutput << 0.0 << "\n";
+                else if (i == n - 1 && j == 0)
+                    fileOutput << 0.0 << "\n";
+                else if (i == n - 1 && j == n - 1)
+                    fileOutput << 0.0 << "\n";
+                else if (i == 0 && j == n - 1)
+                    fileOutput << 0.0 << "\n";
+                else
+                    fileOutput << analyticOfLaplasEquation(coordinateMesh[i][j].getX(), coordinateMesh[i][j].getY(), systemParameters)
+                               << "\n";
                 node++;
             }
         }
@@ -290,19 +354,75 @@ void outputAnalyticSolutionOnSquareMesh(Point **&coordinateMesh,
         {
             node++;
             for (int j = 0; j < n; j++)
+            {
                 if (j % 2 == 0)
                 {
-
-                    fileOutput << analyticOfLaplasEquation(coordinateMesh[i][j].getX(),
-                                                           coordinateMesh[i][j].getY(),
-                                                           systemParameters)
-                               << "\n";
+                    if (i == 0 && j == 0)
+                        fileOutput << 0.0 << "\n";
+                    else if (i == n - 1 && j == 0)
+                        fileOutput << 0.0 << "\n";
+                    else if (i == n - 1 && j == n - 1)
+                        fileOutput << 0.0 << "\n";
+                    else if (i == 0 && j == n - 1)
+                        fileOutput << 0.0 << "\n";
+                    else
+                        fileOutput << analyticOfLaplasEquation(coordinateMesh[i][j].getX(),
+                                                               coordinateMesh[i][j].getY(),
+                                                               systemParameters)
+                                   << "\n";
                     node++;
                 }
+            }
         }
-
         node++;
     }
 
+    fileOutput.close();
+}
+
+void outputDifferenceOnSquareMesh(double *&solution,
+                                  Point **&coordinateMesh,
+                                  std::string fileNameOutput,
+                                  const int &n,
+                                  SystemParameters systemParameters)
+{
+    std::ofstream fileOutput;
+    fileOutput.open(fileNameOutput);
+
+    int node = 0;
+
+    for (int i = 0; i < n; i++)
+    {
+        if (i % 2 == 0)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                if (i == 0 || j == 0 || i == n - 1 || j == n - 1)
+                    fileOutput << 0.0 << "\n";
+                else
+                    fileOutput << fabs(solution[node] - analyticOfLaplasEquation(coordinateMesh[i][j].getX(),
+                                                                                 coordinateMesh[i][j].getY(),
+                                                                                 systemParameters))
+                               << "\n";
+                node++;
+            }
+        }
+
+        if (i % 2 == 1)
+        {
+            for (int j = 0; j < n; j++)
+                if (j % 2 == 0)
+                {
+                    if (i == 0 || j == 0 || i == n - 1 || j == n - 1)
+                        fileOutput << 0.0 << "\n";
+                    else
+                        fileOutput << fabs(solution[node] - analyticOfLaplasEquation(coordinateMesh[i][j].getX(),
+                                                                                     coordinateMesh[i][j].getY(),
+                                                                                     systemParameters))
+                                   << "\n";
+                    node++;
+                }
+        }
+    }
     fileOutput.close();
 }

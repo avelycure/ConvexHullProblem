@@ -34,6 +34,7 @@ void solveWithFirstOrderRectangleFE(FirstOrderRectangleContributionMatrix *&cont
                                                   rightPart,
                                                   localRigthParts,
                                                   systemParameters.n);
+
     addBorderConditionsOnPressureValues(matrixPressure,
                                         rightPart,
                                         systemParameters.n,
@@ -95,26 +96,26 @@ void createLocalContributionMatrixForRectangleElement(FirstOrderRectangleContrib
     double z3 = (1.0 / 3.0) * (pow(pointJ.getX(), 3.0) - pow(pointI.getX(), 3.0));
 
     //before cl R1
-    double coef1 = A1 * s1 * z1 + A2 * s2 * z1 + A3 * s3 * z1 + A4 * s4 * z1;
+    double c1 = A1 * s1 * z1 + A2 * s2 * z1 + A3 * s3 * z1 + A4 * s4 * z1;
 
     //before bl R2
-    double coef2 = A1 * s1 * z1 + A2 * s2 * z1 + A3 * s3 * z1 + A4 * s4 * z1;
+    double c2 = A1 * s1 * z1 + A2 * s2 * z1 + A3 * s3 * z1 + A4 * s4 * z1;
 
     //before dl R2
-    double coef3 = A1 * s2 * z1 + A2 * s3 * z1 + A3 * s4 * z1 + A4 * s5 * z1;
+    double c3 = A1 * s2 * z1 + A2 * s3 * z1 + A3 * s4 * z1 + A4 * s5 * z1;
 
     //before blR4
-    double coef4 = A1 * s2 * z1 + A2 * s3 * z1 + A3 * s4 * z1 + A4 * s5 * z1;
+    double c4 = A1 * s2 * z1 + A2 * s3 * z1 + A3 * s4 * z1 + A4 * s5 * z1;
 
     //before dlR1
-    double coef5 = A1 * s1 * z2 + A2 * s2 * z2 + A3 * s3 * z2 + A4 * s4 * z2;
+    double c5 = A1 * s1 * z2 + A2 * s2 * z2 + A3 * s3 * z2 + A4 * s4 * z2;
 
     //before clR4
-    double coef6 = A1 * s1 * z2 + A2 * s2 * z2 + A3 * s3 * z2 + A4 * s4 * z2;
+    double c6 = A1 * s1 * z2 + A2 * s2 * z2 + A3 * s3 * z2 + A4 * s4 * z2;
 
     //before dlR4
-    double coef7 = A1 * s3 * z1 + A2 * s4 * z1 + A3 * s5 * z1 + A4 * s6 * z1 +
-                   A1 * s1 * z3 + A2 * s2 * z3 + A3 * s3 * z3 + A4 * s4 * z3;
+    double c7 = A1 * s3 * z1 + A2 * s4 * z1 + A3 * s5 * z1 + A4 * s6 * z1 +
+                A1 * s1 * z3 + A2 * s2 * z3 + A3 * s3 * z3 + A4 * s4 * z3;
 
     //coefficient R3 6 * mu * k * L * ...
     double R3 = 6.0 * systemParameters.mu * systemParameters.L * systemParameters.U * k /
@@ -125,36 +126,40 @@ void createLocalContributionMatrixForRectangleElement(FirstOrderRectangleContrib
     double *c = new double[4];
     double *d = new double[4];
 
-    double S = fabs((pointI.getX() - pointK.getX()) * (pointI.getY() - pointK.getY()));
+    double xi = pointI.getX();
+    double yi = pointI.getY();
 
-    a[0] = pointK.getX() * pointK.getY() / S;
-    a[1] = -pointI.getX() * pointK.getY() / S;
-    a[2] = pointI.getX() * pointI.getY() / S;
-    a[3] = -pointK.getX() * pointI.getY() / S;
+    double xk = pointK.getX();
+    double yk = pointK.getY();
 
-    b[0] = -pointK.getY() / S;
-    b[1] = pointK.getY() / S;
-    b[2] = -pointI.getY() / S;
-    b[3] = pointI.getY() / S;
+    a[0] = (xk * yk) / ((xi - xk) * (yi - yk));
+    a[1] = (xi * yk) / ((xi - xk) * (-yi + yk));
+    a[2] = (xi * yi) / ((xi - xk) * (yi - yk));
+    a[3] = (xk * yi) / ((-xi + xk) * (yi - yk));
 
-    c[0] = -pointK.getX() / S;
-    c[1] = pointI.getX() / S;
-    c[2] = -pointI.getX() / S;
-    c[3] = pointK.getX() / S;
+    b[0] = yk / ((xi - xk) * (-yi + yk));
+    b[1] = yk / ((xi - xk) * (yi - yk));
+    b[2] = yi / ((xi - xk) * (-yi + yk));
+    b[3] = yi / ((xi - xk) * (yi - yk));
 
-    d[0] = 1.0 / S;
-    d[1] = -1.0 / S;
-    d[2] = 1.0 / S;
-    d[3] = -1.0 / S;
+    c[0] = xk / ((-xi + xk) * (yi - yk));
+    c[1] = xi / ((xi - xk) * (yi - yk));
+    c[2] = xi / ((xi - xk) * (-yi + yk));
+    c[3] = xk / ((xi - xk) * (yi - yk));
+
+    d[0] = 1.0 / ((xi - xk) * (yi - yk));
+    d[1] = 1.0 / ((-xi + xk) * (yi - yk));
+    d[2] = 1.0 / ((xi - xk) * (yi - yk));
+    d[3] = 1.0 / ((-xi + xk) * (yi - yk));
 
     double valR1, valR2, valR4;
 
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
         {
-            valR1 = c[j] * (c[i] * coef1 + d[i] * coef5);
-            valR2 = b[j] * (b[i] * coef2 + d[i] * coef3);
-            valR4 = d[j] * (b[i] * coef4 + c[i] * coef6 + d[i] * coef7);
+            valR1 = c[j] * (c[i] * c1 + d[i] * c5);
+            valR2 = b[j] * (b[i] * c2 + d[i] * c3);
+            valR4 = d[j] * (b[i] * c4 + c[i] * c6 + d[i] * c7);
             localMatrix.setElement(i, j, valR1 + valR2 + valR4);
         }
 
@@ -196,4 +201,6 @@ void createGlobalPressureMatrixForRectangleElement(double **&matrixPressure,
 
             finiteElementNumber++;
         }
+
+    delete[] globalNodeNumbersIJK;
 }
